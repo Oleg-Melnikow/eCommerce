@@ -6,8 +6,8 @@
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js --open",
     "build": "webpack --config webpack.prod.js",
-    "prettier": "prettier --check src/**/*.(js|jsx|ts|tsx|json|css|scss|md)",
-    "prettier:fix": "prettier --write src/**/*.(js|jsx|ts|tsx|json|css|scss|md)",
+    "prettier": "npx prettier --check src/**/*.{js,jsx,ts,tsx,json,css,scss,md}",
+    "prettier:fix": "npx prettier --write src/**/*.{js,jsx,ts,tsx,json,css,scss,md}",
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
     "test": "jest --watch",
