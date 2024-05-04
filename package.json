@@ -15,12 +15,6 @@
     "precommit": "npm run prettier:fix && npm run lint",
     "prepare": "husky"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run prettier:fix && npm run lint",
-      "pre-push": "npx validate-branch-name"
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Oleg-Melnikow/eCommerce.git"
