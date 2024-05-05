@@ -14,7 +14,7 @@ export default class API {
       this.getToken().then(() => this.createAPI());
     } else {
       this.instance = axios.create({
-        baseURL: process.env.CTP_API_URL,
+        baseURL: `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}`,
         headers: { Authorization: `${tokenType} ${accessToken}` },
         responseType: "json",
       });
