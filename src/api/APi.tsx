@@ -19,7 +19,9 @@ export async function getToken(): Promise<void> {
 
     if (response.status === 200) {
       const accessToken = response.data.access_token;
+      const tokenType = response.data.token_type;
       localStorage.setItem("ACCES_TOKEN", accessToken);
+      localStorage.setItem("TOKEN_TYPE", tokenType);
     } else {
       console.error(
         `Error fetching token: ${response.status} ${response.statusText}`
