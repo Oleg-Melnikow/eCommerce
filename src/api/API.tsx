@@ -8,11 +8,12 @@ export default class API {
   }
 
   private createAPI(): void {
-    const accessToken = localStorage.getItem("ACCES_TOKEN");
-    const tokenType = localStorage.getItem("TOKEN_TYPE");
-    if (!accessToken && !tokenType) {
+    const token = localStorage.getItem("ACCES_TOKEN");
+    if (!token) {
       this.getToken().then(() => this.createAPI());
     } else {
+      console.log(token);
+      const { accessToken, tokenType } = JSON.parse(token);
       this.instance = axios.create({
         baseURL: `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}`,
         headers: { Authorization: `${tokenType} ${accessToken}` },
@@ -38,10 +39,12 @@ export default class API {
         }
       );
       if (response.status === 200) {
-        const accessToken = response.data.access_token;
-        const tokenType = response.data.token_type;
-        localStorage.setItem("ACCES_TOKEN", accessToken);
-        localStorage.setItem("TOKEN_TYPE", tokenType);
+        const { token_type: tokenType, access_token: accessToken } =
+          response.data;
+        localStorage.setItem(
+          "ACCES_TOKEN",
+          JSON.stringify({ accessToken, tokenType })
+        );
       } else {
         console.error(
           `Error fetching token: ${response.status} ${response.statusText}`
