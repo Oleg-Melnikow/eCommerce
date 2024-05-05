@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 
-export async function getToken(): Promise<void> {
+async function getToken(): Promise<void> {
   try {
     const response = await axios.post(
       `${process.env.CTP_AUTH_URL}/oauth/token`,
@@ -30,5 +30,22 @@ export async function getToken(): Promise<void> {
   } catch (error) {
     if (error instanceof Error)
       console.error(`Error fetching token: ${error.message}`);
+  }
+}
+
+async function createAPI(): Promise<AxiosInstance | undefined> {
+  const accessToken = localStorage.getItem("ACCES_TOKEN");
+  const tokenType = localStorage.getItem("TOKEN_TYPE");
+  if (!accessToken && !tokenType) {
+    getToken().then(() => createAPI());
+  } else {
+    const API = axios.create({
+      baseURL: process.env.CTP_API_URL,
+      headers: { Authorization: `${tokenType} ${accessToken}` },
+      responseType: "json",
+    });
+    return new Promise((resolve) => {
+      resolve(API);
+    });
   }
 }
