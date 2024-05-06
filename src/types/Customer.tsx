@@ -1,82 +1,52 @@
-export interface Customer {
-  version: number;
-  vatId?: string;
-  title?: string;
-  stores?: StoreKeyReference[];
-  shippingAddressIds?: string[];
-  salutation?: string;
-  password: string;
-  middleName?: string;
-  locale?: string;
-  lastName?: string;
-  lastModifiedBy?: LastModifiedBy;
-  lastModifiedAt: Date;
-  key?: string;
-  isEmailVerified: boolean;
-  id: string;
-  firstName?: string;
-  externalId?: string;
+export interface CustomerDraft extends Partial<CustomerDraftRequired> {
   email: string;
-  defaultShippingAddressId?: string;
-  defaultBillingAddressId?: string;
-  dateOfBirth?: Date;
-  customerNumber?: string;
-  customerGroup?: CustomerGroupReference;
-  custom?: CustomFields;
-  createdBy?: CreatedBy;
-  createdAt: Date;
-  companyName?: string;
-  billingAddressIds?: string[];
+}
+interface CustomerDraftRequired {
+  vatid: string;
+  title: string;
+  stores: StoreResourceIdentifier[];
+  shippingaddresses: number[];
+  salutation: string;
+  password: string;
+  middlename: string;
+  locale: string;
+  lastname: string;
+  key: string;
+  isemailverified: boolean;
+  firstname: string;
+  externalid: string;
+  email: string;
+  defaultshippingaddress: number;
+  defaultbillingaddress: number;
+  dateofbirth: Date;
+  customernumber: string;
+  customergroup: CustomerGroupResourceIdentifier;
+  custom: CustomFieldsDraft;
+  companyname: string;
+  billingaddresses: number[];
+  anonymousid: string;
+  anonymouscartid: string;
   addresses: Address[];
 }
 
-interface StoreKeyReference {
-  key: string;
-}
-
-interface LastModifiedBy {
-  externalUserId?: string;
-  customer?: CustomerReference;
-  clientId?: string;
-  anonymousId?: string;
-}
-
-interface CustomerReference {
-  id: string;
-  obj?: Customer;
-}
-
-interface CustomerGroupReference {
-  id: string;
-  obj?: CustomerGroup;
-}
-
-interface CustomerGroup {
-  version: number;
-  name: string;
-  lastModifiedBy?: LastModifiedBy;
-  lastModifiedAt: Date;
+interface StoreResourceIdentifier {
   key?: string;
-  id: string;
-  custom?: CustomFields;
-  createdBy?: CreatedBy;
-  createdAt: Date;
+  id?: string;
 }
 
-interface CustomFields {
-  type?: TypeReference;
-  fields?: FieldContainer;
+interface CustomerGroupResourceIdentifier {
+  key?: string;
+  id?: string;
 }
 
-interface TypeReference {
-  id: string;
+interface CustomFieldsDraft {
+  type: TypeResourceIdentifier;
+  fields?: { [key: string]: unknown };
 }
 
-interface CreatedBy {
-  externalUserId?: string;
-  customer?: CustomerReference;
-  clientId?: string;
-  anonymousId?: string;
+interface TypeResourceIdentifier {
+  key?: string;
+  id?: string;
 }
 
 interface Address {
@@ -105,7 +75,4 @@ interface Address {
   apartment?: string;
   additionalStreetInfo?: string;
   additionalAddressInfo?: string;
-  custom?: CustomFields;
 }
-
-type FieldContainer = Record<string, string>;
