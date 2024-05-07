@@ -42,6 +42,7 @@
       "@typescript-eslint/no-non-null-assertion": "error",
       "max-lines-per-function": ["error", 40],
       "react/no-array-index-key": "error",
-      "react/react-in-jsx-scope": "off"
+      "react/react-in-jsx-scope": "off",
+      "import/no-extraneous-dependencies": "off"
   }
 }
