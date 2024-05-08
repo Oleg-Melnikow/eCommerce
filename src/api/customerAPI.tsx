@@ -1,18 +1,17 @@
 import axios, { AxiosInstance } from "axios";
+import { Customer } from "types/Customer";
 
 export default class CustomerAPI {
   instance: AxiosInstance | undefined;
 
-  constructor(email: string, password: string) {
-    this.getToken(email, password);
+  constructor(customerData: Customer) {
+    this.getToken(customerData);
   }
 
-  private createAPI(email: string, password: string): void {
+  private createAPI(customerData: Customer): void {
     const token = localStorage.getItem("ACCES_TOKEN_CUSTOMER");
     if (!token) {
-      this.getToken(email, password).then(() =>
-        this.createAPI(email, password)
-      );
+      this.getToken(customerData).then(() => this.createAPI(customerData));
     } else {
       console.log(token);
       const { accessToken, tokenType } = JSON.parse(token);
@@ -24,7 +23,7 @@ export default class CustomerAPI {
     }
   }
 
-  private async getToken(email: string, password: string): Promise<void> {
+  private async getToken({ email, password }: Customer): Promise<void> {
     try {
       const response = await axios.post(
         `${process.env.CTP_AUTH_URL}/oauth/${process.env.CTP_PROJECT_KEY}/customers/token`,
