@@ -6,6 +6,8 @@ import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 =======
 >>>>>>> 880b0cd (Feat: RSS-ECOMM-2_20 Not Found Page (#12))
 
+import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
+
 const routes: RouteObject[] = [
   { path: "/", element: <div>Main</div> },
   { path: "/login", element: <div>Login</div> },
