@@ -2,6 +2,8 @@ import NotFound from "pages/NotFound/NotFound";
 import { RouteObject, Navigate } from "react-router-dom";
 import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 
+import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
+
 const routes: RouteObject[] = [
   { path: "/", element: <div>Main</div> },
   { path: "/login", element: <div>Login</div> },
