@@ -8,15 +8,15 @@ import ButtonTag from "../../components/ButtonTag/ButtonTag";
 
 function LoginPage(): ReactElement {
   const [formData, setFormData] = useState({
-    name: "",
+    email: "",
     password: "",
   });
 
   const handleChangeInpt = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    if (event.target.name === "usename") {
-      setFormData({ ...formData, name: event.target.value });
+    if (event.target.name === "email") {
+      setFormData({ ...formData, email: event.target.value });
     } else if (event.target.name === "password") {
       setFormData({ ...formData, password: event.target.value });
     }
@@ -24,7 +24,7 @@ function LoginPage(): ReactElement {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    console.log(`Submitted data: ${formData.name} ${formData.password}`);
+    console.log(`Submitted data: ${formData.email} ${formData.password}`);
   };
   return (
     <FormWrapper title="Login">
@@ -34,7 +34,7 @@ function LoginPage(): ReactElement {
         url="ourURLinFuture"
         onSubmit={handleSubmit}
       >
-        <InputTag type="text" id="username" onChange={handleChangeInpt} />
+        <InputTag type="email" onChange={handleChangeInpt} />
         <InputTag type="password" id="password" onChange={handleChangeInpt} />
 
         <ButtonTag type="submit" title="Login" />
