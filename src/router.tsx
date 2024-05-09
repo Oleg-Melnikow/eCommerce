@@ -1,4 +1,7 @@
+import LoginPage from "pages/LoginPage/LoginPage";
+import RegistrationPage from "pages/RegistrationPage/RegistrationPage";
 import NotFound from "pages/NotFound/NotFound";
+
 import { RouteObject, Navigate } from "react-router-dom";
 import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 
