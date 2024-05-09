@@ -17,7 +17,7 @@ function FormWrapper({
       break;
     case "Login":
       className = "login-page";
-      description = "Enter your credentials to log in.";
+      description = "Enter your username and password to login.";
       break;
     default:
       className = "";

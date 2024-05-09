@@ -11,7 +11,7 @@ function ButtonTag({ type, title, onClick }: ButtonTagProps): ReactElement {
       classNameBtn = `${classNameBtn} button__login`;
       break;
     case "submit":
-      classNameBtn = `${classNameBtn} button__registration`;
+      classNameBtn = `${classNameBtn} ${title === "Register" ? "button__registration" : "button__login"}`;
       break;
     case "reset":
       classNameBtn = `${classNameBtn} button__login`;
