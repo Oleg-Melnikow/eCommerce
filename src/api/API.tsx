@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from "axios";
+import { CustomerDraft } from "types/API/Customer";
 
-export default class API {
-  instance: AxiosInstance | undefined;
+class API {
+  protected instance: AxiosInstance | undefined;
 
   constructor() {
     this.createAPI();
@@ -12,7 +13,6 @@ export default class API {
     if (!token) {
       this.getToken().then(() => this.createAPI());
     } else {
-      console.log(token);
       const { accessToken, tokenType } = JSON.parse(token);
       this.instance = axios.create({
         baseURL: `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}`,
@@ -55,4 +55,22 @@ export default class API {
         console.error(`Error fetching token: ${error.message}`);
     }
   }
+
+  public async createCustomer(customerData: CustomerDraft): Promise<void> {
+    this.instance
+      ?.post("/customers/", customerData)
+      .then((response) => {
+        if (response.status === 201) console.log(response);
+        else console.error(`Error registration user: ${response.statusText}`);
+      })
+      .catch((error) =>
+        console.log(
+          error.response.status === 400 // Error when re-registering an already registered user
+            ? error.response.data.message
+            : error.message
+        )
+      );
+  }
 }
+const clientAPI = new API();
+export default clientAPI;

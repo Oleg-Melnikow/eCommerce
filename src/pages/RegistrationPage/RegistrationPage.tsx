@@ -6,6 +6,7 @@ import FormTag from "../../components/Form/FormTag";
 import InputTag from "../../components/InputTag/InputTag";
 import ButtonTag from "../../components/ButtonTag/ButtonTag";
 import SelectTag from "../../components/SelectTag/SelectTag";
+import clientAPI from "../../api/API";
 
 function RegistrationPage(): ReactElement {
   const [formData, setFormData] = useState({
@@ -46,9 +47,16 @@ function RegistrationPage(): ReactElement {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    console.log(
-      `Submitted data: ${formData.name} ${formData.email} ${formData.password} ${formData.confirmPassword}`
-    );
+
+    const newUserData = {
+      lastname: formData.surname,
+      firstname: formData.name,
+      email: formData.email,
+      password: formData.password,
+    };
+
+    clientAPI.createCustomer(newUserData).then(console.log);
+
   };
   return (
     <FormWrapper title="Register">
