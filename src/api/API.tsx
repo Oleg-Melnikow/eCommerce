@@ -98,6 +98,7 @@ class API {
           JSON.stringify(response.data)
         );
         this.createAPIForAuthorizedCustomer();
+        this.getAuthorizedCustomer();
       } else {
         console.error(
           `Error fetching token: ${response.status} ${response.statusText}`
