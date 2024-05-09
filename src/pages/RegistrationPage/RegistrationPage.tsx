@@ -47,6 +47,7 @@ function RegistrationPage(): ReactElement {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+
     const newUserData = {
       lastname: formData.surname,
       firstname: formData.name,
