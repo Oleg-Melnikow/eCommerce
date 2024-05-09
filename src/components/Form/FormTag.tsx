@@ -6,7 +6,7 @@ import FormTagProps from "types/FormTagProps";
 function FormTag({
   className,
   id,
-  URL,
+  url,
   onSubmit,
   children,
 }: FormTagProps): ReactElement {
@@ -14,7 +14,7 @@ function FormTag({
     <form
       className={className}
       id={id}
-      action={URL}
+      action={url}
       method="post"
       onSubmit={onSubmit}
     >
