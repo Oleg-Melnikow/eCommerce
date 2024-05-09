@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
-import { CustomerDraft } from "types/Customer";
+import { CustomerDraft } from "types/API/Customer";
 
-export default class API {
+class API {
   protected instance: AxiosInstance | undefined;
 
   constructor() {
@@ -72,3 +72,5 @@ export default class API {
       );
   }
 }
+const clientAPI = new API();
+export default clientAPI;
