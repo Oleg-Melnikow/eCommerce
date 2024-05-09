@@ -60,7 +60,7 @@ class API {
     this.instance
       ?.post("/customers/", customerData)
       .then((response) => {
-        if (response.status === 201) console.log(response);
+        if (response.status === 201) this.authCustomer(response.data);
         else console.error(`Error registration user: ${response.statusText}`);
       })
       .catch((error) =>
@@ -70,6 +70,41 @@ class API {
             : error.message
         )
       );
+  }
+
+  public async authCustomer({ email, password }: CustomerDraft): Promise<void> {
+    try {
+      const response = await axios.post(
+        `${process.env.CTP_AUTH_URL}/oauth/${process.env.CTP_PROJECT_KEY}/customers/token`,
+        null,
+        {
+          params: {
+            grant_type: "password",
+            scope: process.env.CTP_SCOPES,
+            username: email,
+            password,
+          },
+          auth: {
+            username: process.env.CTP_CLIENT_ID ?? "",
+            password: process.env.CTP_CLIENT_SECRET ?? "",
+          },
+        }
+      );
+      console.log(response);
+      if (response.status === 200) {
+        localStorage.setItem(
+          "ACCES_TOKEN_CUSTOMER",
+          JSON.stringify(response.data)
+        );
+      } else {
+        console.error(
+          `Error fetching token: ${response.status} ${response.statusText}`
+        );
+      }
+    } catch (error) {
+      if (error instanceof Error)
+        console.error(`Error fetching token: ${error.message}`);
+    }
   }
 }
 const clientAPI = new API();
