@@ -10,14 +10,18 @@ function InputTag({ type, id, onChange }: InputTagProps): JSX.Element {
 
   switch (type) {
     case "text":
-      styleInput = `${styleInput} input_username`;
-      placeholder = "Username";
-      name = "username";
-      localId = "username";
+      styleInput = `${styleInput} ${localId === "username" ? "input_username" : "input_surname"}`;
+      name = localId === "username" ? "username" : "surname";
+      placeholder = localId === "username" ? "Username" : "Surname";
+      break;
+    case "date":
+      styleInput = `${styleInput} input_date`;
+      name = "date";
+      placeholder = "Enter your Birthdate";
       break;
     case "email":
       styleInput = `${styleInput} input_email`;
-      placeholder = "Enter your email adress";
+      placeholder = "Email adress";
       name = "email";
       localId = "email";
       break;
@@ -25,6 +29,7 @@ function InputTag({ type, id, onChange }: InputTagProps): JSX.Element {
       styleInput = `${styleInput} input_password`;
       placeholder = localId === "password" ? "Password" : "Confirm Password";
       break;
+
     default:
       break;
   }
