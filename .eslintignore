@@ -2,3 +2,5 @@
 webpack.config.js
 webpack.dev.js
 webpack.prod.js
+
+declaration.d.ts

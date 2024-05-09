@@ -13,6 +13,9 @@
     "outDir": "./dist",
     "types": ["@testing-library/jest-dom", "node"],
   },
-  "include": ["src"],
+  "paths": {
+    "pages/*": ["pages/*"],
+  },
+  "include": ["src", "declaration.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
