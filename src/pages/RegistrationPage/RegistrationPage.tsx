@@ -4,17 +4,28 @@ import React, { useState, ReactElement } from "react";
 import FormTag from "../../components/Form/FormTag";
 import InputTag from "../../components/InputTag/InputTag";
 import ButtonTag from "../../components/ButtonTag/ButtonTag";
+import SelectTag from "../../components/SelectTag/SelectTag";
 
 function RegistrationPage(): ReactElement {
   const [formData, setFormData] = useState({
     name: "",
+    surname: "",
+    date: "",
+    country: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+
+  const handleChangeInpt = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     if (event.target.name === "usename") {
       setFormData({ ...formData, name: event.target.value });
+    } else if (event.target.name === "surname") {
+      setFormData({ ...formData, surname: event.target.value });
+    } else if (event.target.name === "date") {
+      setFormData({ ...formData, date: event.target.value });
     } else if (event.target.name === "email")
       setFormData({ ...formData, email: event.target.value });
     else if (event.target.name === "password") {
@@ -23,6 +34,15 @@ function RegistrationPage(): ReactElement {
       setFormData({ ...formData, confirmPassword: event.target.value });
     }
   };
+
+  const handleChangeSlct = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ): void => {
+    if (event.target.name === "country") {
+      setFormData({ ...formData, country: event.target.value });
+    }
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     console.log(
@@ -34,22 +54,28 @@ function RegistrationPage(): ReactElement {
       <div className="registration-page__content">
         <h2 className="registration-page__content_title">Register</h2>
         <p className="registration-page__content_description">
-          Enter your email and password to register.
+          Enter your personal information to register.
         </p>
         <FormTag
           className="registration-page__form"
           id="reg-Form"
-          URL="ourURLinFuture"
+          url="ourURLinFuture"
           onSubmit={handleSubmit}
         >
-          <InputTag type="text" onChange={handleChange} />
-          <InputTag type="email" onChange={handleChange} />
-          <InputTag type="password" id="password" onChange={handleChange} />
+          <InputTag type="text" id="username" onChange={handleChangeInpt} />
+          <InputTag type="text" id="surname" onChange={handleChangeInpt} />
+          <InputTag type="date" id="date" onChange={handleChangeInpt} />
+
+          <SelectTag id="country" onChange={handleChangeSlct} />
+
+          <InputTag type="email" onChange={handleChangeInpt} />
+          <InputTag type="password" id="password" onChange={handleChangeInpt} />
           <InputTag
             type="password"
             id="confirmPassword"
-            onChange={handleChange}
+            onChange={handleChangeInpt}
           />
+
           <ButtonTag type="submit" title="Register" />
         </FormTag>
       </div>
