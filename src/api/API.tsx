@@ -2,7 +2,9 @@ import axios, { AxiosInstance } from "axios";
 import { CustomerDraft } from "types/API/Customer";
 
 class API {
-  protected instance: AxiosInstance | undefined;
+  private instance: AxiosInstance | undefined;
+
+  private authorizedInstance: AxiosInstance | undefined;
 
   constructor() {
     this.createAPI();
@@ -90,12 +92,12 @@ class API {
           },
         }
       );
-      console.log(response);
       if (response.status === 200) {
         localStorage.setItem(
           "ACCES_TOKEN_CUSTOMER",
           JSON.stringify(response.data)
         );
+        this.createAPIForAuthorizedCustomer();
       } else {
         console.error(
           `Error fetching token: ${response.status} ${response.statusText}`
@@ -104,6 +106,32 @@ class API {
     } catch (error) {
       if (error instanceof Error)
         console.error(`Error fetching token: ${error.message}`);
+    }
+  }
+
+  private async createAPIForAuthorizedCustomer(): Promise<void> {
+    const { token_type: tokenType, access_token: accessToken } = JSON.parse(
+      localStorage.getItem("ACCES_TOKEN_CUSTOMER") ?? ""
+    );
+    this.authorizedInstance = axios.create({
+      baseURL: `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}`,
+      headers: { Authorization: `${tokenType} ${accessToken}` },
+      responseType: "json",
+    });
+  }
+
+  public async getAuthorizedCustomer(): Promise<void> {
+    try {
+      const response = await this.authorizedInstance?.get("/me/");
+      if (response?.status === 200)
+        localStorage.setItem("ACTIVE_CUSTOMER", JSON.stringify(response.data));
+      else
+        console.error(
+          `Error atentification: ${response?.status} ${response?.statusText}`
+        );
+    } catch (error) {
+      if (error instanceof Error)
+        console.error(`Error atentification: ${error.message}`);
     }
   }
 }
