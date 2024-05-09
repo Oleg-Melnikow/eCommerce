@@ -1,6 +1,7 @@
 import "./RegistrationPage.scss";
 import React, { useState, ReactElement } from "react";
 
+import FormWrapper from "../../components/FormWrapper/FormWrapper";
 import FormTag from "../../components/Form/FormTag";
 import InputTag from "../../components/InputTag/InputTag";
 import ButtonTag from "../../components/ButtonTag/ButtonTag";
@@ -50,36 +51,30 @@ function RegistrationPage(): ReactElement {
     );
   };
   return (
-    <div className="registration-page">
-      <div className="registration-page__content">
-        <h2 className="registration-page__content_title">Register</h2>
-        <p className="registration-page__content_description">
-          Enter your personal information to register.
-        </p>
-        <FormTag
-          className="registration-page__form"
-          id="reg-Form"
-          url="ourURLinFuture"
-          onSubmit={handleSubmit}
-        >
-          <InputTag type="text" id="username" onChange={handleChangeInpt} />
-          <InputTag type="text" id="surname" onChange={handleChangeInpt} />
-          <InputTag type="date" id="date" onChange={handleChangeInpt} />
+    <FormWrapper title="Register">
+      <FormTag
+        className="registration-page__form"
+        id="reg-Form"
+        url="ourURLinFuture"
+        onSubmit={handleSubmit}
+      >
+        <InputTag type="text" id="username" onChange={handleChangeInpt} />
+        <InputTag type="text" id="surname" onChange={handleChangeInpt} />
+        <InputTag type="date" id="date" onChange={handleChangeInpt} />
 
-          <SelectTag id="country" onChange={handleChangeSlct} />
+        <SelectTag id="country" onChange={handleChangeSlct} />
 
-          <InputTag type="email" onChange={handleChangeInpt} />
-          <InputTag type="password" id="password" onChange={handleChangeInpt} />
-          <InputTag
-            type="password"
-            id="confirmPassword"
-            onChange={handleChangeInpt}
-          />
+        <InputTag type="email" onChange={handleChangeInpt} />
+        <InputTag type="password" id="password" onChange={handleChangeInpt} />
+        <InputTag
+          type="password"
+          id="confirmPassword"
+          onChange={handleChangeInpt}
+        />
 
-          <ButtonTag type="submit" title="Register" />
-        </FormTag>
-      </div>
-    </div>
+        <ButtonTag type="submit" title="Register" />
+      </FormTag>
+    </FormWrapper>
   );
 }
 
