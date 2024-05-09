@@ -27,6 +27,7 @@ function InputTag({ type, id, onChange }: InputTagProps): JSX.Element {
       break;
     case "password":
       styleInput = `${styleInput} input_password`;
+      name = localId === "password" ? "password" : "confirm-password";
       placeholder = localId === "password" ? "Password" : "Confirm Password";
       break;
 
