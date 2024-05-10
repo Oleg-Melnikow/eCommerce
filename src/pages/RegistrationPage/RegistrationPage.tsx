@@ -56,7 +56,6 @@ function RegistrationPage(): ReactElement {
     };
 
     clientAPI.createCustomer(newUserData).then(console.log);
-
   };
   return (
     <FormWrapper title="Register">
