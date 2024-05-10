@@ -1,3 +1,4 @@
+import MainPage from "pages/MainPage/MainPage";
 import LoginPage from "pages/LoginPage/LoginPage";
 import RegistrationPage from "pages/RegistrationPage/RegistrationPage";
 import NotFound from "pages/NotFound/NotFound";
@@ -5,7 +6,7 @@ import NotFound from "pages/NotFound/NotFound";
 import { RouteObject, Navigate } from "react-router-dom";
 
 const routes: RouteObject[] = [
-  { path: "/", element: <div>Main</div> },
+  { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/registration", element: <RegistrationPage /> },
   { path: "/about", element: <div>About</div> },

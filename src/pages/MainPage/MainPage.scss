@@ -1,0 +1,19 @@
+@mixin DisplayFlex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .main-page__container {
+    @include DisplayFlex;
+    margin: 0 auto;
+    max-width: 1200px;
+    width: 100%;
+    border: 1px solid black;
+  }
+}
