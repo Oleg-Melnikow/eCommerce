@@ -44,10 +44,21 @@
             color: rgb(70, 163, 88);
           }
 
-          &:active {
+          &.active {
+            position: relative;
             font-size: 18px;
             font-weight: 700;
             line-height: 20px;
+
+            &::before {
+              content: "";
+              position: absolute;
+              left: 0;
+              bottom: -29px;
+              width: 100%;
+              height: 3px;
+              background-color: rgb(70, 163, 88);
+            }
           }
         }
       }
@@ -58,10 +69,14 @@
 
         .header__inner_link-login,
         .header__inner_link-register,
-        .header__inner_link-logout {
-          max-width: 40px;
-          width: 100%;
+        .header__inner_link-logout,
+        .header__inner_link-basket {
           height: 40px;
+
+          img {
+            max-width: 40px;
+            width: 100%;
+          }
         }
       }
     }
