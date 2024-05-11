@@ -22,7 +22,7 @@ function RegistrationPage(): ReactElement {
   const handleChangeInpt = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    if (event.target.name === "usename") {
+    if (event.target.name === "username") {
       setFormData({ ...formData, name: event.target.value });
     } else if (event.target.name === "surname") {
       setFormData({ ...formData, surname: event.target.value });
