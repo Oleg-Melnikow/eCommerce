@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from "axios";
+import { toast } from "react-toastify";
 import { MyCustomerDraft } from "types/API/Customer";
 
 class API {
@@ -59,13 +60,13 @@ class API {
       if (response.status === 200) {
         localStorage.setItem("ACCES_TOKEN", JSON.stringify(response.data));
       } else {
-        console.error(
+        toast.error(
           `Error fetching token: ${response.status} ${response.statusText}`
         );
       }
     } catch (error) {
       if (error instanceof Error)
-        console.error(`Error fetching token: ${error.message}`);
+        toast.error(`Error fetching token: ${error.message}`);
     }
   }
 
@@ -75,13 +76,18 @@ class API {
       .then((response) => {
         if (response.status === 201) {
           this.createAPI(customerData);
-        } else console.error(`Error registration user: ${response.statusText}`);
+          toast.success("Registration was successful");
+        } else
+          toast.error(
+            `Something went wrong during the registration process. Please, should try again later.`
+          );
       })
       .catch((error) =>
-        console.log(
+        toast.error(
           error.response.status === 400
-            ? `Error registration user: re-registration of an already registered user`
-            : error.response.data.message
+            ? `Error registration user: re-registration of an already registered user.\n
+               Please, login or use another email address.`
+            : `Something went wrong during the registration process. Please, should try again later.`
         )
       );
   }
