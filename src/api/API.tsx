@@ -25,6 +25,10 @@ class API {
 
   private async getToken(customerData?: MyCustomerDraft): Promise<void> {
     try {
+      const auth = {
+        username: process.env.CTP_CLIENT_ID ?? "",
+        password: process.env.CTP_CLIENT_SECRET ?? "",
+      };
       const response = customerData
         ? await axios.post(
             `${process.env.CTP_AUTH_URL}/oauth/${process.env.CTP_PROJECT_KEY}/customers/token`,
@@ -36,10 +40,7 @@ class API {
                 username: customerData.email,
                 password: customerData.password,
               },
-              auth: {
-                username: process.env.CTP_CLIENT_ID ?? "",
-                password: process.env.CTP_CLIENT_SECRET ?? "",
-              },
+              auth,
             }
           )
         : await axios.post(
@@ -50,10 +51,7 @@ class API {
                 grant_type: "client_credentials",
                 scope: process.env.CTP_SCOPES,
               },
-              auth: {
-                username: process.env.CTP_CLIENT_ID ?? "",
-                password: process.env.CTP_CLIENT_SECRET ?? "",
-              },
+              auth,
             }
           );
       if (response.status === 200) {
