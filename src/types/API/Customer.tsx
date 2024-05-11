@@ -1,50 +1,21 @@
-export interface CustomerDraft extends Partial<CustomerDraftRequired> {
-  email: string;
-}
-interface CustomerDraftRequired {
-  vatid: string;
-  title: string;
-  stores: StoreResourceIdentifier[];
-  shippingaddresses: number[];
-  salutation: string;
+export interface MyCustomerDraft {
+  vatId?: string;
+  title?: string;
+  stores?: StoreResourceIdentifier[];
   password: string;
-  middlename: string;
-  locale: string;
-  lastname: string;
-  key: string;
-  isemailverified: boolean;
-  firstname: string;
-  externalid: string;
+  middleName?: string;
+  locale?: string;
+  lastName?: string;
+  firstName?: string;
   email: string;
-  defaultshippingaddress: number;
-  defaultbillingaddress: number;
-  dateofbirth: Date;
-  customernumber: string;
-  customergroup: CustomerGroupResourceIdentifier;
-  custom: CustomFieldsDraft;
-  companyname: string;
-  billingaddresses: number[];
-  anonymousid: string;
-  anonymouscartid: string;
-  addresses: Address[];
+  defaultShippingAddress?: number;
+  defaultBillingAddress?: number;
+  dateOfBirth?: Date;
+  companyName?: string;
+  addresses?: Address[];
 }
 
 interface StoreResourceIdentifier {
-  key?: string;
-  id?: string;
-}
-
-interface CustomerGroupResourceIdentifier {
-  key?: string;
-  id?: string;
-}
-
-interface CustomFieldsDraft {
-  type: TypeResourceIdentifier;
-  fields?: { [key: string]: unknown };
-}
-
-interface TypeResourceIdentifier {
   key?: string;
   id?: string;
 }
