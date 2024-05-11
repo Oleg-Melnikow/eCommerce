@@ -9,7 +9,7 @@ function App(): ReactElement {
   const content = useRoutes(routes);
   return (
     <div className="App">
-      <ToastContainer />
+      <ToastContainer className="toastContainer" />
       {content}
     </div>
   );

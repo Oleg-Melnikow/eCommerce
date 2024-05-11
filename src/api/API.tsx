@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { toast } from "react-toastify";
 import { MyCustomerDraft } from "types/API/Customer";
+import toastOptions from "../helpers/toastOptions";
 
 class API {
   protected instance: AxiosInstance | undefined;
@@ -74,10 +75,11 @@ class API {
       .then((response) => {
         if (response.status === 201) {
           this.createAPI(customerData);
-          toast.success("Registration was successful");
+          toast.success("Registration was successful", toastOptions);
         } else
           toast.error(
-            `Something went wrong during the registration process. Please, should try again later.`
+            `Something went wrong during the registration process. Please, should try again later.`,
+            toastOptions
           );
       })
       .catch((error) =>
@@ -85,7 +87,8 @@ class API {
           error.response.status === 400
             ? `Error registration user: re-registration of an already registered user.\n
                Please, login or use another email address.`
-            : `Something went wrong during the registration process. Please, should try again later.`
+            : `Something went wrong during the registration process. Please, should try again later.`,
+          toastOptions
         )
       );
   }
