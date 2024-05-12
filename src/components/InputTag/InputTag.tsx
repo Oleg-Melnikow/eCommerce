@@ -43,6 +43,7 @@ function InputTag({ type, id, onChange }: InputTagProps): JSX.Element {
       className={styleInput}
       placeholder={placeholder}
       onChange={onChange}
+      autoComplete={type === "password" ? "current-password" : "on"}
     />
   );
 }
