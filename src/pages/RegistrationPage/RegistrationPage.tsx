@@ -22,7 +22,7 @@ function RegistrationPage(): ReactElement {
   const handleChangeInpt = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    if (event.target.name === "usename") {
+    if (event.target.name === "username") {
       setFormData({ ...formData, name: event.target.value });
     } else if (event.target.name === "surname") {
       setFormData({ ...formData, surname: event.target.value });
@@ -49,14 +49,15 @@ function RegistrationPage(): ReactElement {
     event.preventDefault();
 
     const newUserData = {
-      lastname: formData.surname,
-      firstname: formData.name,
+      lastName: formData.surname,
+      firstName: formData.name,
       email: formData.email,
       password: formData.password,
     };
-
-    clientAPI.createCustomer(newUserData).then(console.log);
+    
+    clientAPI.createCustomer(newUserData);
   };
+  
   return (
     <FormWrapper title="Register">
       <FormTag
