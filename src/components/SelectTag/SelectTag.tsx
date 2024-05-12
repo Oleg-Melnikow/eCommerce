@@ -5,12 +5,7 @@ import SelectTagProps from "types/SelectTagProps"; // Импортируем т�
 
 function SelectTag({ id, onChange }: SelectTagProps): ReactElement {
   const options = [
-    {
-      value: "",
-      label: "Select country",
-      disabled: true,
-      selected: true,
-    },
+    { value: "", label: "Select country", disabled: true },
     { value: "1", label: "Belarus" },
     { value: "2", label: "European Union" },
     { value: "3", label: "The United Kingdom" },
@@ -18,13 +13,17 @@ function SelectTag({ id, onChange }: SelectTagProps): ReactElement {
   ];
 
   return (
-    <select id={id} className="select select_country" onChange={onChange}>
-      {options.map((option, index) => (
+    <select
+      id={id}
+      className="select select_country"
+      onChange={onChange}
+      defaultValue=""
+    >
+      {options.map((option) => (
         <option
           key={option.value}
           value={option.value}
           disabled={option.disabled}
-          selected={option.selected}
         >
           {option.label}
         </option>
