@@ -1,11 +1,13 @@
 import "./RegistrationPage.scss";
 import React, { useState, ReactElement } from "react";
+import { NavLink } from "react-router-dom";
 
 import FormWrapper from "../../components/FormWrapper/FormWrapper";
 import FormTag from "../../components/Form/FormTag";
 import InputTag from "../../components/InputTag/InputTag";
 import ButtonTag from "../../components/ButtonTag/ButtonTag";
 import SelectTag from "../../components/SelectTag/SelectTag";
+
 import clientAPI from "../../api/API";
 
 function RegistrationPage(): ReactElement {
@@ -54,10 +56,10 @@ function RegistrationPage(): ReactElement {
       email: formData.email,
       password: formData.password,
     };
-    
+
     clientAPI.createCustomer(newUserData);
   };
-  
+
   return (
     <FormWrapper title="Register">
       <FormTag
@@ -82,6 +84,10 @@ function RegistrationPage(): ReactElement {
 
         <ButtonTag type="submit" title="Register" />
       </FormTag>
+
+      <NavLink className="registration-page__content_log-in" to="/login">
+        Have an account? Log In
+      </NavLink>
     </FormWrapper>
   );
 }
