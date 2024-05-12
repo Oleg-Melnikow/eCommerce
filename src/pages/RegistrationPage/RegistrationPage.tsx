@@ -54,10 +54,10 @@ function RegistrationPage(): ReactElement {
       email: formData.email,
       password: formData.password,
     };
-    
+
     clientAPI.createCustomer(newUserData);
   };
-  
+
   return (
     <FormWrapper title="Register">
       <FormTag
