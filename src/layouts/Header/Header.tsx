@@ -1,4 +1,4 @@
-import "./_Header.scss";
+import "./Header.scss";
 import React, { ReactElement } from "react";
 
 import HeaderLogo from "../../assets/HeaderLogo.png";

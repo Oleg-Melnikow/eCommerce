@@ -1,12 +1,14 @@
 import "./Layout.scss";
 import React, { ReactElement, ReactNode } from "react";
-import Header from "../_Header/_Header";
+import { Outlet } from "react-router-dom";
 
-function Layout({ children }: { children: ReactNode }): ReactElement {
+import Header from "../Header/Header";
+
+function Layout(): ReactElement {
   return (
     <div className="layout__container">
       <Header />
-      {children}
+      <Outlet />
     </div>
   );
 }
