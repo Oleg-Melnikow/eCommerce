@@ -1,6 +1,10 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { MyCustomerDraft } from "types/API/Customer";
+import {
+  CustomerSignInResult,
+  MyCustomerDraft,
+  MyCustomerSignin,
+} from "types/API/Customer";
 import toastOptions from "../helpers/toastOptions";
 
 class API {
@@ -10,7 +14,7 @@ class API {
     this.createAPI();
   }
 
-  private createAPI(customerData?: MyCustomerDraft): void {
+  private async createAPI(customerData?: MyCustomerDraft): Promise<void> {
     const token = localStorage.getItem("ACCES_TOKEN");
     if (!token || customerData) {
       this.getToken(customerData).then(() => this.createAPI());
@@ -91,6 +95,38 @@ class API {
           toastOptions
         )
       );
+  }
+
+  public async signInCustomer(customerData: MyCustomerSignin): Promise<void> {
+    this.createAPI(customerData).then(() => {
+      if (this.instance)
+        toast
+          .promise(
+            this.instance.post("/me/login/", customerData),
+            {
+              pending: "Please wait.",
+              success: {
+                render(props) {
+                  const response = props.data as AxiosResponse;
+                  if (response.status === 200) {
+                    const { customer } = response.data as CustomerSignInResult;
+                    return `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`;
+                  }
+                  throw new Error(
+                    "Something went wrong during the registration process. Please, should try again later."
+                  );
+                },
+              },
+              error: {
+                render(props) {
+                  return `${props.data}`;
+                },
+              },
+            },
+            toastOptions
+          )
+          .catch(console.log);
+    });
   }
 }
 const clientAPI = new API();
