@@ -5,7 +5,8 @@ export default function errorHandler(error: ErrorResponse | Error): ReactNode {
   let errorMessageInner: ReactNode;
   switch (error.message) {
     case "Account with the given credentials not found.":
-      errorMessageInner = "Email or password is incorrect";
+      errorMessageInner =
+        "The password is incorrect. Please enter the correct password.";
       break;
 
     default:

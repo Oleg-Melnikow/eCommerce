@@ -71,13 +71,13 @@ class API {
       if (response.status === 200) {
         localStorage.setItem("ACCESS_TOKEN", JSON.stringify(response.data));
       } else {
-        toast.error(
+        console.error(
           `Error fetching token: ${response.status} ${response.statusText}`
         );
       }
     } catch (error) {
       if (error instanceof Error)
-        toast.error(`Error fetching token: ${error.message}`);
+        console.error(`Error fetching token: ${error.message}`);
     }
   }
 
@@ -183,6 +183,7 @@ class API {
   }
 
   public async signInCustomer(customerData: MyCustomerSignin): Promise<void> {
+    const isCustomerExist = await this.checkCustomerByEmail(customerData.email);
     this.createAPI(customerData).then(() => {
       if (this.instance)
         toast.promise(
@@ -201,19 +202,43 @@ class API {
             },
             error: {
               render(props) {
-                console.log(props);
                 const error =
                   props.data instanceof AxiosError
                     ? (props.data.response?.data as ErrorResponse)
                     : (props.data as Error);
-                console.log(error);
-                return errorHandler(error);
+                return isCustomerExist
+                  ? errorHandler(error)
+                  : `The user with the email address "${customerData.email}" is not registered. Please check your email address or register.`;
               },
             },
           },
           toastOptions
         );
     });
+  }
+
+  private async checkCustomerByEmail(email: string): Promise<boolean> {
+    const params = {
+      where: `email="${email}"`,
+    };
+    if (this.instance)
+      try {
+        const response: AxiosResponse = await this.instance?.head(
+          "/customers/",
+          { params }
+        );
+        if (response.status === 200) {
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error(
+          "An error occurred while verifying the existence of the client.",
+          error
+        );
+        return false;
+      }
+    return false;
   }
 }
 const clientAPI = new API();
