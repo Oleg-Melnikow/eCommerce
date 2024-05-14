@@ -15,7 +15,7 @@ class API {
   }
 
   private async createAPI(customerData?: MyCustomerDraft): Promise<void> {
-    const token = localStorage.getItem("ACCES_TOKEN");
+    const token = localStorage.getItem("ACCESS_TOKEN");
     if (!token || customerData) {
       this.getToken(customerData).then(() => this.createAPI());
     } else {
@@ -61,7 +61,7 @@ class API {
             }
           );
       if (response.status === 200) {
-        localStorage.setItem("ACCES_TOKEN", JSON.stringify(response.data));
+        localStorage.setItem("ACCESS_TOKEN", JSON.stringify(response.data));
       } else {
         toast.error(
           `Error fetching token: ${response.status} ${response.statusText}`
@@ -71,6 +71,37 @@ class API {
       if (error instanceof Error)
         toast.error(`Error fetching token: ${error.message}`);
     }
+  }
+
+  private async checkToken(): Promise<boolean> {
+    try {
+      const auth = {
+        username: process.env.CTP_CLIENT_ID ?? "",
+        password: process.env.CTP_CLIENT_SECRET ?? "",
+      };
+      const accessToken = localStorage.getItem("ACCESS_TOKEN");
+      if (accessToken) {
+        const { access_token: token } = JSON.parse(accessToken);
+        const response = await axios.post(
+          `${process.env.CTP_AUTH_URL}/oauth/introspect`,
+          null,
+          {
+            params: {
+              token,
+              scope: process.env.CTP_SCOPES,
+            },
+            auth,
+          }
+        );
+        if (response.status === 200 && response.data.active) {
+          return true;
+        }
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
+    return false;
   }
 
   public async createCustomer(customerData: MyCustomerDraft): Promise<void> {
