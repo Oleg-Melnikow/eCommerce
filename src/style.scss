@@ -16,5 +16,15 @@ body {
 }
 
 .toastContainer {
-  width: 100%;
+  width: 450px;
+  @media screen and (max-width: 500px) {
+    width: 90%;
+    padding: 4px;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    .Toastify__toast {
+      border-radius: 6px;
+    }
+  }
 }
