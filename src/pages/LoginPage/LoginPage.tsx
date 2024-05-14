@@ -2,6 +2,8 @@ import "./LoginPage.scss";
 import React, { useState, ReactElement } from "react";
 import { NavLink } from "react-router-dom";
 
+import { toast } from "react-toastify";
+import clientAPI from "../../api/API";
 import FormWrapper from "../../components/FormWrapper/FormWrapper";
 import FormTag from "../../components/Form/FormTag";
 import InputTag from "../../components/InputTag/InputTag";
@@ -25,7 +27,8 @@ function LoginPage(): ReactElement {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    console.log(`Submitted data: ${formData.email} ${formData.password}`);
+    console.log(formData);
+    clientAPI.signInCustomer(formData);
   };
   return (
     <FormWrapper title="Login">

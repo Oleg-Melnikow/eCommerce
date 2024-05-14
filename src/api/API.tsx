@@ -1,6 +1,10 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { MyCustomerDraft } from "types/API/Customer";
+import {
+  CustomerSignInResult,
+  MyCustomerDraft,
+  MyCustomerSignin,
+} from "types/API/Customer";
 import toastOptions from "../helpers/toastOptions";
 
 class API {
@@ -10,7 +14,7 @@ class API {
     this.createAPI();
   }
 
-  private createAPI(customerData?: MyCustomerDraft): void {
+  private async createAPI(customerData?: MyCustomerDraft): Promise<void> {
     const token = localStorage.getItem("ACCES_TOKEN");
     if (!token || customerData) {
       this.getToken(customerData).then(() => this.createAPI());
@@ -70,27 +74,66 @@ class API {
   }
 
   public async createCustomer(customerData: MyCustomerDraft): Promise<void> {
-    this.instance
-      ?.post("/me/signup", customerData)
-      .then((response) => {
-        if (response.status === 201) {
-          this.createAPI(customerData);
-          toast.success("Registration was successful", toastOptions);
-        } else
-          toast.error(
-            `Something went wrong during the registration process. Please, should try again later.`,
-            toastOptions
-          );
-      })
-      .catch((error) =>
-        toast.error(
-          error.response.status === 400
-            ? `Error registration user: re-registration of an already registered user.\n
-               Please, login or use another email address.`
-            : `Something went wrong during the registration process. Please, should try again later.`,
-          toastOptions
-        )
+    if (this.instance)
+      toast.promise(
+        this.instance?.post("/me/signup", customerData),
+        {
+          pending: "Please, wait.",
+          success: {
+            render(props) {
+              const response = props.data as AxiosResponse;
+              if (response.status === 201) {
+                return "Registration was successful";
+              }
+              throw new Error(
+                "Something went wrong during the registration process. Please, should try again later."
+              );
+            },
+          },
+          error: {
+            render(props) {
+              const error = props.data as AxiosError;
+              console.log(error);
+              return `${
+                error.response?.status === 400
+                  ? "Error registration user: re-registration of an already registered user.\nPlease, login or use another email address."
+                  : "Something went wrong during the registration process. Please, should try again later."
+              }`;
+            },
+          },
+        },
+        toastOptions
       );
+  }
+
+  public async signInCustomer(customerData: MyCustomerSignin): Promise<void> {
+    this.createAPI(customerData).then(() => {
+      if (this.instance)
+        toast.promise(
+          this.instance.post("/me/login/", customerData),
+          {
+            pending: "Please wait.",
+            success: {
+              render(props) {
+                const response = props.data as AxiosResponse;
+                if (response.status === 200) {
+                  const { customer } = response.data as CustomerSignInResult;
+                  return `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`;
+                }
+                throw new Error(
+                  "Something went wrong during the registration process. Please, should try again later."
+                );
+              },
+            },
+            error: {
+              render(props) {
+                return `${props.data}`;
+              },
+            },
+          },
+          toastOptions
+        );
+    });
   }
 }
 const clientAPI = new API();
