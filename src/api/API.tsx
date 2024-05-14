@@ -104,6 +104,42 @@ class API {
     return false;
   }
 
+  private async refreshToken(): Promise<void> {
+    try {
+      const auth = {
+        username: process.env.CTP_CLIENT_ID ?? "",
+        password: process.env.CTP_CLIENT_SECRET ?? "",
+      };
+      const accessToken = localStorage.getItem("ACCESS_TOKEN");
+      if (accessToken) {
+        const { refresh_token: refreshToken } = JSON.parse(accessToken);
+        const response = await axios.post(
+          `${process.env.CTP_AUTH_URL}/oauth/token`,
+          null,
+          {
+            params: {
+              grant_type: "refresh_token",
+              refresh_token: refreshToken,
+              scope: process.env.CTP_SCOPES,
+            },
+            auth,
+          }
+        );
+        if (response.status === 200) {
+          console.log(response.data);
+          localStorage.setItem("ACCESS_TOKEN", JSON.stringify(response.data));
+        } else {
+          console.error(
+            `Error fetching token: ${response.status} ${response.statusText}`
+          );
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error(`Error fetching token: ${error.message}`);
+    }
+  }
+
   public async createCustomer(customerData: MyCustomerDraft): Promise<void> {
     if (this.instance)
       toast.promise(
