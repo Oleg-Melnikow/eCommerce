@@ -1,5 +1,6 @@
 import "./LoginPage.scss";
 import React, { useState, ReactElement } from "react";
+import { NavLink } from "react-router-dom";
 
 import { toast } from "react-toastify";
 import clientAPI from "../../api/API";
@@ -42,6 +43,9 @@ function LoginPage(): ReactElement {
 
         <ButtonTag type="submit" title="Login" />
       </FormTag>
+      <NavLink className="login-page__content_sing-up" to="/registration">
+        Have an account? Sign Up
+      </NavLink>
     </FormWrapper>
   );
 }

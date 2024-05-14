@@ -12,6 +12,7 @@ const toastOptions: ToastOptions = {
   transition: Slide,
   style: {
     textAlign: "center",
+    boxShadow: "0 0 15px 0 #000",
   },
 };
 
