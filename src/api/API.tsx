@@ -5,6 +5,8 @@ import {
   MyCustomerDraft,
   MyCustomerSignin,
 } from "types/API/Customer";
+import errorHandler from "../helpers/errorHandler";
+import { ErrorResponse } from "../types/API/Errors";
 import toastOptions from "../helpers/toastOptions";
 
 class API {
@@ -194,14 +196,18 @@ class API {
                   const { customer } = response.data as CustomerSignInResult;
                   return `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`;
                 }
-                throw new Error(
-                  "Something went wrong during the registration process. Please, should try again later."
-                );
+                throw new Error("Undefined error");
               },
             },
             error: {
               render(props) {
-                return `${props.data}`;
+                console.log(props);
+                const error =
+                  props.data instanceof AxiosError
+                    ? (props.data.response?.data as ErrorResponse)
+                    : (props.data as Error);
+                console.log(error);
+                return errorHandler(error);
               },
             },
           },
