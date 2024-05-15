@@ -6,7 +6,6 @@ import {
   MyCustomerSignin,
 } from "types/API/Customer";
 import errorHandler from "../helpers/errorHandler";
-import { ErrorResponse } from "../types/API/Errors";
 import toastOptions from "../helpers/toastOptions";
 
 class API {
@@ -24,6 +23,7 @@ class API {
   });
 
   constructor() {
+    this.checkToken().then(console.log);
     this.createAPI();
   }
 
@@ -32,17 +32,26 @@ class API {
     if (!token || customerData) {
       this.getToken(customerData).then(() => this.createAPI());
     } else {
-      const { access_token: accessToken, token_type: tokenType } =
-        JSON.parse(token);
+      const {
+        access_token: accessToken,
+        token_type: tokenType,
+        scope,
+      } = JSON.parse(token);
+      this.checkToken().then((isActive) => {
+        if (!isActive)
+          if (scope.includes("anonymous_id")) {
+            this.getToken().then(() => this.createAPI()); // If the anonymous user's token is not active, we get a new token.
+          } else if (scope.includes("customer_id")) {
+            console.error("The token expired"); // TODO: Here you need to redirect the user to the `login` page
+          }
+      });
       this.instance = axios.create({
         baseURL: `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}`,
         headers: { Authorization: `${tokenType} ${accessToken}` },
         responseType: "json",
       });
       this.instance.interceptors.request.use((config) => {
-        this.checkToken().then((isActive) => {
-          if (!isActive) this.refreshToken();
-        });
+        this.refreshToken();
         return config;
       });
     }
@@ -94,8 +103,8 @@ class API {
             token,
           },
         });
-        if (response.status === 200 && response.data.active) {
-          return true;
+        if (response.status === 200) {
+          return response.data.active;
         }
         return false;
       }
@@ -131,6 +140,7 @@ class API {
   }
 
   public async createCustomer(customerData: MyCustomerDraft): Promise<void> {
+    const createAPIBinded = this.createAPI.bind(this);
     if (this.instance)
       toast.promise(
         this.instance?.post("/me/signup", customerData),
@@ -140,6 +150,7 @@ class API {
             render(props) {
               const response = props.data as AxiosResponse;
               if (response.status === 201) {
+                createAPIBinded(customerData);
                 return "Registration was successfull";
               }
               throw new Error(
