@@ -8,9 +8,11 @@ const toastOptions: ToastOptions = {
   pauseOnHover: true,
   draggable: true,
   progress: undefined,
-  theme: "colored",
+  theme: "dark",
   transition: Slide,
+
   style: {
+    fontFamily: "Noto Sans, sans-serif",
     textAlign: "center",
     boxShadow: "0 0 15px 0 #000",
   },
