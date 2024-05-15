@@ -26,6 +26,12 @@ class API {
         headers: { Authorization: `${tokenType} ${accessToken}` },
         responseType: "json",
       });
+      this.instance.interceptors.request.use((config) => {
+        this.checkToken().then((isActive) => {
+          if (!isActive) this.refreshToken();
+        });
+        return config;
+      });
     }
   }
 
@@ -94,6 +100,7 @@ class API {
           }
         );
         if (response.status === 200 && response.data.active) {
+          console.log(response);
           return true;
         }
         return false;
