@@ -5,6 +5,8 @@ import {
   MyCustomerDraft,
   MyCustomerSignin,
 } from "types/API/Customer";
+import errorHandler from "../helpers/errorHandler";
+import { ErrorResponse } from "../types/API/Errors";
 import toastOptions from "../helpers/toastOptions";
 
 class API {
@@ -63,13 +65,13 @@ class API {
       if (response.status === 200) {
         localStorage.setItem("ACCES_TOKEN", JSON.stringify(response.data));
       } else {
-        toast.error(
+        console.error(
           `Error fetching token: ${response.status} ${response.statusText}`
         );
       }
     } catch (error) {
       if (error instanceof Error)
-        toast.error(`Error fetching token: ${error.message}`);
+        console.error(`Error fetching token: ${error.message}`);
     }
   }
 
@@ -107,6 +109,7 @@ class API {
   }
 
   public async signInCustomer(customerData: MyCustomerSignin): Promise<void> {
+    const isCustomerExist = await this.checkCustomerByEmail(customerData.email);
     this.createAPI(customerData).then(() => {
       if (this.instance)
         toast.promise(
@@ -120,20 +123,48 @@ class API {
                   const { customer } = response.data as CustomerSignInResult;
                   return `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`;
                 }
-                throw new Error(
-                  "Something went wrong during the registration process. Please, should try again later."
-                );
+                throw new Error("Undefined error");
               },
             },
             error: {
               render(props) {
-                return `${props.data}`;
+                const error =
+                  props.data instanceof AxiosError
+                    ? (props.data.response?.data as ErrorResponse)
+                    : (props.data as Error);
+                return isCustomerExist
+                  ? errorHandler(error)
+                  : `The user with the email address "${customerData.email}" is not registered. Please check your email address or register.`;
               },
             },
           },
           toastOptions
         );
     });
+  }
+
+  private async checkCustomerByEmail(email: string): Promise<boolean> {
+    const params = {
+      where: `email="${email}"`,
+    };
+    if (this.instance)
+      try {
+        const response: AxiosResponse = await this.instance?.head(
+          "/customers/",
+          { params }
+        );
+        if (response.status === 200) {
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error(
+          "An error occurred while verifying the existence of the client.",
+          error
+        );
+        return false;
+      }
+    return false;
   }
 }
 const clientAPI = new API();

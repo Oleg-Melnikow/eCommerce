@@ -27,7 +27,6 @@ function LoginPage(): ReactElement {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    console.log(formData);
     clientAPI.signInCustomer(formData);
   };
   return (
