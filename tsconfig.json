@@ -15,6 +15,8 @@
   },
   "paths": {
     "pages/*": ["pages/*"],
+    "components/*": ["components/*"],
+    "api/*": ["api/*"],
   },
   "include": ["src", "declaration.d.ts"],
   "exclude": ["node_modules", "dist"]
