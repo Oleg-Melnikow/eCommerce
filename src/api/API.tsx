@@ -12,6 +12,17 @@ import toastOptions from "../helpers/toastOptions";
 class API {
   protected instance: AxiosInstance | undefined;
 
+  protected authInstance = axios.create({
+    baseURL: `${process.env.CTP_AUTH_URL}/oauth`,
+    auth: {
+      username: process.env.CTP_CLIENT_ID ?? "",
+      password: process.env.CTP_CLIENT_SECRET ?? "",
+    },
+    params: {
+      scope: process.env.CTP_SCOPES,
+    },
+  });
+
   constructor() {
     this.createAPI();
   }
@@ -39,33 +50,25 @@ class API {
 
   private async getToken(customerData?: MyCustomerDraft): Promise<void> {
     try {
-      const auth = {
-        username: process.env.CTP_CLIENT_ID ?? "",
-        password: process.env.CTP_CLIENT_SECRET ?? "",
-      };
       const response = customerData
-        ? await axios.post(
-            `${process.env.CTP_AUTH_URL}/oauth/${process.env.CTP_PROJECT_KEY}/customers/token`,
+        ? await this.authInstance.post(
+            `/${process.env.CTP_PROJECT_KEY}/customers/token`,
             null,
             {
               params: {
                 grant_type: "password",
-                scope: process.env.CTP_SCOPES,
                 username: customerData.email,
                 password: customerData.password,
               },
-              auth,
             }
           )
-        : await axios.post(
-            `${process.env.CTP_AUTH_URL}/oauth/${process.env.CTP_PROJECT_KEY}/anonymous/token`,
+        : await this.authInstance.post(
+            `/${process.env.CTP_PROJECT_KEY}/anonymous/token`,
             null,
             {
               params: {
                 grant_type: "client_credentials",
-                scope: process.env.CTP_SCOPES,
               },
-              auth,
             }
           );
       if (response.status === 200) {
@@ -83,26 +86,15 @@ class API {
 
   private async checkToken(): Promise<boolean> {
     try {
-      const auth = {
-        username: process.env.CTP_CLIENT_ID ?? "",
-        password: process.env.CTP_CLIENT_SECRET ?? "",
-      };
       const accessToken = localStorage.getItem("ACCESS_TOKEN");
       if (accessToken) {
         const { access_token: token } = JSON.parse(accessToken);
-        const response = await axios.post(
-          `${process.env.CTP_AUTH_URL}/oauth/introspect`,
-          null,
-          {
-            params: {
-              token,
-              scope: process.env.CTP_SCOPES,
-            },
-            auth,
-          }
-        );
+        const response = await this.authInstance.post(`/introspect`, null, {
+          params: {
+            token,
+          },
+        });
         if (response.status === 200 && response.data.active) {
-          console.log(response);
           return true;
         }
         return false;
@@ -115,27 +107,16 @@ class API {
 
   private async refreshToken(): Promise<void> {
     try {
-      const auth = {
-        username: process.env.CTP_CLIENT_ID ?? "",
-        password: process.env.CTP_CLIENT_SECRET ?? "",
-      };
       const accessToken = localStorage.getItem("ACCESS_TOKEN");
       if (accessToken) {
         const { refresh_token: refreshToken } = JSON.parse(accessToken);
-        const response = await axios.post(
-          `${process.env.CTP_AUTH_URL}/oauth/token`,
-          null,
-          {
-            params: {
-              grant_type: "refresh_token",
-              refresh_token: refreshToken,
-              scope: process.env.CTP_SCOPES,
-            },
-            auth,
-          }
-        );
+        const response = await this.authInstance.post(`/token`, null, {
+          params: {
+            grant_type: "refresh_token",
+            refresh_token: refreshToken,
+          },
+        });
         if (response.status === 200) {
-          console.log(response.data);
           localStorage.setItem("ACCESS_TOKEN", JSON.stringify(response.data));
         } else {
           console.error(
@@ -145,7 +126,7 @@ class API {
       }
     } catch (error) {
       if (error instanceof Error)
-        toast.error(`Error fetching token: ${error.message}`);
+        console.error(`Error fetching token: ${error.message}`);
     }
   }
 
@@ -159,7 +140,7 @@ class API {
             render(props) {
               const response = props.data as AxiosResponse;
               if (response.status === 201) {
-                return "Registration was successful";
+                return "Registration was successfull";
               }
               throw new Error(
                 "Something went wrong during the registration process. Please, should try again later."
@@ -169,12 +150,7 @@ class API {
           error: {
             render(props) {
               const error = props.data as AxiosError;
-              console.log(error);
-              return `${
-                error.response?.status === 400
-                  ? "Error registration user: re-registration of an already registered user.\nPlease, login or use another email address."
-                  : "Something went wrong during the registration process. Please, should try again later."
-              }`;
+              return `${errorHandler(props)}`;
             },
           },
         },
@@ -202,12 +178,8 @@ class API {
             },
             error: {
               render(props) {
-                const error =
-                  props.data instanceof AxiosError
-                    ? (props.data.response?.data as ErrorResponse)
-                    : (props.data as Error);
                 return isCustomerExist
-                  ? errorHandler(error)
+                  ? errorHandler(props)
                   : `The user with the email address "${customerData.email}" is not registered. Please check your email address or register.`;
               },
             },
