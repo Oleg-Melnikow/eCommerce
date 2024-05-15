@@ -6,6 +6,7 @@ import {
   MyCustomerSignin,
 } from "types/API/Customer";
 import errorHandler from "../helpers/errorHandler";
+
 import toastOptions from "../helpers/toastOptions";
 
 class API {
@@ -136,6 +137,7 @@ class API {
     } catch (error) {
       if (error instanceof Error)
         console.error(`Error fetching token: ${error.message}`);
+
     }
   }
 

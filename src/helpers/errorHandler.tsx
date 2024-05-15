@@ -10,7 +10,6 @@ export default function errorHandler(
     toastProps.data instanceof AxiosError
       ? (toastProps.data.response?.data as ErrorResponse)
       : (toastProps.data as Error);
-
   let errorMessageInner: ReactNode;
   switch (error.message) {
     case "Account with the given credentials not found.":
