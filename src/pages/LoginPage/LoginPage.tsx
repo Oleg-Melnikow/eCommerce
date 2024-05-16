@@ -59,10 +59,10 @@ function LoginPage(): ReactElement {
     }
   };
 
-
   const onSubmit: SubmitHandler<FormValues> = (dataForm: FormValues): void => {
     console.log(dataForm);
     clientAPI.signInCustomer(dataForm);
+
   };
 
   return (

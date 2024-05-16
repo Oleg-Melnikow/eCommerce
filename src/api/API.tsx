@@ -6,64 +6,83 @@ import {
   MyCustomerSignin,
 } from "types/API/Customer";
 import errorHandler from "../helpers/errorHandler";
-import { ErrorResponse } from "../types/API/Errors";
+
 import toastOptions from "../helpers/toastOptions";
 
 class API {
   protected instance: AxiosInstance | undefined;
 
+  protected authInstance = axios.create({
+    baseURL: `${process.env.CTP_AUTH_URL}/oauth`,
+    auth: {
+      username: process.env.CTP_CLIENT_ID ?? "",
+      password: process.env.CTP_CLIENT_SECRET ?? "",
+    },
+    params: {
+      scope: process.env.CTP_SCOPES,
+    },
+  });
+
   constructor() {
+    this.checkToken().then(console.log);
     this.createAPI();
   }
 
   private async createAPI(customerData?: MyCustomerDraft): Promise<void> {
-    const token = localStorage.getItem("ACCES_TOKEN");
+    const token = localStorage.getItem("ACCESS_TOKEN");
     if (!token || customerData) {
       this.getToken(customerData).then(() => this.createAPI());
     } else {
-      const { access_token: accessToken, token_type: tokenType } =
-        JSON.parse(token);
+      const {
+        access_token: accessToken,
+        token_type: tokenType,
+        scope,
+      } = JSON.parse(token);
+      this.checkToken().then((isActive) => {
+        if (!isActive)
+          if (scope.includes("anonymous_id")) {
+            this.getToken().then(() => this.createAPI()); // If the anonymous user's token is not active, we get a new token.
+          } else if (scope.includes("customer_id")) {
+            console.error("The token expired"); // TODO: Here you need to redirect the user to the `login` page
+          }
+      });
       this.instance = axios.create({
         baseURL: `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}`,
         headers: { Authorization: `${tokenType} ${accessToken}` },
         responseType: "json",
+      });
+      this.instance.interceptors.request.use((config) => {
+        this.refreshToken();
+        return config;
       });
     }
   }
 
   private async getToken(customerData?: MyCustomerDraft): Promise<void> {
     try {
-      const auth = {
-        username: process.env.CTP_CLIENT_ID ?? "",
-        password: process.env.CTP_CLIENT_SECRET ?? "",
-      };
       const response = customerData
-        ? await axios.post(
-            `${process.env.CTP_AUTH_URL}/oauth/${process.env.CTP_PROJECT_KEY}/customers/token`,
+        ? await this.authInstance.post(
+            `/${process.env.CTP_PROJECT_KEY}/customers/token`,
             null,
             {
               params: {
                 grant_type: "password",
-                scope: process.env.CTP_SCOPES,
                 username: customerData.email,
                 password: customerData.password,
               },
-              auth,
             }
           )
-        : await axios.post(
-            `${process.env.CTP_AUTH_URL}/oauth/${process.env.CTP_PROJECT_KEY}/anonymous/token`,
+        : await this.authInstance.post(
+            `/${process.env.CTP_PROJECT_KEY}/anonymous/token`,
             null,
             {
               params: {
                 grant_type: "client_credentials",
-                scope: process.env.CTP_SCOPES,
               },
-              auth,
             }
           );
       if (response.status === 200) {
-        localStorage.setItem("ACCES_TOKEN", JSON.stringify(response.data));
+        localStorage.setItem("ACCESS_TOKEN", JSON.stringify(response.data));
       } else {
         console.error(
           `Error fetching token: ${response.status} ${response.statusText}`
@@ -75,7 +94,55 @@ class API {
     }
   }
 
+  private async checkToken(): Promise<boolean> {
+    try {
+      const accessToken = localStorage.getItem("ACCESS_TOKEN");
+      if (accessToken) {
+        const { access_token: token } = JSON.parse(accessToken);
+        const response = await this.authInstance.post(`/introspect`, null, {
+          params: {
+            token,
+          },
+        });
+        if (response.status === 200) {
+          return response.data.active;
+        }
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
+    return false;
+  }
+
+  private async refreshToken(): Promise<void> {
+    try {
+      const accessToken = localStorage.getItem("ACCESS_TOKEN");
+      if (accessToken) {
+        const { refresh_token: refreshToken } = JSON.parse(accessToken);
+        const response = await this.authInstance.post(`/token`, null, {
+          params: {
+            grant_type: "refresh_token",
+            refresh_token: refreshToken,
+          },
+        });
+        if (response.status === 200) {
+          localStorage.setItem("ACCESS_TOKEN", JSON.stringify(response.data));
+        } else {
+          console.error(
+            `Error fetching token: ${response.status} ${response.statusText}`
+          );
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error)
+        console.error(`Error fetching token: ${error.message}`);
+
+    }
+  }
+
   public async createCustomer(customerData: MyCustomerDraft): Promise<void> {
+    const createAPIBinded = this.createAPI.bind(this);
     if (this.instance)
       toast.promise(
         this.instance?.post("/me/signup", customerData),
@@ -85,7 +152,8 @@ class API {
             render(props) {
               const response = props.data as AxiosResponse;
               if (response.status === 201) {
-                return "Registration was successful";
+                createAPIBinded(customerData);
+                return "Registration was successfull";
               }
               throw new Error(
                 "Something went wrong during the registration process. Please, should try again later."
@@ -95,12 +163,7 @@ class API {
           error: {
             render(props) {
               const error = props.data as AxiosError;
-              console.log(error);
-              return `${
-                error.response?.status === 400
-                  ? "Error registration user: re-registration of an already registered user.\nPlease, login or use another email address."
-                  : "Something went wrong during the registration process. Please, should try again later."
-              }`;
+              return `${errorHandler(props)}`;
             },
           },
         },
@@ -128,12 +191,8 @@ class API {
             },
             error: {
               render(props) {
-                const error =
-                  props.data instanceof AxiosError
-                    ? (props.data.response?.data as ErrorResponse)
-                    : (props.data as Error);
                 return isCustomerExist
-                  ? errorHandler(error)
+                  ? errorHandler(props)
                   : `The user with the email address "${customerData.email}" is not registered. Please check your email address or register.`;
               },
             },
