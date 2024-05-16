@@ -1,13 +1,13 @@
 import { ReactElement } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormWrapper from "components/FormWrapper/FormWrapper";
 import FormTag from "components/Form/FormTag";
 import InputTag from "components/InputTag/InputTag";
 import ButtonTag from "components/ButtonTag/ButtonTag";
-import clientAPI from "api/API";
+import API from "api/API";
 import "./LoginPage.scss";
 
 const loginSchema = z.object({
@@ -60,9 +60,8 @@ function LoginPage(): ReactElement {
   };
 
   const onSubmit: SubmitHandler<FormValues> = (dataForm: FormValues): void => {
-    console.log(dataForm);
+    const clientAPI = API.getInstance(useNavigate);
     clientAPI.signInCustomer(dataForm);
-
   };
 
   return (
