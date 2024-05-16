@@ -1,8 +1,7 @@
 import { IconButton, InputAdornment, TextField } from "@mui/material";
-import InputTagProps from "types/InputTagProps";
+import { InputTagProps } from "types/InputTagProps";
 import { ReactElement, useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import "./InputTag.scss";
 
 type PasswordButtonProps = {
   showPassword: boolean;
@@ -29,11 +28,12 @@ function PasswordButton(props: PasswordButtonProps): ReactElement {
 
 function InputTag({
   type,
-  id,
   onChange,
   isError,
   message,
   value,
+  name,
+  label,
 }: InputTagProps): JSX.Element {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -47,65 +47,31 @@ function InputTag({
     event.preventDefault();
   };
 
-  let styleInput = "input";
-  let placeholder = "";
-  let name = "";
-  let localId = id;
+  let inputType = type;
 
-  switch (type) {
-    case "text":
-      styleInput = `${styleInput} ${localId === "username" ? "input_username" : "input_surname"}`;
-      name = localId === "username" ? "username" : "surname";
-      placeholder = localId === "username" ? "Username" : "Surname";
-      break;
-    case "date":
-      styleInput = `${styleInput} input_date`;
-      name = "date";
-      placeholder = "Enter your Birthdate";
-      break;
-    case "email":
-      styleInput = `${styleInput} input_email`;
-      placeholder = "Email adress";
-      name = "email";
-      localId = "email";
-      break;
-    case "password":
-      styleInput = `${styleInput} input_password`;
-      name = localId === "password" ? "password" : "confirm-password";
-      placeholder = localId === "password" ? "Password" : "Confirm Password";
-      break;
-
-    default:
-      break;
+  if (type === "password") {
+    inputType = type === "password" && !showPassword ? type : "text";
   }
+
+  const date = new Date();
 
   return (
     <TextField
       variant="outlined"
       fullWidth
       size="small"
-      sx={{
-        "& .MuiOutlinedInput-root": {
-          "&:has(> input:-webkit-autofill)": {
-            background: "#e8f0fe",
-          },
-          "& .MuiOutlinedInput-notchedOutline": {
-            border: "none",
-          },
-        },
-      }}
+      sx={{ mt: 2 }}
+      label={label}
       value={value || ""}
-      type={id === "password" && !showPassword ? type : "text"}
-      id={localId}
+      type={inputType}
       name={name}
-      placeholder={placeholder}
+      id={name}
       onChange={onChange}
       InputProps={{
-        className: styleInput,
         inputProps: {
-          style: { padding: "8px 0" },
+          max: `2024-05-${date.getDate()}`,
         },
-        endAdornment: id === "password" && (
+        endAdornment: type === "password" && (
           <PasswordButton
             showPassword={showPassword}
             handleClickShowPassword={handleClickShowPassword}
