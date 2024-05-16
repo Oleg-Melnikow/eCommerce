@@ -6,11 +6,10 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.tsx$/,
         use: "ts-loader",
         exclude: /node_modules/,
       },
-
       {
         test: /\.(?:ico|png|svg|jpg|jpeg|gif)$/i,
         type: "asset/resource",
@@ -24,6 +23,8 @@ module.exports = {
       pages: path.resolve(__dirname, "./src/pages"),
       components: path.resolve(__dirname, "./src/components"),
       api: path.resolve(__dirname, "./src/api"),
+      helpers: path.resolve(__dirname, "./src/helpers"),
+      types: path.resolve(__dirname, "./src/types"),
     },
   },
 };
