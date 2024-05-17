@@ -65,7 +65,7 @@ export interface CustomerSignInResult {
   cart?: Cart;
 }
 
-interface Customer {
+export interface Customer {
   version: number;
   vatId?: string;
   title?: string;

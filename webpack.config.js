@@ -25,6 +25,8 @@ module.exports = {
       api: path.resolve(__dirname, "./src/api"),
       helpers: path.resolve(__dirname, "./src/helpers"),
       types: path.resolve(__dirname, "./src/types"),
+      hooks: path.resolve(__dirname, "./src/hooks"),
+      assets: path.resolve(__dirname, "./src/assets"),
     },
   },
 };

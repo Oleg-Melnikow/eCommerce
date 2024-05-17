@@ -194,6 +194,7 @@ export default class API {
                   const response = props.data as AxiosResponse;
                   if (response.status === 200) {
                     const { customer } = response.data as CustomerSignInResult;
+                    localStorage.setItem("userProfile", JSON.stringify(customer));
                     return `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`;
                   }
                   throw new Error("Undefined error");
