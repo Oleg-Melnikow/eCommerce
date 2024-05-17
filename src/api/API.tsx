@@ -32,12 +32,8 @@ export default class API {
     this.createAPI();
   }
 
-  public static getInstance(navigate: (to: string) => void): API {
-    if (!this.instance) {
-      this.instance = new API(navigate);
-    } else {
-      this.instance.navigate = navigate;
-    }
+  public static getInstance(navigate?: (to: string) => void): API | null {
+    if (!this.instance && navigate) this.instance = new API(navigate);
     return this.instance;
   }
 
@@ -56,8 +52,8 @@ export default class API {
           if (scope.includes("anonymous_id")) {
             this.getToken().then(() => this.createAPI()); // If the anonymous user's token is not active, we get a new token.
           } else if (scope.includes("customer_id")) {
-            console.error("The token expired");
-            this.navigate("/login"); // If the user's token is not active, we redirect the user to the `login` page
+            this.getToken().then(() => this.navigate("/login"));
+            toast.error("The token expired. Please login again"); // If the user's token is not active, we redirect the user to the `login` page
           }
       });
       this.apiInstance = axios.create({
@@ -66,7 +62,7 @@ export default class API {
         responseType: "json",
       });
       this.apiInstance.interceptors.request.use((config) => {
-        this.refreshToken();
+        // this.refreshToken(); !!!An error occurs here. I'll fix it.
         return config;
       });
     }
@@ -188,31 +184,41 @@ export default class API {
     const isCustomerExist = await this.checkCustomerByEmail(customerData.email);
     this.createAPI(customerData).then(() => {
       if (this.apiInstance)
-        toast.promise(
-          this.apiInstance.post("/me/login/", customerData),
-          {
-            pending: "Please wait.",
-            success: {
-              render(props) {
-                const response = props.data as AxiosResponse;
-                if (response.status === 200) {
-                  const { customer } = response.data as CustomerSignInResult;
-                  API.instance?.navigate("/");
-                  return `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`;
-                }
-                throw new Error("Undefined error");
+        toast
+          .promise(
+            this.apiInstance.post("/me/login/", customerData),
+            {
+              pending: "Please wait.",
+              success: {
+                render(props) {
+                  const response = props.data as AxiosResponse;
+                  if (response.status === 200) {
+                    const { customer } = response.data as CustomerSignInResult;
+                    return `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`;
+                  }
+                  throw new Error("Undefined error");
+                },
+              },
+              error: {
+                render(props) {
+                  return isCustomerExist
+                    ? errorHandler(props)
+                    : `The user with the email address "${customerData.email}" is not registered. Please check your email address or register.`;
+                },
               },
             },
-            error: {
-              render(props) {
-                return isCustomerExist
-                  ? errorHandler(props)
-                  : `The user with the email address "${customerData.email}" is not registered. Please check your email address or register.`;
-              },
-            },
-          },
-          toastOptions
-        );
+            toastOptions
+          )
+          .then((response) => {
+            console.log(response);
+            if (
+              response &&
+              typeof response === "object" &&
+              "status" in response &&
+              response.status === 200
+            )
+              API.instance?.navigate("/");
+          });
     });
   }
 

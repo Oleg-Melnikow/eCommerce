@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormWrapper from "components/FormWrapper/FormWrapper";
@@ -60,8 +60,8 @@ function LoginPage(): ReactElement {
   };
 
   const onSubmit: SubmitHandler<FormValues> = (dataForm: FormValues): void => {
-    const clientAPI = API.getInstance(useNavigate);
-    clientAPI.signInCustomer(dataForm);
+    const clientAPI = API.getInstance();
+    clientAPI?.signInCustomer(dataForm);
   };
 
   return (

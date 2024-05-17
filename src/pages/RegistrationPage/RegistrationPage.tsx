@@ -1,6 +1,6 @@
 import "./RegistrationPage.scss";
 import React, { useState, ReactElement } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import FormWrapper from "../../components/FormWrapper/FormWrapper";
 import FormTag from "../../components/Form/FormTag";
@@ -56,8 +56,8 @@ function RegistrationPage(): ReactElement {
       email: formData.email,
       password: formData.password,
     };
-    const clientAPI = API.getInstance(useNavigate);
-    clientAPI.createCustomer(newUserData);
+    const clientAPI = API.getInstance();
+    clientAPI?.createCustomer(newUserData);
   };
 
   return (
