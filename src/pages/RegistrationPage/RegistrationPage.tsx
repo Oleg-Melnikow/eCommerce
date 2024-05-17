@@ -1,63 +1,84 @@
-import "./RegistrationPage.scss";
-import React, { useState, ReactElement } from "react";
+import { ReactElement } from "react";
 import { NavLink } from "react-router-dom";
+import {
+  Controller,
+  SubmitErrorHandler,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Typography } from "@mui/material";
+import FormWrapper from "components/FormWrapper/FormWrapper";
+import FormTag from "components/Form/FormTag";
+import InputTag from "components/InputTag/InputTag";
+import ButtonTag from "components/ButtonTag/ButtonTag";
+import SelectTag from "components/SelectTag/SelectTag";
+import { registration } from "helpers/validatioinSchemes";
+import validateDateOfBirth from "helpers/validateDateOfBirth";
+import clientAPI from "api/API";
 
-import FormWrapper from "../../components/FormWrapper/FormWrapper";
-import FormTag from "../../components/Form/FormTag";
-import InputTag from "../../components/InputTag/InputTag";
-import ButtonTag from "../../components/ButtonTag/ButtonTag";
-import SelectTag from "../../components/SelectTag/SelectTag";
+import "./RegistrationPage.scss";
 
-import clientAPI from "../../api/API";
+type FormType = {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  country: string;
+  city: string;
+  street: string;
+  postalCode: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 function RegistrationPage(): ReactElement {
-  const [formData, setFormData] = useState({
-    name: "",
-    surname: "",
-    date: "",
-    country: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    clearErrors,
+    setError,
+    formState: { errors },
+  } = useForm<FormType>({
+    mode: "onChange",
+    reValidateMode: "onChange",
+    resolver: zodResolver(registration),
   });
 
-  const handleChangeInpt = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    if (event.target.name === "username") {
-      setFormData({ ...formData, name: event.target.value });
-    } else if (event.target.name === "surname") {
-      setFormData({ ...formData, surname: event.target.value });
-    } else if (event.target.name === "date") {
-      setFormData({ ...formData, date: event.target.value });
-    } else if (event.target.name === "email")
-      setFormData({ ...formData, email: event.target.value });
-    else if (event.target.name === "password") {
-      setFormData({ ...formData, password: event.target.value });
-    } else if (event.target.name === "confirmPassword") {
-      setFormData({ ...formData, confirmPassword: event.target.value });
+  const checkDate = (date: string): void => {
+    const isValid = validateDateOfBirth(date);
+    if (!isValid) {
+      setError("dateOfBirth", {
+        message: "You should be at least 14 years old to register",
+        type: "validate",
+      });
+    } else {
+      clearErrors("dateOfBirth");
     }
   };
 
-  const handleChangeSlct = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ): void => {
-    if (event.target.name === "country") {
-      setFormData({ ...formData, country: event.target.value });
-    }
+  const onChangeBirth = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setValue("dateOfBirth", event.target.value);
+    checkDate(event.target.value);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
+  const onSubmit: SubmitHandler<FormType> = (dataForm: FormType): void => {
+    const { firstName, lastName, email, password } = dataForm;
 
     const newUserData = {
-      lastName: formData.surname,
-      firstName: formData.name,
-      email: formData.email,
-      password: formData.password,
+      lastName,
+      firstName,
+      email,
+      password,
     };
 
     clientAPI.createCustomer(newUserData);
+  };
+
+  const onInvalid: SubmitErrorHandler<FormType> = (): void => {
+    checkDate(getValues("dateOfBirth"));
   };
 
   return (
@@ -66,25 +87,163 @@ function RegistrationPage(): ReactElement {
         className="registration-page__form"
         id="reg-Form"
         url="ourURLinFuture"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit, onInvalid)}
       >
-        <InputTag type="text" id="username" onChange={handleChangeInpt} />
-        <InputTag type="text" id="surname" onChange={handleChangeInpt} />
-        <InputTag type="date" id="date" onChange={handleChangeInpt} />
-
-        <SelectTag id="country" onChange={handleChangeSlct} />
-
-        <InputTag type="email" onChange={handleChangeInpt} />
-        <InputTag type="password" id="password" onChange={handleChangeInpt} />
-        <InputTag
-          type="password"
-          id="confirmPassword"
-          onChange={handleChangeInpt}
+        <Controller
+          name="firstName"
+          control={control}
+          render={({ field: { onChange, value, name } }) => (
+            <InputTag
+              value={value}
+              type="text"
+              label="First name"
+              name={name}
+              onChange={onChange}
+              isError={Boolean(errors?.firstName)}
+              message={errors.firstName?.message}
+            />
+          )}
         />
-
+        <Controller
+          name="lastName"
+          control={control}
+          render={({ field: { onChange, value, name } }) => (
+            <InputTag
+              value={value}
+              type="text"
+              label="Last name"
+              id={name}
+              onChange={onChange}
+              isError={Boolean(errors?.lastName)}
+              message={errors.lastName?.message}
+            />
+          )}
+        />
+        <Controller
+          name="dateOfBirth"
+          control={control}
+          render={({ field: { value, name } }) => (
+            <InputTag
+              value={value}
+              type="date"
+              id={name}
+              onChange={onChangeBirth}
+              isError={Boolean(errors?.dateOfBirth)}
+              message={errors.dateOfBirth?.message}
+            />
+          )}
+        />
+        <Typography sx={{ mt: 2, alignSelf: "flex-start" }} variant="body1">
+          Address
+        </Typography>
+        <Controller
+          name="country"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <SelectTag
+              valueTag={value}
+              id="country"
+              onChange={onChange}
+              isError={Boolean(errors?.country)}
+              message={errors.country?.message}
+            />
+          )}
+        />
+        <Controller
+          name="postalCode"
+          control={control}
+          render={({ field: { onChange, value, name } }) => (
+            <InputTag
+              value={value}
+              type="text"
+              label="Postal Code"
+              id={name}
+              onChange={onChange}
+              isError={Boolean(errors?.postalCode)}
+              message={errors.postalCode?.message}
+            />
+          )}
+        />
+        <Controller
+          name="city"
+          control={control}
+          render={({ field: { onChange, value, name } }) => (
+            <InputTag
+              value={value}
+              type="text"
+              label="City"
+              id={name}
+              onChange={onChange}
+              isError={Boolean(errors?.city)}
+              message={errors.city?.message}
+            />
+          )}
+        />
+        <Controller
+          name="street"
+          control={control}
+          render={({ field: { onChange, value, name } }) => (
+            <InputTag
+              value={value}
+              type="text"
+              label="Street"
+              id={name}
+              onChange={onChange}
+              isError={Boolean(errors?.street)}
+              message={errors.street?.message}
+            />
+          )}
+        />
+        <Typography sx={{ mt: 2, alignSelf: "flex-start" }} variant="body1">
+          Credentials
+        </Typography>
+        <Controller
+          name="email"
+          control={control}
+          render={({ field: { onChange, value, name } }) => (
+            <InputTag
+              value={value}
+              type="email"
+              label="Email"
+              name={name}
+              onChange={onChange}
+              isError={Boolean(errors?.email)}
+              message={errors.email?.message}
+            />
+          )}
+        />
+        <Controller
+          name="password"
+          control={control}
+          render={({ field: { onChange, value, name } }) => (
+            <InputTag
+              value={value}
+              type="password"
+              label="Password"
+              name={name}
+              onChange={onChange}
+              isError={Boolean(errors?.password)}
+              message={errors.password?.message}
+            />
+          )}
+        />
+        <Controller
+          name="confirmPassword"
+          control={control}
+          render={({ field: { onChange, value, name } }) => (
+            <InputTag
+              value={value}
+              label="Confirm Password"
+              type="password"
+              name={name}
+              onChange={onChange}
+              isError={Boolean(errors?.confirmPassword)}
+              message={errors.confirmPassword?.message}
+            />
+          )}
+        />
         <ButtonTag type="submit" title="Register" />
       </FormTag>
-
       <NavLink className="registration-page__content_log-in" to="/login">
         Have an account? Log In
       </NavLink>

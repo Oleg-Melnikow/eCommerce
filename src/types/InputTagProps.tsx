@@ -1,6 +1,4 @@
-import { UseFormRegister, UseFormRegisterReturn } from "react-hook-form";
-
-type FormValues = {
+type FormValuesType = {
   email: string;
   password: string;
 };
@@ -11,8 +9,9 @@ interface InputTagProps {
   id?: string;
   isError?: boolean;
   message?: string;
-  register?: UseFormRegister<FormValues>;
   value?: string;
+  label?: string;
+  name?: string;
 }
 
-export default InputTagProps;
+export { InputTagProps, FormValuesType };

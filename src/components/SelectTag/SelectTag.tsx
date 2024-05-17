@@ -1,34 +1,46 @@
-import "./SelectTag.scss";
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { ReactElement } from "react";
 
-import SelectTagProps from "types/SelectTagProps"; // Импортируем типы свойств для селекта
+import SelectTagProps from "types/SelectTagProps";
 
-function SelectTag({ id, onChange }: SelectTagProps): ReactElement {
+function SelectTag({
+  id,
+  onChange,
+  isError,
+  message,
+  valueTag,
+}: SelectTagProps): ReactElement {
   const options = [
-    { value: "", label: "Select country", disabled: true },
-    { value: "1", label: "Belarus" },
-    { value: "2", label: "European Union" },
-    { value: "3", label: "The United Kingdom" },
-    { value: "4", label: "USA" },
+    { value: "BY", label: "Belarus" },
+    { value: "EU", label: "European Union" },
+    { value: "UK", label: "The United Kingdom" },
+    { value: "USA", label: "USA" },
   ];
 
   return (
-    <select
-      id={id}
-      className="select select_country"
-      onChange={onChange}
-      defaultValue=""
-    >
-      {options.map((option) => (
-        <option
-          key={option.value}
-          value={option.value}
-          disabled={option.disabled}
-        >
-          {option.label}
-        </option>
-      ))}
-    </select>
+    <FormControl fullWidth sx={{ mt: 2 }} size="small" error={isError}>
+      <InputLabel id="selectCountry">Country</InputLabel>
+      <Select
+        labelId="selectCountry"
+        id={id}
+        value={valueTag || ""}
+        label="Country"
+        onChange={onChange}
+      >
+        {options.map(({ value, label }) => (
+          <MenuItem key={value} value={value}>
+            {label}
+          </MenuItem>
+        ))}
+      </Select>
+      {isError && <FormHelperText sx={{ m: 0 }}>{message}</FormHelperText>}
+    </FormControl>
   );
 }
 
