@@ -6,9 +6,9 @@ import FormWrapper from "components/FormWrapper/FormWrapper";
 import FormTag from "components/Form/FormTag";
 import InputTag from "components/InputTag/InputTag";
 import ButtonTag from "components/ButtonTag/ButtonTag";
+import API from "api/API";
 import { loginSchema } from "helpers/validatioinSchemes";
 import { FormValuesType } from "types/InputTagProps";
-import clientAPI from "api/API";
 import "./LoginPage.scss";
 
 function LoginPage(): ReactElement {
@@ -24,9 +24,11 @@ function LoginPage(): ReactElement {
   const onSubmit: SubmitHandler<FormValuesType> = (
     dataForm: FormValuesType
   ): void => {
+    const clientAPI = API.getInstance();
+    clientAPI?.signInCustomer(dataForm);
     console.log(dataForm);
-    clientAPI.signInCustomer(dataForm);
   };
+
 
   return (
     <FormWrapper title="Login">

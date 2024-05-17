@@ -9,8 +9,10 @@ import errorHandler from "../helpers/errorHandler";
 
 import toastOptions from "../helpers/toastOptions";
 
-class API {
-  protected instance: AxiosInstance | undefined;
+export default class API {
+  protected static instance: API | null = null;
+
+  protected apiInstance: AxiosInstance | undefined;
 
   protected authInstance = axios.create({
     baseURL: `${process.env.CTP_AUTH_URL}/oauth`,
@@ -23,9 +25,16 @@ class API {
     },
   });
 
-  constructor() {
-    this.checkToken().then(console.log);
+  protected navigate: (to: string) => void;
+
+  private constructor(navigate: (to: string) => void) {
+    this.navigate = navigate;
     this.createAPI();
+  }
+
+  public static getInstance(navigate?: (to: string) => void): API | null {
+    if (!this.instance && navigate) this.instance = new API(navigate);
+    return this.instance;
   }
 
   private async createAPI(customerData?: MyCustomerDraft): Promise<void> {
@@ -43,16 +52,17 @@ class API {
           if (scope.includes("anonymous_id")) {
             this.getToken().then(() => this.createAPI()); // If the anonymous user's token is not active, we get a new token.
           } else if (scope.includes("customer_id")) {
-            console.error("The token expired"); // TODO: Here you need to redirect the user to the `login` page
+            this.getToken().then(() => this.navigate("/login"));
+            toast.error("The token expired. Please login again"); // If the user's token is not active, we redirect the user to the `login` page
           }
       });
-      this.instance = axios.create({
+      this.apiInstance = axios.create({
         baseURL: `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}`,
         headers: { Authorization: `${tokenType} ${accessToken}` },
         responseType: "json",
       });
-      this.instance.interceptors.request.use((config) => {
-        this.refreshToken();
+      this.apiInstance.interceptors.request.use((config) => {
+        // this.refreshToken(); !!!An error occurs here. I'll fix it.
         return config;
       });
     }
@@ -142,9 +152,9 @@ class API {
 
   public async createCustomer(customerData: MyCustomerDraft): Promise<void> {
     const createAPIBinded = this.createAPI.bind(this);
-    if (this.instance)
+    if (this.apiInstance)
       toast.promise(
-        this.instance?.post("/me/signup", customerData),
+        this.apiInstance?.post("/me/signup", customerData),
         {
           pending: "Please, wait.",
           success: {
@@ -173,32 +183,43 @@ class API {
   public async signInCustomer(customerData: MyCustomerSignin): Promise<void> {
     const isCustomerExist = await this.checkCustomerByEmail(customerData.email);
     this.createAPI(customerData).then(() => {
-      if (this.instance)
-        toast.promise(
-          this.instance.post("/me/login/", customerData),
-          {
-            pending: "Please wait.",
-            success: {
-              render(props) {
-                const response = props.data as AxiosResponse;
-                if (response.status === 200) {
-                  const { customer } = response.data as CustomerSignInResult;
-                  localStorage.setItem("userProfile", JSON.stringify(customer));
-                  return `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`;
-                }
-                throw new Error("Undefined error");
+      if (this.apiInstance)
+        toast
+          .promise(
+            this.apiInstance.post("/me/login/", customerData),
+            {
+              pending: "Please wait.",
+              success: {
+                render(props) {
+                  const response = props.data as AxiosResponse;
+                  if (response.status === 200) {
+                    const { customer } = response.data as CustomerSignInResult;
+                    localStorage.setItem("userProfile", JSON.stringify(customer));
+                    return `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`;
+                  }
+                  throw new Error("Undefined error");
+                },
+              },
+              error: {
+                render(props) {
+                  return isCustomerExist
+                    ? errorHandler(props)
+                    : `The user with the email address "${customerData.email}" is not registered. Please check your email address or register.`;
+                },
               },
             },
-            error: {
-              render(props) {
-                return isCustomerExist
-                  ? errorHandler(props)
-                  : `The user with the email address "${customerData.email}" is not registered. Please check your email address or register.`;
-              },
-            },
-          },
-          toastOptions
-        );
+            toastOptions
+          )
+          .then((response) => {
+            console.log(response);
+            if (
+              response &&
+              typeof response === "object" &&
+              "status" in response &&
+              response.status === 200
+            )
+              API.instance?.navigate("/");
+          });
     });
   }
 
@@ -206,9 +227,9 @@ class API {
     const params = {
       where: `email="${email}"`,
     };
-    if (this.instance)
+    if (this.apiInstance)
       try {
-        const response: AxiosResponse = await this.instance?.head(
+        const response: AxiosResponse = await this.apiInstance?.head(
           "/customers/",
           { params }
         );
@@ -226,5 +247,3 @@ class API {
     return false;
   }
 }
-const clientAPI = new API();
-export default clientAPI;

@@ -15,10 +15,9 @@ import ButtonTag from "components/ButtonTag/ButtonTag";
 import SelectTag from "components/SelectTag/SelectTag";
 import { registration } from "helpers/validatioinSchemes";
 import validateDateOfBirth from "helpers/validateDateOfBirth";
-import clientAPI from "api/API";
 
 import "./RegistrationPage.scss";
-
+import API from "../../api/API";
 type FormType = {
   firstName: string;
   lastName: string;
@@ -73,8 +72,8 @@ function RegistrationPage(): ReactElement {
       email,
       password,
     };
-
-    clientAPI.createCustomer(newUserData);
+    const clientAPI = API.getInstance();
+    clientAPI?.createCustomer(newUserData);
   };
 
   const onInvalid: SubmitErrorHandler<FormType> = (): void => {
