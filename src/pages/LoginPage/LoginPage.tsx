@@ -26,7 +26,7 @@ function LoginPage(): ReactElement {
   ): void => {
     console.log(dataForm);
     clientAPI.signInCustomer(dataForm);
-  }
+  };
 
   return (
     <FormWrapper title="Login">

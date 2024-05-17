@@ -1,10 +1,9 @@
-import "./Header.scss";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import { NavLink } from "react-router-dom";
-
-import HeaderLogo from "../../assets/HeaderLogo.png";
+import HeaderLogo from "assets/HeaderLogo.png";
 import NavLinksToContent from "./NavLinksContent";
 import NavLinksToAccount from "./NavLinksAccount";
+import "./Header.scss";
 
 function Header(): ReactElement {
   return (
