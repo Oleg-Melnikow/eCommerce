@@ -1,74 +1,64 @@
-import React, { ReactElement } from "react";
+import { ReactElement, memo, useCallback, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
+import useAuth from "hooks/use-auth";
+import { LinkAccount, navLinksToAccount } from "helpers/static-data";
+import { Box } from "@mui/material";
 
-import LogIn from "../../assets/LogIn.svg";
-import Register from "../../assets/Register.svg";
-import LogOut from "../../assets/LogOut.svg";
-import Basket from "../../assets/Basket.svg";
+const NavLinksToAccount = memo(function NavLinksToAccount(): ReactElement {
+  const { isAuthenticated, logoutAccount } = useAuth();
+  const [links, setLinks] = useState<LinkAccount[]>([]);
 
-function NavLinksToAccount(): ReactElement {
-  const navLinksToAccount = [
-    {
-      id: 1,
-      path: "/login",
-      title: "Log In",
-      className: "header__inner_link-login",
-      imgSrc: LogIn,
-      imgAlt: "LogInLogo",
-    },
-    {
-      id: 2,
-      path: "/registration",
-      title: "Register",
-      className: "header__inner_link-register",
-      imgSrc: Register,
-      imgAlt: "RegisterLogo",
-    },
-    {
-      id: 3,
-      path: "/",
-      title: "Log Out",
-      className: "header__inner_link-logout",
-      imgSrc: LogOut,
-      imgAlt: "LogOutLogo",
-    },
-    {
-      id: 4,
-      path: "/basket",
-      title: "Basket",
-      className: "header__inner_link-basket",
-      imgSrc: Basket,
-      imgAlt: "BasketLogo",
-    },
-  ];
+  const logOut = (): void => {
+    logoutAccount();
+  };
+
+  const filterLink = useCallback((): LinkAccount[] => {
+    return navLinksToAccount.filter((link) => {
+      if (isAuthenticated) {
+        return link.permission !== "unlogined";
+      }
+      return link.permission !== "logined";
+    });
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    setLinks(filterLink());
+  }, [isAuthenticated, filterLink]);
 
   return (
     <div className="header__inner ">
-      {navLinksToAccount.map((elem) => (
-        <NavLink key={elem.id} className={elem.className} to={elem.path}>
-          <Tooltip
-            title={elem.title}
-            arrow
-            slotProps={{
-              popper: {
-                modifiers: [
-                  {
-                    name: "offset",
-                    options: {
-                      offset: [0, -6],
-                    },
+      {links.map(({ id, title, className, path, imgSrc }) => (
+        <Tooltip
+          key={id}
+          title={title}
+          arrow
+          slotProps={{
+            popper: {
+              modifiers: [
+                {
+                  name: "offset",
+                  options: {
+                    offset: [0, -6],
                   },
-                ],
-              },
-            }}
-          >
-            <img src={elem.imgSrc} alt={elem.imgAlt} />
-          </Tooltip>
-        </NavLink>
+                },
+              ],
+            },
+          }}
+        >
+          {id !== "logout" ? (
+            <NavLink className={className} to={path}>
+              <img src={imgSrc} alt={title} />
+            </NavLink>
+          ) : (
+            <Box className={className} onClick={logOut}>
+              <img src={imgSrc} alt={title} />
+            </Box>
+          )}
+        </Tooltip>
       ))}
     </div>
   );
-}
+});
 
 export default NavLinksToAccount;
