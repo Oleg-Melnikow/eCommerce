@@ -180,47 +180,21 @@ export default class API {
       );
   }
 
-  public async signInCustomer(customerData: MyCustomerSignin): Promise<void> {
-    const isCustomerExist = await this.checkCustomerByEmail(customerData.email);
-    this.createAPI(customerData).then(() => {
-      if (this.apiInstance)
-        toast
-          .promise(
-            this.apiInstance.post("/me/login/", customerData),
-            {
-              pending: "Please wait.",
-              success: {
-                render(props) {
-                  const response = props.data as AxiosResponse;
-                  if (response.status === 200) {
-                    const { customer } = response.data as CustomerSignInResult;
-                    localStorage.setItem("userProfile", JSON.stringify(customer));
-                    return `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`;
-                  }
-                  throw new Error("Undefined error");
-                },
-              },
-              error: {
-                render(props) {
-                  return isCustomerExist
-                    ? errorHandler(props)
-                    : `The user with the email address "${customerData.email}" is not registered. Please check your email address or register.`;
-                },
-              },
-            },
-            toastOptions
-          )
-          .then((response) => {
-            console.log(response);
-            if (
-              response &&
-              typeof response === "object" &&
-              "status" in response &&
-              response.status === 200
-            )
-              API.instance?.navigate("/");
-          });
-    });
+  public async signInCustomer(
+    data: MyCustomerSignin
+  ): Promise<CustomerSignInResult> {
+    const isCustomerExist = await this.checkCustomerByEmail(data.email);
+    return this.createAPI(data)
+      .then(async () => {
+        const response = await this.apiInstance?.post("/me/login/", data);
+        return response?.data as CustomerSignInResult;
+      })
+      .catch((err) => {
+        const message = isCustomerExist
+          ? errorHandler(err)
+          : `The user with the email address "${data.email}" is not registered. Please check your email address or register.`;
+        throw new Error(message);
+      });
   }
 
   private async checkCustomerByEmail(email: string): Promise<boolean> {
