@@ -19,6 +19,8 @@
     "api/*": ["api/*"],
     "helpers/*": ["helpers/*"],
     "types/*": ["types/*"],
+    "hooks/*": ["hooks/*"],
+    "assets/*": ["assets/*"],
   },
   "include": ["src", "declaration.d.ts"],
   "exclude": ["node_modules", "dist"]
