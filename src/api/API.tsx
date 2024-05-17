@@ -68,7 +68,7 @@ export default class API {
     }
   }
 
-  private async getToken(customerData?: MyCustomerDraft): Promise<void> {
+  public async getToken(customerData?: MyCustomerDraft): Promise<void> {
     try {
       const response = customerData
         ? await this.authInstance.post(

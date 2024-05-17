@@ -6,6 +6,7 @@ import {
   useMemo,
   useReducer,
 } from "react";
+import API from "api/API";
 import { useNavigate } from "react-router-dom";
 import {
   AuthContext,
@@ -39,7 +40,8 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
   };
 
   const logoutAccount = useCallback(async () => {
-    localStorage.removeItem("userProfile");
+    localStorage.clear();
+    API.getInstance()?.getToken();
     dispatch(initialize(false, null));
     navigate("/login");
   }, [navigate]);
