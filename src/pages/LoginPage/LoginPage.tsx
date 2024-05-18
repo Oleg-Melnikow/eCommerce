@@ -2,31 +2,28 @@ import { ReactElement } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { NavLink } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { LoadingButton } from "@mui/lab";
+import useAuth from "hooks/use-auth";
 import FormWrapper from "components/FormWrapper/FormWrapper";
 import FormTag from "components/Form/FormTag";
 import InputTag from "components/InputTag/InputTag";
-import ButtonTag from "components/ButtonTag/ButtonTag";
-import API from "api/API";
 import { loginSchema } from "helpers/validatioinSchemes";
-import { FormValuesType } from "types/InputTagProps";
+import { LoginType } from "types/InputTagProps";
 import "./LoginPage.scss";
 
 function LoginPage(): ReactElement {
+  const { login, isLoading } = useAuth();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValuesType>({
+  } = useForm<LoginType>({
     mode: "onChange",
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit: SubmitHandler<FormValuesType> = (
-    dataForm: FormValuesType
-  ): void => {
-    const clientAPI = API.getInstance();
-    clientAPI?.signInCustomer(dataForm);
-    console.log(dataForm);
+  const onSubmit: SubmitHandler<LoginType> = (dataForm: LoginType): void => {
+    login(dataForm);
   };
 
   return (
@@ -67,7 +64,15 @@ function LoginPage(): ReactElement {
             />
           )}
         />
-        <ButtonTag type="submit" title="Login" />
+        <LoadingButton
+          sx={{ m: 2, background: "rgb(70, 163, 88)" }}
+          fullWidth
+          type="submit"
+          loading={isLoading}
+          variant="contained"
+        >
+          Login
+        </LoadingButton>
       </FormTag>
       <NavLink className="login-page__content_sing-up" to="/registration">
         Have an account? Sign Up
