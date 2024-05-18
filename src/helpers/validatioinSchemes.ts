@@ -20,31 +20,34 @@ const loginSchema = z.object({
     .max(32),
 });
 
-const registrationSchema = z.object({
-  firstName: z
-    .string({ message: "First name is a required field" })
-    .regex(/^[a-zA-Z\s]+$/, "First name only letter")
-    .min(1),
-  lastName: z
-    .string({ message: "Last name is a required field" })
-    .regex(/^[a-zA-Z\s]+$/, "Last name only letter")
-    .min(1),
+const validateAdress = z.object({
+  street: z.string({ message: "Street is a required field" }).min(1),
+  postalCode: z.string({ message: "Postal code is a required field" }).min(1),
+  country: z.string({ message: "Country is a required field" }),
   city: z
     .string({ message: "City is a required field" })
     .regex(/^[a-zA-Z\s]+$/, "City only letter")
     .min(1),
-  street: z.string().min(1),
-  postalCode: z.string().min(1),
-  confirmPassword: z.string({ message: "Passwords do not match" }),
-  country: z.string({ message: "Country is a required field" }),
-  dateOfBirth: z.string({ message: "Date is a required field" }).date(),
 });
 
-const registration = registrationSchema
-  .merge(loginSchema)
-  .refine((values) => values.password === values.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+const validateNames = (name: string): z.ZodString => {
+  return z
+    .string({ message: `${name} name is a required field` })
+    .regex(/^[a-zA-Z\s]+$/, `${name} name only letter`)
+    .min(1);
+};
 
-export { registration, loginSchema };
+const registrationSchema = z.object({
+  firstName: validateNames("First"),
+  lastName: validateNames("Last"),
+  confirmPassword: z.string({ message: "Passwords do not match" }),
+  dateOfBirth: z.string({ message: "Date is a required field" }).date(),
+  shippingAddress: validateAdress,
+  billingAddress: validateAdress,
+});
+
+const registration = registrationSchema.merge(loginSchema);
+
+const registrationFull = registration.omit({ billingAddress: true });
+
+export { registration, loginSchema, registrationFull };
