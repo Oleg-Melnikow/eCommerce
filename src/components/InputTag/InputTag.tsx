@@ -1,4 +1,9 @@
-import { IconButton, InputAdornment, TextField } from "@mui/material";
+import {
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  TextField,
+} from "@mui/material";
 import { InputTagProps } from "types/InputTagProps";
 import { ReactElement, useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -56,33 +61,41 @@ function InputTag({
   const date = new Date();
 
   return (
-    <TextField
-      variant="outlined"
-      fullWidth
-      size="small"
-      sx={{ mt: 2 }}
-      label={label}
-      value={value || ""}
-      type={inputType}
-      name={name}
-      id={name}
-      onChange={onChange}
-      InputProps={{
-        inputProps: {
-          max: `2024-05-${date.getDate()}`,
-        },
-        endAdornment: type === "password" && (
-          <PasswordButton
-            showPassword={showPassword}
-            handleClickShowPassword={handleClickShowPassword}
-            handleMouseDownPassword={handleMouseDownPassword}
-          />
-        ),
-      }}
-      FormHelperTextProps={{ sx: { margin: 0 } }}
-      error={isError}
-      helperText={message || ""}
-    />
+    <>
+      {type === "date" && (
+        <InputLabel sx={{ fontSize: 14 }} error={isError}>
+          {label}
+        </InputLabel>
+      )}
+      <TextField
+        variant="outlined"
+        fullWidth
+        size="small"
+        sx={{ mt: type !== "date" ? 2 : 0, bottom: type === "date" ? 4 : 0 }}
+        label={type !== "date" ? label : ""}
+        value={value || ""}
+        type={inputType}
+        name={name}
+        id={name}
+        onChange={onChange}
+        InputProps={{
+          inputProps: {
+            min: "1904-01-01",
+            max: `2024-05-${date.getDate()}`,
+          },
+          endAdornment: type === "password" && (
+            <PasswordButton
+              showPassword={showPassword}
+              handleClickShowPassword={handleClickShowPassword}
+              handleMouseDownPassword={handleMouseDownPassword}
+            />
+          ),
+        }}
+        FormHelperTextProps={{ sx: { margin: 0 } }}
+        error={isError}
+        helperText={message || ""}
+      />
+    </>
   );
 }
 
