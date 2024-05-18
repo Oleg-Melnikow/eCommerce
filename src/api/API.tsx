@@ -37,7 +37,7 @@ export default class API {
     return this.instance;
   }
 
-  private async createAPI(customerData?: MyCustomerDraft): Promise<void> {
+  public async createAPI(customerData?: MyCustomerDraft): Promise<void> {
     const token = localStorage.getItem("ACCESS_TOKEN");
     if (!token || customerData) {
       this.getToken(customerData).then(() => this.createAPI());
@@ -94,9 +94,7 @@ export default class API {
       if (response.status === 200) {
         localStorage.setItem("ACCESS_TOKEN", JSON.stringify(response.data));
       } else {
-        console.error(
-          `Error fetching token: ${response.status} ${response.statusText}`
-        );
+        throw new Error(`${response.status} ${response.statusText}`);
       }
     } catch (error) {
       if (error instanceof Error)
