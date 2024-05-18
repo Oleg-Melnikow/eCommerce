@@ -31,12 +31,13 @@ const routes: RouteObject[] = [
         path: "/basket",
         element: <BasketPage />,
       },
+      { path: "/login", element: <LoginPage /> },
+      { path: "/registration", element: <RegistrationPage /> },
+      { path: "/profile", element: <div>User Profile</div> },
+      { path: "/product", element: <div>Product</div> },
     ],
   },
-  { path: "/login", element: <LoginPage /> },
-  { path: "/registration", element: <RegistrationPage /> },
-  { path: "/profile", element: <div>User Profile</div> },
-  { path: "/product", element: <div>Product</div> },
+
   { path: "/404", element: <NotFound /> },
   { path: "/*", element: <Navigate to="404" replace /> },
 ];
