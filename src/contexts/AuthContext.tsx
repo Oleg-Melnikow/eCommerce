@@ -7,11 +7,16 @@ import {
   useReducer,
 } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { LoginType } from "types/InputTagProps";
+import API from "api/API";
+import toastOptions from "helpers/toastOptions";
 import {
   AuthContext,
   AuthInitialState,
   authReducer,
   initialize,
+  loading,
 } from "../reducers/authReducer";
 
 interface AuthProviderProps {
@@ -38,6 +43,34 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
     }
   };
 
+  const login = useCallback(
+    async (data: LoginType) => {
+      dispatch(loading(true));
+      try {
+        const clientAPI = API.getInstance();
+        const response = await clientAPI?.signInCustomer(data);
+        if (response?.customer) {
+          const { customer } = response;
+          toast.success(
+            `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`,
+            toastOptions
+          );
+          localStorage.setItem("userProfile", JSON.stringify(customer));
+          dispatch(initialize(true, customer));
+          navigate("/");
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error?.message, toastOptions);
+        }
+        console.log(error);
+      } finally {
+        dispatch(loading(false));
+      }
+    },
+    [navigate]
+  );
+
   const logoutAccount = useCallback(async () => {
     localStorage.removeItem("userProfile");
     dispatch(initialize(false, null));
@@ -49,8 +82,8 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
   }, []);
 
   const contextValue = useMemo(
-    () => ({ ...state, logoutAccount }),
-    [state, logoutAccount]
+    () => ({ ...state, logoutAccount, login }),
+    [state, logoutAccount, login]
   );
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

@@ -1,4 +1,4 @@
-type FormValuesType = {
+type LoginType = {
   email: string;
   password: string;
 };
@@ -14,4 +14,4 @@ interface InputTagProps {
   name?: string;
 }
 
-export { InputTagProps, FormValuesType };
+export { InputTagProps, LoginType };

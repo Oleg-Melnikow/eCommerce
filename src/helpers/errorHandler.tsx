@@ -1,16 +1,23 @@
-import { ReactNode } from "react";
 import { ToastContentProps } from "react-toastify";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "../types/API/Errors";
 
 export default function errorHandler(
   toastProps: ToastContentProps<unknown>
-): ReactNode {
-  const error =
+): string {
+  let error =
     toastProps.data instanceof AxiosError
       ? (toastProps.data.response?.data as ErrorResponse)
       : (toastProps.data as Error);
-  let errorMessageInner: ReactNode;
+
+  if (!error) {
+    error =
+      toastProps instanceof AxiosError
+        ? (toastProps.response?.data as ErrorResponse)
+        : (toastProps.data as Error);
+  }
+
+  let errorMessageInner: string;
   switch (error.message) {
     case "Account with the given credentials not found.":
       errorMessageInner =
