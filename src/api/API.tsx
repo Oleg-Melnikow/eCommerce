@@ -37,7 +37,7 @@ export default class API {
     return this.instance;
   }
 
-  private async createAPI(customerData?: MyCustomerDraft): Promise<void> {
+  public async createAPI(customerData?: MyCustomerDraft): Promise<void> {
     const token = localStorage.getItem("ACCESS_TOKEN");
     if (!token || customerData) {
       this.getToken(customerData).then(() => this.createAPI());
@@ -68,7 +68,7 @@ export default class API {
     }
   }
 
-  public async getToken(customerData?: MyCustomerDraft): Promise<void> {
+  private async getToken(customerData?: MyCustomerDraft): Promise<void> {
     try {
       const response = customerData
         ? await this.authInstance.post(

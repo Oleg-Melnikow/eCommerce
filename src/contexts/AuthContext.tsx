@@ -6,7 +6,6 @@ import {
   useMemo,
   useReducer,
 } from "react";
-import API from "api/API";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { LoginType } from "types/InputTagProps";
@@ -73,9 +72,11 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
   );
 
   const logoutAccount = useCallback(async () => {
-    localStorage.clear();
+    ["ACCESS_TOKEN", "userProfile"].forEach((item) => {
+      localStorage.removeItem(item);
+    });
     API.getInstance()
-      ?.getToken()
+      ?.createAPI()
       .then(() => {
         dispatch(initialize(false, null));
         navigate("/login");
