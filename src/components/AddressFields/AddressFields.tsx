@@ -1,7 +1,7 @@
 import { FormControlLabel, Grid, Typography } from "@mui/material";
 import InputTag from "components/InputTag/InputTag";
 import SelectTag from "components/SelectTag/SelectTag";
-import { FormTypeRegister } from "pages/RegistrationPage/RegistrationPage";
+import { FormTypeRegister } from "types/RegisterForm";
 import { ChangeEvent, ReactElement } from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import Switch from "@mui/material/Switch";
