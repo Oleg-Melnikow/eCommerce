@@ -29,7 +29,6 @@ function LoginPage(): ReactElement {
     console.log(dataForm);
   };
 
-
   return (
     <FormWrapper title="Login">
       <FormTag

@@ -18,6 +18,7 @@ import validateDateOfBirth from "helpers/validateDateOfBirth";
 
 import "./RegistrationPage.scss";
 import API from "../../api/API";
+
 type FormType = {
   firstName: string;
   lastName: string;

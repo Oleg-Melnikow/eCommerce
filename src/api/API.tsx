@@ -94,9 +94,7 @@ export default class API {
       if (response.status === 200) {
         localStorage.setItem("ACCESS_TOKEN", JSON.stringify(response.data));
       } else {
-        console.error(
-          `Error fetching token: ${response.status} ${response.statusText}`
-        );
+        throw new Error(`${response.status} ${response.statusText}`);
       }
     } catch (error) {
       if (error instanceof Error)
@@ -194,7 +192,10 @@ export default class API {
                   const response = props.data as AxiosResponse;
                   if (response.status === 200) {
                     const { customer } = response.data as CustomerSignInResult;
-                    localStorage.setItem("userProfile", JSON.stringify(customer));
+                    localStorage.setItem(
+                      "userProfile",
+                      JSON.stringify(customer)
+                    );
                     return `Welcome ${customer.firstName ?? ""} ${customer.lastName ?? ""}!`;
                   }
                   throw new Error("Undefined error");
@@ -211,7 +212,6 @@ export default class API {
             toastOptions
           )
           .then((response) => {
-            console.log(response);
             if (
               response &&
               typeof response === "object" &&

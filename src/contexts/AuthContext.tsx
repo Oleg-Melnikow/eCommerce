@@ -41,9 +41,12 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
 
   const logoutAccount = useCallback(async () => {
     localStorage.clear();
-    API.getInstance()?.getToken();
-    dispatch(initialize(false, null));
-    navigate("/login");
+    API.getInstance()
+      ?.getToken()
+      .then(() => {
+        dispatch(initialize(false, null));
+        navigate("/login");
+      });
   }, [navigate]);
 
   useEffect(() => {
@@ -54,6 +57,7 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
     () => ({ ...state, logoutAccount }),
     [state, logoutAccount]
   );
+
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
