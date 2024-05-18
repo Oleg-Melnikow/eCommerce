@@ -9,19 +9,20 @@ import {
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Grid, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import FormWrapper from "components/FormWrapper/FormWrapper";
 import FormTag from "components/Form/FormTag";
 import InputTag from "components/InputTag/InputTag";
-import ButtonTag from "components/ButtonTag/ButtonTag";
 import { AddressFields } from "components/AddressFields/AddressFields";
 import { registration, registrationFull } from "helpers/validatioinSchemes";
 import validateDateOfBirth from "helpers/validateDateOfBirth";
 import { MyCustomerDraft } from "types/API/Customer";
 import { FormTypeRegister } from "types/RegisterForm";
-import API from "api/API";
+import useAuth from "hooks/use-auth";
 import "./RegistrationPage.scss";
 
 function RegistrationPage(): ReactElement {
+  const { signup, isLoading } = useAuth();
   const [validSchema, setValidSchema] = useState(registrationFull);
   const [defaultShipping, setDefaultShipping] = useState<boolean>(false);
   const [defaultBilling, setDefaultBilling] = useState<boolean>(false);
@@ -109,9 +110,7 @@ function RegistrationPage(): ReactElement {
       };
     }
 
-    console.log(newUserData);
-    const clientAPI = API.getInstance();
-    clientAPI?.createCustomer(newUserData);
+    signup(newUserData);
   };
 
   const onInvalid: SubmitErrorHandler<FormTypeRegister> = (
@@ -272,7 +271,16 @@ function RegistrationPage(): ReactElement {
             </Grid>
           </Grid>
         </Grid>
-        <ButtonTag type="submit" title="Register" />
+        <LoadingButton
+          sx={{ m: 2, background: "rgb(70, 163, 88)" }}
+          fullWidth
+          type="submit"
+          loading={isLoading}
+          variant="contained"
+          color="success"
+        >
+          Register
+        </LoadingButton>
       </FormTag>
       <NavLink className="registration-page__content_log-in" to="/login">
         Have an account? Log In

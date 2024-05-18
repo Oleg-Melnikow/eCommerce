@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { Customer } from "types/API/Customer";
+import { Customer, MyCustomerDraft } from "types/API/Customer";
 import { LoginType } from "types/InputTagProps";
 
 interface AuthStateType {
@@ -54,10 +54,12 @@ type ActionsType =
 export interface AuthContextValue extends AuthStateType {
   logoutAccount: () => void;
   login: (data: LoginType) => Promise<void>;
+  signup: (customer: MyCustomerDraft) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextValue>({
   ...AuthInitialState,
   logoutAccount: () => {},
   login: () => Promise.resolve(),
+  signup: () => Promise.resolve(),
 });

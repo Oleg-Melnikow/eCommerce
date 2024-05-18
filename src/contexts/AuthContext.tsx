@@ -3,14 +3,16 @@ import {
   ReactNode,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useReducer,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { LoginType } from "types/InputTagProps";
 import API from "api/API";
 import toastOptions from "helpers/toastOptions";
+import { MyCustomerDraft } from "types/API/Customer";
 import {
   AuthContext,
   AuthInitialState,
@@ -27,6 +29,7 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
   const { children } = props;
   const [state, dispatch] = useReducer(authReducer, AuthInitialState);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const initializeAccount = async (): Promise<void> => {
     try {
@@ -71,6 +74,33 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
     [navigate]
   );
 
+  const signup = useCallback(
+    async (customerData: MyCustomerDraft) => {
+      dispatch(loading(true));
+      try {
+        const clientAPI = API.getInstance();
+        const response = await clientAPI?.createCustomer(customerData);
+        if (response?.customer) {
+          localStorage.setItem(
+            "userProfile",
+            JSON.stringify(response?.customer)
+          );
+          dispatch(initialize(true, response?.customer));
+          navigate("/");
+          toast.success("Registration was successfull!", toastOptions);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error?.message, toastOptions);
+        }
+        console.log(error);
+      } finally {
+        dispatch(loading(false));
+      }
+    },
+    [navigate]
+  );
+
   const logoutAccount = useCallback(async () => {
     localStorage.removeItem("userProfile");
     dispatch(initialize(false, null));
@@ -81,9 +111,19 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
     initializeAccount();
   }, []);
 
+  useLayoutEffect(() => {
+    const userLogined = localStorage.getItem("userProfile");
+    if (userLogined) {
+      const pathArray = ["/login", "/registration"];
+      if (pathArray.includes(pathname)) {
+        navigate("/");
+      }
+    }
+  }, [pathname, navigate]);
+
   const contextValue = useMemo(
-    () => ({ ...state, logoutAccount, login }),
-    [state, logoutAccount, login]
+    () => ({ ...state, logoutAccount, login, signup }),
+    [state, logoutAccount, login, signup]
   );
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
