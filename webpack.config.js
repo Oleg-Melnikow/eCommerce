@@ -27,6 +27,7 @@ module.exports = {
       types: path.resolve(__dirname, "./src/types"),
       hooks: path.resolve(__dirname, "./src/hooks"),
       assets: path.resolve(__dirname, "./src/assets"),
+      reducers: path.resolve(__dirname, "./src/reducers"),
     },
   },
 };

@@ -21,6 +21,7 @@
     "types/*": ["types/*"],
     "hooks/*": ["hooks/*"],
     "assets/*": ["assets/*"],
+    "reducers/*": ["reducers/*"],
   },
   "include": ["src", "declaration.d.ts"],
   "exclude": ["node_modules", "dist"]
