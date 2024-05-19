@@ -18,7 +18,6 @@ function SelectTag({
 }: SelectTagProps): ReactElement {
   const options = [
     { value: "BY", label: "Belarus" },
-    { value: "EU", label: "European Union" },
     { value: "UK", label: "The United Kingdom" },
     { value: "USA", label: "USA" },
   ];

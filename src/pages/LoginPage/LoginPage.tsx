@@ -40,7 +40,7 @@ function LoginPage(): ReactElement {
           render={({ field: { onChange, value, name } }) => (
             <InputTag
               value={value}
-              type="email"
+              type="text"
               label="Email"
               name={name}
               onChange={onChange}
