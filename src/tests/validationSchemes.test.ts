@@ -1,3 +1,4 @@
+import validateDateOfBirth from "../helpers/validateDateOfBirth";
 import {
   loginSchema,
   registrationFull,
@@ -38,5 +39,10 @@ describe("testing validation shcema login page", () => {
     };
     const validationResult = registrationFull.safeParse(registation);
     expect(validationResult.success).toBe(true);
+  });
+
+  it("Should pass with valid years", () => {
+    const correctYears = "2002-11-03";
+    expect(validateDateOfBirth(correctYears)).toBe(true);
   });
 });
