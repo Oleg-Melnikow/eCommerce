@@ -10,6 +10,8 @@ export interface MyCustomerDraft {
   email: string;
   defaultShippingAddress?: number;
   defaultBillingAddress?: number;
+  shippingAddresses?: number[];
+  billingAddresses?: number[];
   dateOfBirth?: string;
   companyName?: string;
   addresses?: Address[];

@@ -101,12 +101,27 @@ function RegistrationPage(): ReactElement {
       newUserData = {
         ...newUserData,
         defaultBillingAddress: defaultShippingAddress,
+        billingAddresses: [defaultShippingAddress],
       };
     }
     if (defaultBilling && !isCheckedBilling) {
       newUserData = {
         ...newUserData,
         defaultBillingAddress,
+      };
+    }
+
+    if (shippingAddress) {
+      newUserData = {
+        ...newUserData,
+        shippingAddresses: [defaultShippingAddress],
+      };
+    }
+
+    if (billingAddress && !isCheckedBilling) {
+      newUserData = {
+        ...newUserData,
+        billingAddresses: [defaultBillingAddress],
       };
     }
 
@@ -225,7 +240,7 @@ function RegistrationPage(): ReactElement {
                 render={({ field: { onChange, value, name } }) => (
                   <InputTag
                     value={value}
-                    type="email"
+                    type="text"
                     label="Email"
                     name={name}
                     onChange={onChange}
