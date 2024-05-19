@@ -6,7 +6,7 @@ import {
   setUser,
 } from "../reducers/authReducer";
 
-describe("authReducer reducer", () => {
+describe("authReducer testing", () => {
   const initialState = AuthInitialState;
 
   it("should return the state with correct data when loading action is called", () => {
