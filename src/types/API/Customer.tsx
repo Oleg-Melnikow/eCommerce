@@ -10,7 +10,7 @@ export interface MyCustomerDraft {
   email: string;
   defaultShippingAddress?: number;
   defaultBillingAddress?: number;
-  dateOfBirth?: Date;
+  dateOfBirth?: string;
   companyName?: string;
   addresses?: Address[];
 }

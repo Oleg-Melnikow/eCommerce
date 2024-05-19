@@ -70,6 +70,7 @@ function LoginPage(): ReactElement {
           type="submit"
           loading={isLoading}
           variant="contained"
+          color="success"
         >
           Login
         </LoadingButton>

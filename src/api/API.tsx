@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import {
   CustomerSignInResult,
@@ -6,8 +6,6 @@ import {
   MyCustomerSignin,
 } from "types/API/Customer";
 import errorHandler from "../helpers/errorHandler";
-
-import toastOptions from "../helpers/toastOptions";
 
 export default class API {
   protected static instance: API | null = null;
@@ -148,34 +146,25 @@ export default class API {
     }
   }
 
-  public async createCustomer(customerData: MyCustomerDraft): Promise<void> {
+  public async createCustomer(
+    customerData: MyCustomerDraft
+  ): Promise<CustomerSignInResult | undefined> {
     const createAPIBinded = this.createAPI.bind(this);
-    if (this.apiInstance)
-      toast.promise(
-        this.apiInstance?.post("/me/signup", customerData),
-        {
-          pending: "Please, wait.",
-          success: {
-            render(props) {
-              const response = props.data as AxiosResponse;
-              if (response.status === 201) {
-                createAPIBinded(customerData);
-                return "Registration was successfull";
-              }
-              throw new Error(
-                "Something went wrong during the registration process. Please, should try again later."
-              );
-            },
-          },
-          error: {
-            render(props) {
-              const error = props.data as AxiosError;
-              return `${errorHandler(props)}`;
-            },
-          },
-        },
-        toastOptions
-      );
+    return this.apiInstance
+      ?.post("/me/signup", customerData)
+      .then((response) => {
+        if (response?.status === 201) {
+          console.log(response.data, "api res");
+          createAPIBinded(customerData);
+          return response?.data as CustomerSignInResult;
+        }
+        throw new Error(
+          "Something went wrong during the registration process. Please, should try again later."
+        );
+      })
+      .catch((error) => {
+        throw new Error(`${errorHandler(error)}`);
+      });
   }
 
   public async signInCustomer(
