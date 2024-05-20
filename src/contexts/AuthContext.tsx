@@ -18,6 +18,7 @@ import {
   authReducer,
   initialize,
   loading,
+  receivingToken,
 } from "../reducers/authReducer";
 
 interface AuthProviderProps {
@@ -112,6 +113,11 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
       });
   }, [navigate]);
 
+  const tokenReceiving = useCallback(() => {
+    dispatch(receivingToken(true));
+    console.log(state);
+  }, [state]);
+
   useEffect(() => {
     initializeAccount();
   }, []);
@@ -127,8 +133,8 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
   }, [pathname, navigate]);
 
   const contextValue = useMemo(
-    () => ({ ...state, logoutAccount, login, signup }),
-    [state, logoutAccount, login, signup]
+    () => ({ ...state, logoutAccount, login, signup, tokenReceiving }),
+    [state, logoutAccount, login, signup, tokenReceiving]
   );
 
   return (
