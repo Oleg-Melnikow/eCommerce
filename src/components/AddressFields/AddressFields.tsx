@@ -1,4 +1,9 @@
-import { FormControlLabel, Grid, Typography } from "@mui/material";
+import {
+  FormControlLabel,
+  Grid,
+  SelectChangeEvent,
+  Typography,
+} from "@mui/material";
 import InputTag from "components/InputTag/InputTag";
 import SelectTag from "components/SelectTag/SelectTag";
 import { FormTypeRegister } from "types/RegisterForm";
@@ -15,6 +20,8 @@ type PropsType = {
   isCheckedBilling: boolean;
   onChangeIsDefault: (event: ChangeEvent<HTMLInputElement>) => void;
   onCheckedBilling: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChangeSelect: (event: SelectChangeEvent) => void;
+  onChangePostalCode: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
 export function AddressFields({
@@ -25,6 +32,8 @@ export function AddressFields({
   onChangeIsDefault,
   isCheckedBilling,
   onCheckedBilling,
+  onChangeSelect,
+  onChangePostalCode,
 }: PropsType): ReactElement {
   const errorsField =
     typeAddress === "shipping" ? errors.shippingAddress : errors.billingAddress;
@@ -48,7 +57,10 @@ export function AddressFields({
               <SelectTag
                 valueTag={value}
                 id={name}
-                onChange={onChange}
+                onChange={(e) => {
+                  onChangeSelect(e);
+                  onChange(e);
+                }}
                 isError={Boolean(errorsField?.country)}
                 message={errorsField?.country?.message}
               />
@@ -59,13 +71,13 @@ export function AddressFields({
           <Controller
             name={`${nameField}.postalCode`}
             control={control}
-            render={({ field: { onChange, value, name } }) => (
+            render={({ field: { value, name } }) => (
               <InputTag
                 value={value}
                 type="text"
                 label="Postal Code"
                 name={name}
-                onChange={onChange}
+                onChange={onChangePostalCode}
                 isError={Boolean(errorsField?.postalCode)}
                 message={errorsField?.postalCode?.message}
               />
@@ -131,7 +143,7 @@ export function AddressFields({
                   onChange={onCheckedBilling}
                 />
               }
-              label="Also use as billing address"
+              label="Use address as billing address"
             />
           </Grid>
         )}

@@ -26,6 +26,7 @@ function SelectTag({
     <FormControl fullWidth sx={{ mt: 2 }} size="small" error={isError}>
       <InputLabel id="selectCountry">Country</InputLabel>
       <Select
+        name={id}
         labelId="selectCountry"
         id={id}
         value={valueTag || ""}
