@@ -5,6 +5,7 @@ import {
   MyCustomerDraft,
   MyCustomerSignin,
 } from "types/API/Customer";
+import { AuthContextValue } from "reducers/authReducer";
 import errorHandler from "../helpers/errorHandler";
 
 export default class API {
@@ -25,13 +26,23 @@ export default class API {
 
   protected navigate: (to: string) => void;
 
-  private constructor(navigate: (to: string) => void) {
+  protected authContext: AuthContextValue;
+
+  private constructor(
+    navigate: (to: string) => void,
+    authContext: AuthContextValue
+  ) {
     this.navigate = navigate;
+    this.authContext = authContext;
     this.createAPI();
   }
 
-  public static getInstance(navigate?: (to: string) => void): API | null {
-    if (!this.instance && navigate) this.instance = new API(navigate);
+  public static getInstance(
+    navigate?: (to: string) => void,
+    authContext?: AuthContextValue
+  ): API | null {
+    if (!this.instance && navigate && authContext)
+      this.instance = new API(navigate, authContext);
     return this.instance;
   }
 
@@ -40,6 +51,8 @@ export default class API {
     if (!token || customerData) {
       this.getToken(customerData).then(() => this.createAPI());
     } else {
+      const { tokenReceiving } = this.authContext;
+      tokenReceiving();
       const {
         access_token: accessToken,
         token_type: tokenType,
