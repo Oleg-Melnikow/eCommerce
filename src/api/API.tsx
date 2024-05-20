@@ -51,8 +51,8 @@ export default class API {
     if (!token || customerData) {
       this.getToken(customerData).then(() => this.createAPI());
     } else {
-      const { tokenReceiving } = this.authContext;
-      tokenReceiving();
+      // const { tokenReceiving } = this.authContext;
+      // tokenReceiving();
       const {
         access_token: accessToken,
         token_type: tokenType,
