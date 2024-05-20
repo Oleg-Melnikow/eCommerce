@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import {
   CustomerSignInResult,
@@ -51,8 +51,8 @@ export default class API {
     if (!token || customerData) {
       this.getToken(customerData).then(() => this.createAPI());
     } else {
-      const { tokenReceiving } = this.authContext;
-      tokenReceiving();
+      // const { tokenReceiving } = this.authContext;
+      // tokenReceiving();
       const {
         access_token: accessToken,
         token_type: tokenType,
@@ -167,7 +167,6 @@ export default class API {
       ?.post("/me/signup", customerData)
       .then((response) => {
         if (response?.status === 201) {
-          console.log(response.data, "api res");
           createAPIBinded(customerData);
           return response?.data as CustomerSignInResult;
         }
@@ -184,15 +183,17 @@ export default class API {
     data: MyCustomerSignin
   ): Promise<CustomerSignInResult> {
     const isCustomerExist = await this.checkCustomerByEmail(data.email);
+    if (!isCustomerExist)
+      throw new Error(
+        `The user with the email address "${data.email}" is not registered. Please check your email address or register.`
+      );
     return this.createAPI(data)
       .then(async () => {
         const response = await this.apiInstance?.post("/me/login/", data);
         return response?.data as CustomerSignInResult;
       })
       .catch((err) => {
-        const message = isCustomerExist
-          ? errorHandler(err)
-          : `The user with the email address "${data.email}" is not registered. Please check your email address or register.`;
+        const message = errorHandler(err);
         throw new Error(message);
       });
   }
@@ -214,7 +215,7 @@ export default class API {
       } catch (error) {
         console.error(
           "An error occurred while verifying the existence of the client.",
-          error
+          (error as AxiosError).message
         );
         return false;
       }

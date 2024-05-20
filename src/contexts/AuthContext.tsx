@@ -115,8 +115,7 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
 
   const tokenReceiving = useCallback(() => {
     dispatch(receivingToken(true));
-    console.log(state);
-  }, [state]);
+  }, []);
 
   useEffect(() => {
     initializeAccount();

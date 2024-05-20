@@ -8,7 +8,7 @@ import Header from "../Header/Header";
 function Layout(): ReactElement {
   return (
     <div className="layout__container">
-      <Loader />
+      {/* <Loader /> */}
       <Header />
       <Outlet />
     </div>
