@@ -11,6 +11,16 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env", "@babel/preset-react"],
+          },
+        },
+      },
+      {
         test: /\.(?:ico|png|svg|jpg|jpeg|gif)$/i,
         type: "asset/resource",
       },
@@ -27,6 +37,7 @@ module.exports = {
       types: path.resolve(__dirname, "./src/types"),
       hooks: path.resolve(__dirname, "./src/hooks"),
       assets: path.resolve(__dirname, "./src/assets"),
+      reducers: path.resolve(__dirname, "./src/reducers"),
     },
   },
 };

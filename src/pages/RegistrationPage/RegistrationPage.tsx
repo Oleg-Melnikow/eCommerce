@@ -8,7 +8,7 @@ import {
   useForm,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Grid, Typography } from "@mui/material";
+import { Grid, SelectChangeEvent, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import FormWrapper from "components/FormWrapper/FormWrapper";
 import FormTag from "components/Form/FormTag";
@@ -19,7 +19,10 @@ import validateDateOfBirth from "helpers/validateDateOfBirth";
 import { MyCustomerDraft } from "types/API/Customer";
 import { FormTypeRegister } from "types/RegisterForm";
 import useAuth from "hooks/use-auth";
+import { validatePostalCode } from "helpers/validatePostalCode";
 import "./RegistrationPage.scss";
+
+type AddressType = "shippingAddress" | "billingAddress";
 
 function RegistrationPage(): ReactElement {
   const { signup, isLoading } = useAuth();
@@ -64,6 +67,7 @@ function RegistrationPage(): ReactElement {
 
   const onCheckedBilling = (event: ChangeEvent<HTMLInputElement>): void => {
     setIsCheckedBilling(event.target.checked);
+    clearErrors("billingAddress");
   };
 
   const onChangeBirth = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -71,9 +75,80 @@ function RegistrationPage(): ReactElement {
     checkDate(event.target.value);
   };
 
+  useEffect(() => {
+    let schema = registrationFull;
+    if (!isCheckedBilling) {
+      schema = registration;
+    }
+    schema.refine((values) => values.password === values.confirmPassword, {
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    });
+    setValidSchema(schema);
+  }, [isCheckedBilling]);
+
+  const checkPostCode = (
+    code: string,
+    country: string,
+    type: AddressType
+  ): void => {
+    const error = validatePostalCode(code, country);
+    if (error) {
+      setError(`${type}.postalCode`, {
+        message: error,
+        type: "validate",
+      });
+    } else {
+      clearErrors(`${type}.postalCode`);
+    }
+  };
+
+  const chekcAddressType = (address: string): AddressType => {
+    return address.includes(`shipping`) ? "shippingAddress" : "billingAddress";
+  };
+
+  const onChangeSelect = (event: SelectChangeEvent): void => {
+    const { name, value } = event.target;
+    const addressType = chekcAddressType(name);
+    const post = getValues(`${addressType}.postalCode`);
+    checkPostCode(post, value, addressType);
+  };
+
+  const onChangePostalCode = (event: ChangeEvent<HTMLInputElement>): void => {
+    const { name, value } = event.target;
+
+    const addressType = chekcAddressType(name);
+    const country = getValues(`${addressType}.country`);
+
+    setValue(`${addressType}.postalCode`, event.target.value);
+    checkPostCode(value, country, addressType);
+  };
+
+  const validateCode = (): void => {
+    const addressTypes = isCheckedBilling
+      ? ["shippingAddress"]
+      : ["shippingAddress", "billingAddress"];
+    addressTypes.forEach((item) => {
+      const address = item as AddressType;
+      const country = getValues(`${address}.country`);
+      const code = getValues(`${address}.postalCode`);
+      checkPostCode(code, country, address);
+    });
+  };
+
+  const onInvalid: SubmitErrorHandler<FormTypeRegister> = (
+    error: FieldErrors<FormTypeRegister>
+  ): void => {
+    console.log(error);
+    checkDate(getValues("dateOfBirth"));
+    validateCode();
+  };
+
   const onSubmit: SubmitHandler<FormTypeRegister> = (
     dataForm: FormTypeRegister
   ): void => {
+    validateCode();
+
     const {
       shippingAddress,
       billingAddress,
@@ -101,6 +176,7 @@ function RegistrationPage(): ReactElement {
       newUserData = {
         ...newUserData,
         defaultBillingAddress: defaultShippingAddress,
+        billingAddresses: [defaultShippingAddress],
       };
     }
     if (defaultBilling && !isCheckedBilling) {
@@ -110,27 +186,24 @@ function RegistrationPage(): ReactElement {
       };
     }
 
-    signup(newUserData);
-  };
-
-  const onInvalid: SubmitErrorHandler<FormTypeRegister> = (
-    error: FieldErrors<FormTypeRegister>
-  ): void => {
-    console.log(error);
-    checkDate(getValues("dateOfBirth"));
-  };
-
-  useEffect(() => {
-    let schema = registrationFull;
-    if (!isCheckedBilling) {
-      schema = registration;
+    if (shippingAddress) {
+      newUserData = {
+        ...newUserData,
+        shippingAddresses: [defaultShippingAddress],
+      };
     }
-    schema.refine((values) => values.password === values.confirmPassword, {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
-    });
-    setValidSchema(schema);
-  }, [isCheckedBilling]);
+
+    if (billingAddress && !isCheckedBilling) {
+      newUserData = {
+        ...newUserData,
+        billingAddresses: [defaultBillingAddress],
+      };
+    }
+
+    if (!Object.keys(errors).length) {
+      signup(newUserData);
+    }
+  };
 
   return (
     <FormWrapper title="Register">
@@ -202,6 +275,8 @@ function RegistrationPage(): ReactElement {
             isCheckedBilling={isCheckedBilling}
             onChangeIsDefault={onChangeShipping}
             onCheckedBilling={onCheckedBilling}
+            onChangeSelect={onChangeSelect}
+            onChangePostalCode={onChangePostalCode}
           />
           {!isCheckedBilling && (
             <AddressFields
@@ -212,6 +287,8 @@ function RegistrationPage(): ReactElement {
               isCheckedBilling={isCheckedBilling}
               onChangeIsDefault={onChangeBilling}
               onCheckedBilling={onCheckedBilling}
+              onChangeSelect={onChangeSelect}
+              onChangePostalCode={onChangePostalCode}
             />
           )}
           <Typography sx={{ mt: 2, alignSelf: "flex-start" }} variant="body1">
@@ -225,7 +302,7 @@ function RegistrationPage(): ReactElement {
                 render={({ field: { onChange, value, name } }) => (
                   <InputTag
                     value={value}
-                    type="email"
+                    type="text"
                     label="Email"
                     name={name}
                     onChange={onChange}

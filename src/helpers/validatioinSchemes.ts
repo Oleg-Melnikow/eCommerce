@@ -3,12 +3,13 @@ import { z } from "zod";
 const loginSchema = z.object({
   email: z
     .string({ message: "Email is a required field" })
+    .regex(/^(?!\s)/, "Leading spaces are not allowed")
     .includes("@", { message: `Email must be include '@'` })
     .regex(/@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/, "Domain not allowed")
     .email({ message: "Email is not valid" }),
   password: z
     .string({ message: "Password is a required field" })
-    .regex(/^(?!\s)/, "Leading spaces are not allowed")
+    .regex(/^\S*$/, "Leading spaces are not allowed")
     .regex(/(?=.*[A-Z])/, "Must contain at least one uppercase letter")
     .regex(/(?=.*[a-z])/, "Must contain at least one lowercase letter")
     .regex(/(?=.*[0-9])/, "Must contain at least one digit")
@@ -50,4 +51,4 @@ const registration = registrationSchema.merge(loginSchema);
 
 const registrationFull = registration.omit({ billingAddress: true });
 
-export { registration, loginSchema, registrationFull };
+export { registration, loginSchema, registrationFull, validateAdress };

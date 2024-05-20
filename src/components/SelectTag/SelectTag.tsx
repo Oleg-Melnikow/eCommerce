@@ -18,7 +18,6 @@ function SelectTag({
 }: SelectTagProps): ReactElement {
   const options = [
     { value: "BY", label: "Belarus" },
-    { value: "EU", label: "European Union" },
     { value: "UK", label: "The United Kingdom" },
     { value: "USA", label: "USA" },
   ];
@@ -27,6 +26,7 @@ function SelectTag({
     <FormControl fullWidth sx={{ mt: 2 }} size="small" error={isError}>
       <InputLabel id="selectCountry">Country</InputLabel>
       <Select
+        name={id}
         labelId="selectCountry"
         id={id}
         value={valueTag || ""}

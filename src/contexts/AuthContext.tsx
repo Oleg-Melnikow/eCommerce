@@ -3,7 +3,6 @@ import {
   ReactNode,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useReducer,
 } from "react";
@@ -117,7 +116,7 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
     initializeAccount();
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const userLogined = localStorage.getItem("userProfile");
     if (userLogined) {
       const pathArray = ["/login", "/registration"];
