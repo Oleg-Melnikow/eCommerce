@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -5,9 +7,42 @@
 }
 
 body {
-  background: #2b2b2b;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 400;
 }
 
 #root {
   position: relative;
+}
+
+.toastContainer {
+  padding: 0px 10px;
+  max-width: 520px;
+  width: 100%;
+
+  .Toastify__toast {
+    border-radius: 5px;
+    background-color: black;
+    opacity: 0.8;
+
+    .Toastify__toast-icon > svg {
+      fill: rgb(255, 0, 0);
+    }
+
+    .Toastify__close-button > svg > path {
+      fill: rgb(255, 255, 255);
+    }
+
+    .Toastify__progress-bar--error {
+      background-color: rgb(255, 0, 0);
+    }
+
+    .Toastify__progress-bar--bg {
+      background-color: rgb(255, 255, 255);
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    top: 16px;
+  }
 }
