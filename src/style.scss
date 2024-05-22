@@ -9,6 +9,10 @@
 body {
   font-family: "Noto Sans", sans-serif;
   font-weight: 400;
+  padding: 0 50px;
+  @media screen and (max-width: 576px) {
+    padding: 0 20px;
+  }
 }
 
 #root {
