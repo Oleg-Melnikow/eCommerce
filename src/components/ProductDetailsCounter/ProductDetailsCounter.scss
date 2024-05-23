@@ -17,6 +17,7 @@
     color: white;
     user-select: none;
     &:hover {
+      cursor: pointer;
       box-shadow: colors.$accent-shadow;
     }
   }

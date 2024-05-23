@@ -1,12 +1,45 @@
 @use "../../styles/colors" as colors;
 
 .product-details {
-  .product-details__price {
+  &__price {
     font-weight: bold;
     color: colors.$main-color;
   }
 
-  .product-details__line {
+  &__line {
     border-color: colors.$main-color;
+  }
+
+  &__btn-wrap {
+    display: flex;
+    gap: 5px;
+  }
+
+  &__counter {
+    margin-right: 5px;
+  }
+
+  &__btn {
+    width: 130px;
+    height: 40px;
+    border: 2px solid colors.$main-color;
+    border-radius: 5px;
+    text-transform: uppercase;
+    transition: 0.25s;
+
+    &--buy {
+      color: white;
+      background-color: colors.$main-color;
+    }
+
+    &--add {
+      color: colors.$main-color;
+      background-color: white;
+    }
+
+    &:hover {
+      cursor: pointer;
+      box-shadow: colors.$accent-shadow;
+    }
   }
 }

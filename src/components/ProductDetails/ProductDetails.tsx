@@ -32,7 +32,21 @@ function ProductDetails(): ReactElement {
       <h4 className="product-details__subtitle">Short Description:</h4>
       <p className="product-details__desc">{shortDesc}</p>
       <ProductDetailsRadio className="product-details" />
-      <ProductDetailsCounter className="product-details" />
+      <div className="product-details__btn-wrap">
+        <ProductDetailsCounter className="product-details" />
+        <button
+          type="button"
+          className="product-details__btn product-details__btn--buy"
+        >
+          Buy Now
+        </button>
+        <button
+          type="button"
+          className="product-details__btn product-details__btn--add"
+        >
+          Add to Cart
+        </button>
+      </div>
       <div className="product-details__info-wrap">
         <p className="product-details__info">
           <span className="product-details__info-title">SKU: </span>
