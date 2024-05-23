@@ -1,0 +1,13 @@
+@use "../../styles/colors" as colors; 
+
+.product-details {
+
+  .product-details__price {
+    font-weight: bold;
+    color: colors.$main-color;
+  }
+
+  .product-details__line {
+    border-color: colors.$main-color;
+  }
+}
