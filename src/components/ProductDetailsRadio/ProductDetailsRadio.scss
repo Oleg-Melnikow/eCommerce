@@ -8,6 +8,7 @@
   height: 28px;
   border: 1px solid black;
   border-radius: 50%;
+  transition: 0.25s;
   &--checked {
     @extend .radio-label;
     border-width: 2px;
@@ -20,6 +21,7 @@
 .radio-group {.radio-btn {
     margin: 5px;
     padding: 0;
+    transition: 0.25s;
     &:hover {
       box-shadow: colors.$accent-shadow;
     }
