@@ -1,0 +1,27 @@
+@use "../../styles/colors" as colors;
+
+.radio-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid black;
+  border-radius: 50%;
+  &--checked {
+    @extend .radio-label;
+    border-width: 2px;
+    border-color: colors.$main-color;
+    color: colors.$main-color;
+    font-weight: bold;
+  }
+}
+
+.radio-group {.radio-btn {
+    margin: 5px;
+    padding: 0;
+    &:hover {
+      box-shadow: colors.$accent-shadow;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 import "./ProductDetails.scss";
+import ProductDetailsRadio from "components/ProductDetailsRadio/ProductDetailsRadio";
 
 function ProductDetails(): ReactElement {
   const line = (
@@ -29,7 +30,7 @@ function ProductDetails(): ReactElement {
       {line}
       <h4 className="product-details__subtitle">Short Description:</h4>
       <p className="product-details__desc">{shortDesc}</p>
-      <h4 className="product-details__subtitle">Size:</h4>
+      <ProductDetailsRadio className="product-details" />
       <div className="product-details__info-wrap">
         <p className="product-details__info">
           <span className="product-details__info-title">SKU: </span>
