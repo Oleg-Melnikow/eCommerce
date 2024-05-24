@@ -47,4 +47,15 @@ const navLinksToAccount: LinkAccount[] = [
   },
 ];
 
-export { LinkAccount, navLinksToAccount };
+const countriesData: CountryData[] = [
+  { value: "BY", label: "Belarus" },
+  { value: "UK", label: "The United Kingdom" },
+  { value: "US", label: "USA" },
+];
+
+type CountryData = {
+  value: string;
+  label: string;
+};
+
+export { LinkAccount, navLinksToAccount, countriesData };

@@ -34,7 +34,7 @@ const routes: RouteObject[] = [
       { path: "/login", element: <LoginPage /> },
       { path: "/registration", element: <RegistrationPage /> },
       { path: "/profile", element: <div>User Profile</div> },
-      { path: "/product", element: <div>Product</div> },
+      { path: "/product/:id", element: <div>Product</div> },
     ],
   },
 

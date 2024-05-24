@@ -5,8 +5,9 @@ import {
   MyCustomerDraft,
   MyCustomerSignin,
 } from "types/API/Customer";
+import { Products } from "types/API/Product";
 import { AuthContextValue } from "reducers/authReducer";
-import errorHandler from "../helpers/errorHandler";
+import errorHandler from "helpers/errorHandler";
 
 export default class API {
   protected static instance: API | null = null;
@@ -220,5 +221,17 @@ export default class API {
         return false;
       }
     return false;
+  }
+
+  public async getProducts(): Promise<Products> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.get("/products");
+        return response?.data as Products;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
   }
 }
