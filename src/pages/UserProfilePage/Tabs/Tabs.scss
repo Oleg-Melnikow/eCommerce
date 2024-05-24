@@ -1,0 +1,10 @@
+.MuiTabs-scroller {
+  // Обертка Tabs, классы тегов вложенных в нее
+  .MuiTabs-indicator {
+    background-color: rgb(70, 163, 88);
+  }
+
+  .MuiTab-textColorPrimary.Mui-selected {
+    color: rgb(70, 163, 88);
+  }
+}

@@ -1,7 +1,25 @@
 .userProfile-page {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  background-color: yellow;
+  margin-top: 50px;
+  max-width: 100%;
+  width: 100%;
+
+  .wrapper__content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .wrapper__content_title {
+      padding: 18px 18px;
+      font-family: "Noto Sans", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 16px;
+      color: rgb(61, 61, 61);
+      background-color: rgb(251, 251, 251);
+    }
+  }
 }
