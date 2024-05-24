@@ -12,7 +12,7 @@ export function validatePostalCode(
     },
     {
       regex: /^\d{5}(?:[-\s]\d{4})?$/,
-      country: "USA",
+      country: "US",
       message: "Postal code not correct, please enter formar like this 33311",
     },
     {
