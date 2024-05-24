@@ -4,18 +4,20 @@ import { ProductData } from "types/API/Product";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
+import { useNavigate } from "react-router-dom";
 
 type PropsType = {
   product: ProductData;
 };
 
 function ProductCard({ product }: PropsType): ReactElement {
-  const { id, key, masterData } = product;
+  const navigate = useNavigate();
+  const { id, masterData } = product;
   const { name, masterVariant, description } = masterData.current;
   const [image] = masterVariant.images;
+
   const onClickProduct = (): void => {
-    console.log(`product-Id:`, id);
-    console.log(`product-key:`, key);
+    navigate(`/product/${id}`);
   };
 
   return (
