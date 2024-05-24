@@ -1,9 +1,12 @@
-interface Products {
+interface ProductPage {
   count: number;
   limit: number;
   offset: number;
-  results: ProductData[];
   total: number;
+}
+
+interface Products extends ProductPage {
+  results: ProductData[];
 }
 
 interface ProductImage {
@@ -33,4 +36,4 @@ interface ProductData {
   };
 }
 
-export { Products, ProductData, ProductImage };
+export { Products, ProductData, ProductImage, ProductPage };
