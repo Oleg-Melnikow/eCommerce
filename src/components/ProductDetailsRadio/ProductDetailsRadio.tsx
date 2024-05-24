@@ -49,7 +49,7 @@ function ProductDetailsRadio({ className }: PropsType): ReactElement {
         id="product-details-radio-group"
         className={`${className}__subtitle`}
       >
-        Size:
+        <h4>Size:</h4>
       </FormLabel>
       <RadioGroup
         row
