@@ -1,0 +1,12 @@
+@use "../../styles/colors" as colors;
+
+.product-description {
+  grid-column: span 2;
+  &__title {
+    display: inline-block;
+    padding-bottom: 10px;
+    text-transform: capitalize;
+    border-bottom: 3px solid colors.$main-color;
+    color: colors.$main-color
+  }
+}
