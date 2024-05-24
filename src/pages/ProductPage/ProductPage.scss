@@ -4,4 +4,9 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(2, auto);
   color: colors.$text-regular;
+
+  @media screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+  }
 }
