@@ -27,7 +27,7 @@ function ProductDetails(): ReactElement {
   return (
     <div className="product-details">
       <h3 className="product-details__title">{title}</h3>
-      <p className="product-details__price">{price}$</p>
+      <p className="product-details__price">{price.toFixed(2)}$</p>
       {line}
       <h4 className="product-details__subtitle">Short Description:</h4>
       <p className="product-details__desc">{shortDesc}</p>

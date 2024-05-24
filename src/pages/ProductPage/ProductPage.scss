@@ -1,5 +1,7 @@
+@use "../../styles/colors" as colors;
 .product-page {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(2, auto);
+  color: colors.$text-regular;
 }
