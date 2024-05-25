@@ -22,6 +22,25 @@ type Languages = {
   en: string;
 };
 
+interface PriceValue {
+  centAmount: number;
+  currencyCode: string;
+  type: string;
+}
+
+interface Price {
+  id: string;
+  key: string;
+  value: PriceValue;
+  discounted?: {
+    discount: {
+      id: string;
+      typeId: string;
+    };
+    value: PriceValue;
+  };
+}
+
 interface ProductData {
   id: string;
   key: string;
@@ -31,9 +50,12 @@ interface ProductData {
       description: Languages;
       masterVariant: {
         images: ProductImage[];
+        key: string;
+        sku: string;
+        prices: Price[];
       };
     };
   };
 }
 
-export { Products, ProductData, ProductImage, ProductPage };
+export { Products, ProductData, ProductImage, ProductPage, Price };
