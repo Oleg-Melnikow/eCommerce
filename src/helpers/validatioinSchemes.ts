@@ -22,7 +22,7 @@ const loginSchema = z.object({
 });
 
 const validateAdress = z.object({
-  street: z.string({ message: "Street is a required field" }).min(1),
+  streetName: z.string({ message: "Street is a required field" }).min(1),
   postalCode: z.string({ message: "Postal code is a required field" }).min(1),
   country: z.string({ message: "Country is a required field" }),
   city: z
