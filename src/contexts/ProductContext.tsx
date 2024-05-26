@@ -15,7 +15,9 @@ import {
   getProducts,
   loading,
   productReducer,
+  setCurrentProduct,
 } from "reducers/productReducer";
+import { ProductData } from "types/API/Product";
 
 interface ProviderProps {
   children: ReactNode;
@@ -44,9 +46,13 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
+  const chooseProduct = useCallback(async (product: ProductData | null) => {
+    dispatch(setCurrentProduct(product));
+  }, []);
+
   const contextValue = useMemo(
-    () => ({ ...state, getProductsData }),
-    [state, getProductsData]
+    () => ({ ...state, getProductsData, chooseProduct }),
+    [state, getProductsData, chooseProduct]
   );
 
   return (

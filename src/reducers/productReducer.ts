@@ -25,6 +25,7 @@ export const productReducer = (
     case "products/eCommerce/GET-PRODUCTS":
     case "products/eCommerce/SET-IS-LOADING":
     case "products/eCommerce/GET-PRODUCT-PAGE":
+    case "products/eCommerce/SET-CURRENT-PRODUCT":
       return {
         ...state,
         ...action.payload,
@@ -43,6 +44,12 @@ export const getProductPageData = (pageData: ProductPage) =>
     payload: { ...pageData },
   }) as const;
 
+export const setCurrentProduct = (currentProduct: ProductData | null) =>
+  ({
+    type: "products/eCommerce/SET-CURRENT-PRODUCT",
+    payload: { currentProduct },
+  }) as const;
+
 export const loading = (isLoading: boolean) =>
   ({
     type: "products/eCommerce/SET-IS-LOADING",
@@ -52,13 +59,16 @@ export const loading = (isLoading: boolean) =>
 type ActionsType =
   | ReturnType<typeof getProducts>
   | ReturnType<typeof loading>
-  | ReturnType<typeof getProductPageData>;
+  | ReturnType<typeof getProductPageData>
+  | ReturnType<typeof setCurrentProduct>;
 
 export interface ProductContextValue extends ProductStateType {
   getProductsData: () => Promise<void>;
+  chooseProduct: (product: ProductData) => Promise<void>;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
   ...ProductInitialState,
   getProductsData: () => Promise.resolve(),
+  chooseProduct: (poduct: ProductData) => Promise.resolve(),
 });
