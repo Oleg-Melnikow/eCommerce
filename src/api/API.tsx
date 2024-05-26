@@ -5,7 +5,7 @@ import {
   MyCustomerDraft,
   MyCustomerSignin,
 } from "types/API/Customer";
-import { Products } from "types/API/Product";
+import { ProductData, Products } from "types/API/Product";
 import { AuthContextValue } from "reducers/authReducer";
 import errorHandler from "helpers/errorHandler";
 
@@ -233,5 +233,16 @@ export default class API {
         const message = errorHandler(err);
         throw new Error(message);
       });
+  }
+
+  public async getProductById(id: string): Promise<ProductData> {
+    try {
+      const response = await this.apiInstance?.get(`/products/${id}`);
+      if (response?.status === 200) return response.data as ProductData;
+      throw new AxiosError(`Error fetching product by id: ${id}`);
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
   }
 }
