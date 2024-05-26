@@ -7,7 +7,7 @@
 .container {
   height: 100vh;
   @include flex;
-  background: url("../../assets/p404.png"), rgba(70, 163, 88, 0.3);
+  background: url("../../assets/p404.png"), rgba(70, 163, 88, 0.7);
   font-family: sans-serif;
 }
 

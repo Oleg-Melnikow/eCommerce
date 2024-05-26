@@ -26,10 +26,10 @@ function ProductCard({ product }: PropsType): ReactElement {
 
   return (
     <Card
-      sx={{ maxWidth: 280, position: "relative", overflow: "visible" }}
+      sx={{ maxWidth: 250, position: "relative", overflow: "visible" }}
       onClick={onClickProduct}
     >
-      {price.discounted && (
+      {price?.discounted && (
         <div className="ribbon ribbon-top-right">
           <span>Sale</span>
         </div>
@@ -37,7 +37,7 @@ function ProductCard({ product }: PropsType): ReactElement {
       <CardActionArea>
         <CardMedia
           className="product-image"
-          image={image.url}
+          image={image?.url}
           title={name.en}
         />
         <CardContent sx={{ p: 1 }}>
