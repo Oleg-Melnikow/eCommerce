@@ -5,6 +5,7 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import { useNavigate } from "react-router-dom";
+import useProduct from "hooks/use-product";
 import { ProductPrice } from "./ProductPrice/ProductPrice";
 import "./ProductCard.scss";
 
@@ -19,9 +20,11 @@ function ProductCard({ product }: PropsType): ReactElement {
   const { prices, images } = masterVariant;
   const [price] = prices;
   const [image] = images;
+  const { chooseProduct } = useProduct();
 
   const onClickProduct = (): void => {
     navigate(`/product/${id}`);
+    chooseProduct(product);
   };
 
   return (

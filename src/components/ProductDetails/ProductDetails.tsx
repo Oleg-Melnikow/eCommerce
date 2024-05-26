@@ -2,8 +2,14 @@ import { ReactElement } from "react";
 import "./ProductDetails.scss";
 import ProductDetailsRadio from "components/ProductDetailsRadio/ProductDetailsRadio";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
+import { ProductData } from "types/API/Product";
+import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 
-function ProductDetails(): ReactElement {
+type PropsType = {
+  product: ProductData;
+};
+
+function ProductDetails({ product }: PropsType): ReactElement {
   const line = (
     <div
       className="product-details__line"
@@ -15,22 +21,19 @@ function ProductDetails(): ReactElement {
       }}
     />
   );
-  const [title, price, sku, categories, tags] = [
-    "Barberton Daisy",
-    119,
-    1995751877966,
+
+  const { name, masterVariant } = product.masterData.current;
+  const { sku, prices } = masterVariant;
+  const [price] = prices;
+  const [title, categories, tags] = [
+    name.en,
     ["Potter Plants"],
     ["Home", "Garden", "Plants"],
   ];
-  const shortDesc =
-    "The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground. The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground.";
   return (
     <div className="product-details">
       <h3 className="product-details__title">{title}</h3>
-      <p className="product-details__price">{price.toFixed(2)}$</p>
-      {line}
-      <h4 className="product-details__subtitle">Short Description:</h4>
-      <p className="product-details__desc">{shortDesc}</p>
+      <ProductPrice price={price} /> {line}
       <ProductDetailsRadio className="product-details" />
       <div className="product-details__btn-wrap">
         <ProductDetailsCounter className="product-details" />
