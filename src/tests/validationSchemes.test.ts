@@ -15,7 +15,7 @@ describe("testing validation shcema login page", () => {
   const address = {
     country: "Tili mili tryamdia",
     city: "Peace",
-    street: "First",
+    streetName: "First",
     postalCode: "122-22",
   };
 
