@@ -46,8 +46,16 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
-  const chooseProduct = useCallback(async (product: ProductData | null) => {
-    dispatch(setCurrentProduct(product));
+  const chooseProduct = useCallback(async (id: string) => {
+    dispatch(loading(true));
+    try {
+      const product = await API.getInstance()?.getProductById(id);
+      if (product) dispatch(setCurrentProduct(product));
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    } finally {
+      dispatch(loading(false));
+    }
   }, []);
 
   const contextValue = useMemo(

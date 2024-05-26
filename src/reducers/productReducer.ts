@@ -64,11 +64,11 @@ type ActionsType =
 
 export interface ProductContextValue extends ProductStateType {
   getProductsData: () => Promise<void>;
-  chooseProduct: (product: ProductData) => Promise<void>;
+  chooseProduct: (id: string) => Promise<void>;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
   ...ProductInitialState,
   getProductsData: () => Promise.resolve(),
-  chooseProduct: (poduct: ProductData) => Promise.resolve(),
+  chooseProduct: (id: string) => Promise.resolve(),
 });

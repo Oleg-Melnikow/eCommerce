@@ -10,7 +10,7 @@ function Slider({ product }: PropsType): ReactElement {
   const { images } = product.masterData.current.masterVariant;
   const thumbs = images.map((image) => (
     <img
-      key={`${image.label}`}
+      key={`${image.url}`}
       className="slider__thumb"
       src={image.url}
       alt={image.label}

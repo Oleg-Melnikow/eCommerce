@@ -20,11 +20,9 @@ function ProductCard({ product }: PropsType): ReactElement {
   const { prices, images } = masterVariant;
   const [price] = prices;
   const [image] = images;
-  const { chooseProduct } = useProduct();
 
   const onClickProduct = (): void => {
     navigate(`/product/${id}`);
-    chooseProduct(product);
   };
 
   return (
