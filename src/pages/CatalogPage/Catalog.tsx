@@ -16,7 +16,7 @@ function CatalogPage(): ReactElement {
       <Typography gutterBottom variant="h5" component="div">
         All Products
       </Typography>
-      <Grid container sx={{ mt: 2 }}>
+      <Grid container sx={{ mt: 2, gap: "10px" }}>
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
