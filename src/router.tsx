@@ -9,6 +9,7 @@ import CatalogPage from "pages/CatalogPage/Catalog";
 import BasketPage from "pages/BasketPage/BasketPage";
 import NotFound from "pages/NotFound/NotFound";
 
+import ProductPage from "pages/ProductPage/ProductPage";
 import Layout from "./layouts/Layout/Layout";
 
 const routes: RouteObject[] = [
@@ -35,7 +36,11 @@ const routes: RouteObject[] = [
       { path: "/login", element: <LoginPage /> },
       { path: "/registration", element: <RegistrationPage /> },
       { path: "/profile", element: <UserProfilePage /> },
-      { path: "/product", element: <div>Product</div> },
+      {
+        path: "/product",
+        element: <ProductPage />,
+      },
+
     ],
   },
 

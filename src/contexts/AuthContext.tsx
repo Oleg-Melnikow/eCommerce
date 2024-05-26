@@ -66,7 +66,6 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
         if (error instanceof Error) {
           toast.error(error?.message, toastOptions);
         }
-        console.log(error);
       } finally {
         dispatch(loading(false));
       }
@@ -93,7 +92,6 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
         if (error instanceof Error) {
           toast.error(error?.message, toastOptions);
         }
-        console.log(error);
       } finally {
         dispatch(loading(false));
       }

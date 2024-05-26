@@ -172,13 +172,22 @@ function RegistrationPage(): ReactElement {
     if (defaultShipping) {
       newUserData = { ...newUserData, defaultShippingAddress };
     }
-    if (isCheckedBilling) {
+
+    if (isCheckedBilling && defaultShipping) {
       newUserData = {
         ...newUserData,
         defaultBillingAddress: defaultShippingAddress,
         billingAddresses: [defaultShippingAddress],
       };
     }
+
+    if (isCheckedBilling && !defaultShipping) {
+      newUserData = {
+        ...newUserData,
+        billingAddresses: [defaultShippingAddress],
+      };
+    }
+
     if (defaultBilling && !isCheckedBilling) {
       newUserData = {
         ...newUserData,

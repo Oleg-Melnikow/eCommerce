@@ -1,7 +1,7 @@
 type Address = {
   country: string;
   city: string;
-  street: string;
+  streetName: string;
   postalCode: string;
 };
 
