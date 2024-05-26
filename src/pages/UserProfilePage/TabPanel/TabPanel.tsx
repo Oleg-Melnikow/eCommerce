@@ -1,4 +1,3 @@
-import "./TabPanel.scss";
 import React, { ReactElement } from "react";
 
 import Box from "@mui/material/Box";

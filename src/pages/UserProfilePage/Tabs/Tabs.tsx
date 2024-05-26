@@ -1,18 +1,22 @@
 import "./Tabs.scss";
-import React, { ReactElement } from "react";
+import React, { useEffect, useState } from "react";
+import useAuth from "hooks/use-auth";
+
+import {
+  UserPersonalData,
+  UserAddressesData,
+} from "types/UserProfileDataProps/UserProfileDataProps";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import CustomTabPanel from "../TabPanel/TabPanel";
-
-import TabPanelContent from "../EditableInput/TabPanelContent";
+import TabPanelContent from "../TabPanelContent/TabPanelContent";
 
 interface A11yPropsReturn {
   id: string;
   "aria-controls": string;
 }
-
 function a11yProps(index: number): A11yPropsReturn {
   return {
     id: `simple-tab-${index}`,
@@ -22,6 +26,45 @@ function a11yProps(index: number): A11yPropsReturn {
 
 function BasicTabs(): JSX.Element {
   const [value, setValue] = React.useState(0);
+  const { user } = useAuth();
+
+  const [userPersonalData, setUserPersonalData] =
+    useState<UserPersonalData | null>(null);
+  const [userAddressesData, setAddressesData] =
+    useState<UserAddressesData | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      const {
+        firstName,
+        lastName,
+        dateOfBirth,
+        billingAddressIds,
+        shippingAddressIds,
+        addresses,
+      } = user;
+
+      if (billingAddressIds && shippingAddressIds) {
+        const [shippingAddress] = shippingAddressIds;
+        const [billingAddress] = billingAddressIds;
+
+        const addressData = addresses.find(
+          (item) => item.id === billingAddress
+        );
+        const { city, country, postalCode } = addressData ?? {};
+        setAddressesData({
+          shippingAddress,
+          country,
+          city,
+          postalCode,
+          billingAddress,
+        });
+        console.log(addressData);
+      }
+
+      setUserPersonalData({ firstName, lastName, dateOfBirth });
+    }
+  }, [user]);
 
   const handleChange = (
     event: React.SyntheticEvent,
@@ -44,10 +87,10 @@ function BasicTabs(): JSX.Element {
       </Box>
 
       <CustomTabPanel value={value} index={0}>
-        <TabPanelContent tabContent="personal" />
+        {userPersonalData && <TabPanelContent userData={userPersonalData} />}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <TabPanelContent tabContent="addresses" />
+        {userAddressesData && <TabPanelContent userData={userAddressesData} />}
       </CustomTabPanel>
     </Box>
   );
