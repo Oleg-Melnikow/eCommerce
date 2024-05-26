@@ -12,6 +12,7 @@ import {
   ProductContext,
   ProductInitialState,
   getCategories,
+  getParentCategories,
   getProductPageData,
   getProducts,
   loading,
@@ -52,6 +53,10 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       const categories = await clientAPI?.getcategories();
       if (categories) {
         dispatch(getCategories(categories.results));
+        const parentCategories = categories.results.filter(
+          (item) => !item.ancestors.length
+        );
+        dispatch(getParentCategories(parentCategories));
       }
     } catch (error) {
       if (error instanceof Error) {
