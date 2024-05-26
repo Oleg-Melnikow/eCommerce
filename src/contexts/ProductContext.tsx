@@ -11,6 +11,7 @@ import toastOptions from "helpers/toastOptions";
 import {
   ProductContext,
   ProductInitialState,
+  getCategories,
   getProductPageData,
   getProducts,
   loading,
@@ -44,9 +45,26 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
+  const getCategoriesData = useCallback(async () => {
+    dispatch(loading(true));
+    try {
+      const clientAPI = API.getInstance();
+      const categories = await clientAPI?.getcategories();
+      if (categories) {
+        dispatch(getCategories(categories.results));
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error?.message, toastOptions);
+      }
+    } finally {
+      dispatch(loading(false));
+    }
+  }, []);
+
   const contextValue = useMemo(
-    () => ({ ...state, getProductsData }),
-    [state, getProductsData]
+    () => ({ ...state, getProductsData, getCategoriesData }),
+    [state, getProductsData, getCategoriesData]
   );
 
   return (

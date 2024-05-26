@@ -6,6 +6,7 @@ import {
   MyCustomerSignin,
 } from "types/API/Customer";
 import { Products } from "types/API/Product";
+import { Categories } from "types/API/Category";
 import { AuthContextValue } from "reducers/authReducer";
 import errorHandler from "helpers/errorHandler";
 
@@ -228,6 +229,20 @@ export default class API {
       .then(async () => {
         const response = await this.apiInstance?.get("/products");
         return response?.data as Products;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
+  }
+
+  public async getcategories(): Promise<Categories> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.get("/categories", {
+          params: { limit: 40 },
+        });
+        return response?.data as Categories;
       })
       .catch((err) => {
         const message = errorHandler(err);
