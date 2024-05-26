@@ -1,9 +1,9 @@
 import { createContext } from "react";
 import { Category } from "types/API/Category";
-import { ProductData, ProductPage } from "types/API/Product";
+import { Product, ProductData, ProductPage } from "types/API/Product";
 
 interface ProductStateType extends ProductPage {
-  products: ProductData[];
+  products: Product[];
   categories: Category[];
   parentCategories: Category[];
   currentProduct: ProductData | null;
@@ -41,7 +41,7 @@ export const productReducer = (
   }
 };
 
-export const getProducts = (products: ProductData[]) =>
+export const getProducts = (products: Product[]) =>
   ({ type: "products/eCommerce/GET-PRODUCTS", payload: { products } }) as const;
 
 export const getCategories = (categories: Category[]) =>
@@ -78,10 +78,12 @@ type ActionsType =
 export interface ProductContextValue extends ProductStateType {
   getProductsData: () => Promise<void>;
   getCategoriesData: () => Promise<void>;
+  getProductsCategory: (id: string) => Promise<void>;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
   ...ProductInitialState,
   getProductsData: () => Promise.resolve(),
   getCategoriesData: () => Promise.resolve(),
+  getProductsCategory: () => Promise.resolve(),
 });

@@ -18,6 +18,7 @@ import {
   loading,
   productReducer,
 } from "reducers/productReducer";
+import { Product } from "types/API/Product";
 
 interface ProviderProps {
   children: ReactNode;
@@ -32,6 +33,29 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     try {
       const clientAPI = API.getInstance();
       const response = await clientAPI?.getProducts();
+      if (response) {
+        const { count, limit, offset, results, total } = response;
+        const resultsData = results.map((item): Product => {
+          const { id, key, masterData } = item;
+          return { id, key, ...masterData.current };
+        });
+        dispatch(getProducts(resultsData));
+        dispatch(getProductPageData({ count, limit, offset, total }));
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error?.message, toastOptions);
+      }
+    } finally {
+      dispatch(loading(false));
+    }
+  }, []);
+
+  const getProductsCategory = useCallback(async (id: string) => {
+    dispatch(loading(true));
+    try {
+      const clientAPI = API.getInstance();
+      const response = await clientAPI?.getProductsProjection(id);
       if (response) {
         const { count, limit, offset, results, total } = response;
         dispatch(getProducts(results));
@@ -68,8 +92,13 @@ export function ProductProvider(props: ProviderProps): ReactElement {
   }, []);
 
   const contextValue = useMemo(
-    () => ({ ...state, getProductsData, getCategoriesData }),
-    [state, getProductsData, getCategoriesData]
+    () => ({
+      ...state,
+      getProductsData,
+      getCategoriesData,
+      getProductsCategory,
+    }),
+    [state, getProductsData, getCategoriesData, getProductsCategory]
   );
 
   return (
