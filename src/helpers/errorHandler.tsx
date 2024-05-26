@@ -1,21 +1,11 @@
-import { ToastContentProps } from "react-toastify";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "../types/API/Errors";
 
-export default function errorHandler(
-  toastProps: ToastContentProps<unknown>
-): string {
-  let error =
-    toastProps.data instanceof AxiosError
-      ? (toastProps.data.response?.data as ErrorResponse)
-      : (toastProps.data as Error);
-
-  if (!error) {
-    error =
-      toastProps instanceof AxiosError
-        ? (toastProps.response?.data as ErrorResponse)
-        : (toastProps.data as Error);
-  }
+export default function errorHandler(axiosError: unknown): string {
+  const error =
+    axiosError instanceof AxiosError
+      ? (axiosError.response?.data as ErrorResponse)
+      : new Error("Unknow error");
 
   let errorMessageInner: string;
   switch (error.message) {
