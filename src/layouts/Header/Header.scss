@@ -76,7 +76,8 @@
     .header__inner_link-login,
     .header__inner_link-register,
     .header__inner_link-logout,
-    .header__inner_link-basket {
+    .header__inner_link-basket,
+    .header__inner_link-profile {
       height: 40px;
 
       @media (max-width: 576px) {
