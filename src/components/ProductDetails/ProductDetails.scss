@@ -1,0 +1,62 @@
+@use "../../styles/colors" as colors;
+
+.product-details {
+  &__title,
+  & &__subtitle {
+    padding: 8px;
+    color: colors.$text-dark;
+  }
+  &__price {
+    padding: 8px;
+    font-weight: bold;
+    color: colors.$main-color;
+  }
+
+  &__line {
+    border-color: colors.$main-color;
+  }
+
+  &__btn-wrap {
+    display: flex;
+    gap: 5px;
+    padding: 8px;
+  }
+
+  &__counter {
+    margin-right: 5px;
+  }
+
+  &__btn {
+    width: 130px;
+    height: 40px;
+    border: 2px solid colors.$main-color;
+    border-radius: 5px;
+    text-transform: uppercase;
+    transition: 0.25s;
+
+    &--buy {
+      color: white;
+      background-color: colors.$main-color;
+    }
+
+    &--add {
+      color: colors.$main-color;
+      background-color: white;
+    }
+
+    &:hover {
+      cursor: pointer;
+      box-shadow: colors.$accent-shadow;
+    }
+  }
+
+  &__info-wrap {
+    padding: 8px;
+  }
+  &__info {
+    color: colors.$text-dark;
+    &-title {
+      color: colors.$text-regular;
+    }
+  }
+}

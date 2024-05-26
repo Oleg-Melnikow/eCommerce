@@ -1,0 +1,30 @@
+@use "../../styles/colors.scss" as colors;
+
+.slider {
+  display: flex;
+  gap: 10px;
+  scrollbar-width: 0;
+
+  .slider__thumbs-wrapper {
+    display: flex;
+    max-width: 20%;
+    gap: 10px;
+    flex-direction: column;
+
+    .slider__thumb {
+      max-width: 100px;
+      max-width: 100px;
+      border-radius: 10px;
+      transition: 250ms;
+      &:hover {
+        cursor: pointer;
+        box-shadow: colors.$accent-shadow;
+      }
+    }
+  }
+  .slider__image-wrap {
+    .slider__image {
+      max-width: 100%;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+@use "../../styles/colors" as colors;
+.product-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, auto);
+  padding: 0 50px;
+  color: colors.$text-regular;
+  @media screen and (max-width: 576px) {
+    padding: 0 20px;
+  }
+  @media screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+  }
+}
