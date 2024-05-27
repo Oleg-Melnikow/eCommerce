@@ -1,16 +1,10 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement } from "react";
 import { List } from "@mui/material";
 import useProduct from "hooks/use-product";
 import { CategoryItem } from "./CategoryItem/CategoryItem";
 
 export function CategoriesMenu(): ReactElement {
-  const { getCategoriesData, parentCategories } = useProduct();
-
-  useEffect(() => {
-    if (!parentCategories.length) {
-      getCategoriesData();
-    }
-  }, [getCategoriesData, parentCategories.length]);
+  const { parentCategories } = useProduct();
 
   return (
     <List

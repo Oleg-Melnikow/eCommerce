@@ -35,12 +35,11 @@ function CategoryChild({
   path,
 }: CategoryChildPropsType): ReactElement {
   const { name, image, id, categoryKey } = payload;
-  const { getProductsCategory, setCategory } = useProduct();
+  const { setCategory } = useProduct();
   const navigate = useNavigate();
 
   const onChangeCategory = async (): Promise<void> => {
     setCategory({ id, key: categoryKey });
-    getProductsCategory(id);
     navigate(`/catalog/${path}`);
   };
 
@@ -109,6 +108,12 @@ export function CategoryItem({ category }: PropsType): ReactElement {
             right: "-210px",
             top: 0,
             background: "#eaeaea",
+            "@media (max-width: 510px)": {
+              position: "relative",
+              background: "#cacaca",
+              right: 0,
+              ml: 1,
+            },
           }}
         >
           <List component="div" disablePadding>
