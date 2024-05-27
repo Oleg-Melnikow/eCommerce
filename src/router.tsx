@@ -24,10 +24,9 @@ const routes: RouteObject[] = [
         path: "/about",
         element: <AboutPage />,
       },
-      {
-        path: "/catalog",
-        element: <CatalogPage />,
-      },
+      { path: "/catalog", element: <CatalogPage /> },
+      { path: "/catalog/:category", element: <CatalogPage /> },
+      { path: "/catalog/:category/:child", element: <CatalogPage /> },
       {
         path: "/basket",
         element: <BasketPage />,

@@ -10,6 +10,7 @@ import { ReactElement, useState } from "react";
 import { Category } from "types/API/Category";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import useProduct from "hooks/use-product";
+import { useNavigate } from "react-router-dom";
 
 type PropsType = {
   category: Category;
@@ -24,17 +25,23 @@ type PayloadPropsType = {
 
 type CategoryChildPropsType = {
   payload: PayloadPropsType;
+  path: string;
   isChildren: boolean;
 };
 
 function CategoryChild({
   payload,
   isChildren,
+  path,
 }: CategoryChildPropsType): ReactElement {
-  const { name, image, categoryKey, id } = payload;
+  const { name, image, id, categoryKey } = payload;
+  const { getProductsCategory, setCategory } = useProduct();
+  const navigate = useNavigate();
 
   const onChangeCategory = async (): Promise<void> => {
-    console.log(id);
+    setCategory({ id, key: categoryKey });
+    getProductsCategory(id);
+    navigate(`/catalog/${path}`);
   };
 
   return (
@@ -42,7 +49,7 @@ function CategoryChild({
       onClick={onChangeCategory}
       sx={{
         p: 1,
-        borderLeft: "4px solid white",
+        borderLeft: "4px solid #eaeaea",
         minWidth: "210px",
         "&:hover": {
           cursor: "pointer",
@@ -53,7 +60,7 @@ function CategoryChild({
     >
       {image && (
         <ListItemIcon>
-          <img style={{ borderRadius: "5px" }} src={image} alt={categoryKey} />
+          <img style={{ borderRadius: "5px" }} src={image} alt={name} />
         </ListItemIcon>
       )}
       <ListItemText primary={name} />
@@ -63,7 +70,7 @@ function CategoryChild({
 }
 
 const propsData = (item: Category): PayloadPropsType => {
-  const { id, key, name, assets } = item;
+  const { id, name, assets, key } = item;
   const nameCategory = name.en || name["en-GB"] || name.ru;
   const image = assets[0]?.sources[0]?.uri;
   return { id, image, name: nameCategory, categoryKey: key };
@@ -88,7 +95,11 @@ export function CategoryItem({ category }: PropsType): ReactElement {
       onMouseLeave={hideChild}
       sx={{ position: "relative" }}
     >
-      <CategoryChild payload={{ ...payload }} isChildren={!!children.length} />
+      <CategoryChild
+        payload={{ ...payload }}
+        isChildren={!!children.length}
+        path={category.key}
+      />
       {!!children.length && (
         <Collapse
           in={open}
@@ -97,15 +108,16 @@ export function CategoryItem({ category }: PropsType): ReactElement {
             position: "absolute",
             right: "-210px",
             top: 0,
-            background: "white",
+            background: "#eaeaea",
           }}
         >
-          <List component="div" disablePadding sx={{ ml: 1 }}>
+          <List component="div" disablePadding>
             {children.map((child) => {
               const payloadChild = propsData(child);
               return (
                 <CategoryChild
                   key={child.key}
+                  path={`${category.key}/${child.key}`}
                   payload={{ ...payloadChild }}
                   isChildren={false}
                 />
