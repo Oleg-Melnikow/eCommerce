@@ -117,11 +117,9 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       dispatch(setCurrentCategory(category));
       if (category) {
         await await getProductsCategory(category.id);
-      } else {
-        await getProductsData();
       }
     },
-    [getProductsCategory, getProductsData]
+    [getProductsCategory]
   );
 
   const initializeCatalog = useCallback(async (): Promise<void> => {
@@ -139,10 +137,23 @@ export function ProductProvider(props: ProviderProps): ReactElement {
   }, [getCategoriesData]);
 
   useEffect(() => {
-    if (!state.parentCategories.length && pathname.includes("catalog")) {
+    const isCatalog = pathname.includes("catalog");
+    if (!state.parentCategories.length && isCatalog) {
       initializeCatalog();
     }
-  }, [initializeCatalog, pathname, state.parentCategories.length]);
+    if (!isCatalog) {
+      dispatch(setCurrentCategory(null));
+    }
+    if (!state.currentCategory && isCatalog) {
+      getProductsData();
+    }
+  }, [
+    getProductsData,
+    initializeCatalog,
+    pathname,
+    state.currentCategory,
+    state.parentCategories.length,
+  ]);
 
   const contextValue = useMemo(
     () => ({

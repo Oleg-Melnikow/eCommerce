@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement } from "react";
 import { Box, Grid } from "@mui/material";
 import useProduct from "hooks/use-product";
 import ProductCard from "components/ProductCard/ProductCard";
@@ -9,13 +9,7 @@ import { ButtonShowMenu } from "components/CategoriesMenu/ButtonShowMenu";
 import "./Catalog.scss";
 
 function CatalogPage(): ReactElement {
-  const { getProductsData, products, isLoading, isInitialize } = useProduct();
-
-  useEffect(() => {
-    if (isInitialize) {
-      getProductsData();
-    }
-  }, []);
+  const { products, isLoading } = useProduct();
 
   return (
     <div className="catalog-page">
