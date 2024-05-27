@@ -11,13 +11,20 @@ function Slider({ product }: PropsType): ReactElement {
   const [currentSlide, setCurrentSlide] = useState(0);
   const containerRef = useRef<HTMLElement>(null);
   const { images } = product.masterData.current.masterVariant;
-  const thumbs = images.map((image) => (
-    <img
+
+  const thumbs = images.map((image, index) => (
+    <Box
       key={`${image.url}`}
-      className="slider__thumb"
-      src={image.url}
-      alt={image.label}
-    />
+      className="slider__tumb-wraper"
+      onClick={() => setCurrentSlide(index)}
+    >
+      <img
+        className={`slider__thumb ${currentSlide === index ? "slider__thumb--active" : ""}`}
+        src={image.url}
+        alt={image.label}
+        draggable="false"
+      />
+    </Box>
   ));
 
   const slider = images.map((image, index) => (
@@ -28,7 +35,12 @@ function Slider({ product }: PropsType): ReactElement {
       appear={false}
       container={containerRef.current}
     >
-      <img className="slider__image" src={image.url} alt={image.label} />
+      <img
+        className="slider__image"
+        src={image.url}
+        alt={image.label}
+        draggable="false"
+      />
     </Slide>
   ));
 
@@ -46,7 +58,7 @@ function Slider({ product }: PropsType): ReactElement {
 
   return (
     <div className="slider">
-      <div className="slider__thumbs-wrapper">{thumbs} </div>
+      <div className="slider__thumbs-container">{thumbs} </div>
       <Box
         className="slider__image-wrap"
         onClick={handleNextSlide}
