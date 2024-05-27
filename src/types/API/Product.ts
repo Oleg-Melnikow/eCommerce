@@ -11,6 +11,7 @@ interface Products extends ProductPage {
 
 interface ProductImage {
   url: string;
+  label: string;
   dimensions: {
     w: number;
     h: number;

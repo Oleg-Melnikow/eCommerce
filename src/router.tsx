@@ -37,7 +37,7 @@ const routes: RouteObject[] = [
       { path: "/registration", element: <RegistrationPage /> },
       { path: "/profile", element: <UserProfilePage /> },
       {
-        path: "/product",
+        path: "/product/:id",
         element: <ProductPage />,
       },
 

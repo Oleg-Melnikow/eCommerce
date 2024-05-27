@@ -5,6 +5,7 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import { useNavigate } from "react-router-dom";
+import useProduct from "hooks/use-product";
 import { ProductPrice } from "./ProductPrice/ProductPrice";
 import "./ProductCard.scss";
 

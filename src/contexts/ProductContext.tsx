@@ -15,7 +15,9 @@ import {
   getProducts,
   loading,
   productReducer,
+  setCurrentProduct,
 } from "reducers/productReducer";
+import { ProductData } from "types/API/Product";
 
 interface ProviderProps {
   children: ReactNode;
@@ -44,9 +46,21 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
+  const chooseProduct = useCallback(async (id: string) => {
+    dispatch(loading(true));
+    try {
+      const product = await API.getInstance()?.getProductById(id);
+      if (product) dispatch(setCurrentProduct(product));
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    } finally {
+      dispatch(loading(false));
+    }
+  }, []);
+
   const contextValue = useMemo(
-    () => ({ ...state, getProductsData }),
-    [state, getProductsData]
+    () => ({ ...state, getProductsData, chooseProduct }),
+    [state, getProductsData, chooseProduct]
   );
 
   return (
