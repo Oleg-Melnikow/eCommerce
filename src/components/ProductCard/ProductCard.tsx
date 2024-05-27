@@ -1,6 +1,6 @@
 import { CardActionArea, CardActions, Typography } from "@mui/material";
 import { ReactElement } from "react";
-import { ProductData } from "types/API/Product";
+import { Product } from "types/API/Product";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
@@ -9,13 +9,12 @@ import { ProductPrice } from "./ProductPrice/ProductPrice";
 import "./ProductCard.scss";
 
 type PropsType = {
-  product: ProductData;
+  product: Product;
 };
 
 function ProductCard({ product }: PropsType): ReactElement {
   const navigate = useNavigate();
-  const { id, masterData } = product;
-  const { name, masterVariant, description } = masterData.current;
+  const { id, masterVariant, name, description } = product;
   const { prices, images } = masterVariant;
   const [price] = prices;
   const [image] = images;
@@ -26,7 +25,7 @@ function ProductCard({ product }: PropsType): ReactElement {
 
   return (
     <Card
-      sx={{ maxWidth: 250, position: "relative", overflow: "visible" }}
+      sx={{ width: 250, position: "relative", overflow: "visible" }}
       onClick={onClickProduct}
     >
       {price?.discounted && (

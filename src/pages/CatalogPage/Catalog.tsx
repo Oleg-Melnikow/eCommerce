@@ -1,8 +1,9 @@
 import { ReactElement, useEffect } from "react";
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import useProduct from "hooks/use-product";
 import ProductCard from "components/ProductCard/ProductCard";
 import { CategoriesMenu } from "components/CategoriesMenu/CategoriesMenu";
+import { BreadcrumbsBlock } from "components/BreadcrumbsBlock/BreadcrumbsBlock";
 import "./Catalog.scss";
 
 function CatalogPage(): ReactElement {
@@ -17,16 +18,23 @@ function CatalogPage(): ReactElement {
       <Typography gutterBottom variant="h5" component="div">
         All Products
       </Typography>
-      <Grid container sx={{ mt: 2 }}>
-        <CategoriesMenu />
+      <BreadcrumbsBlock />
+      <Grid container sx={{ mt: 2 }} justifyContent="space-between">
+        <Box className="category-list">
+          <CategoriesMenu />
+        </Box>
         <Grid
           container
-          sx={{ gap: "10px" }}
+          sx={{
+            display: "flex",
+            gap: "10px",
+            maxWidth: "calc(100% - 250px)",
+            "@media (max-width: 510px)": {
+              maxWidth: "100%",
+              justifyContent: "center",
+            },
+          }}
           item
-          md={9}
-          sm={8}
-          xs={7}
-          display="flex"
         >
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
