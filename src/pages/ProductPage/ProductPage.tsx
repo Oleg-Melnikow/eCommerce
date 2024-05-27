@@ -4,10 +4,7 @@ import Slider from "components/Slider/slider";
 import ProductDetails from "components/ProductDetails/ProductDetails";
 import ProductDescription from "components/ProductDescription/ProductDescription";
 import useProduct from "hooks/use-product";
-import { ProductData } from "types/API/Product";
-import { useNavigate, useParams } from "react-router-dom";
-import API from "api/API";
-import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 function ProductPage(): ReactElement {
   const { currentProduct, chooseProduct } = useProduct();
