@@ -1,14 +1,20 @@
 @use "../../styles/colors.scss" as colors;
 
 .slider {
-  display: flex;
+  display: grid;
   gap: 10px;
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: 350px auto;
 
   &__thumbs-container {
     display: flex;
-    max-width: 20%;
     gap: 10px;
     flex-direction: column;
+    max-width: 100%;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      width: 0;
+    }
 
     .slider__thumb-wraper {
       max-width: 100%;
@@ -40,10 +46,36 @@
     .slider__image {
       position: absolute;
       top: 0;
-      left: 0;
-      max-width: 100%;
+      left: auto;
       max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
       border-radius: 10px;
     }
+  }
+
+  .slider__btns-row {
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 10px;
+  }
+
+  @mixin control__icon {
+    height: 8px;
+    border-radius: 4px;
+    background-color: colors.$main-color;
+    transition: 0.25s;
+  }
+  
+  .slider__control_icon {
+    @include control__icon();
+    width: 8px;
+  }
+
+  &__control_icon--checked {
+    @include control__icon();
+    width: 28px;
   }
 }

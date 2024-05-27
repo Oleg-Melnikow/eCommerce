@@ -1,7 +1,9 @@
 import { ReactElement, useRef, useState } from "react";
 import "./slider.scss";
 import { ProductData } from "types/API/Product";
-import { Box, Slide } from "@mui/material";
+import { Box, IconButton, Radio, RadioGroup, Slide } from "@mui/material";
+import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
+import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 
 type PropsType = {
   product: ProductData;
@@ -44,6 +46,17 @@ function Slider({ product }: PropsType): ReactElement {
     </Slide>
   ));
 
+  const controls = images.map((image, index) => (
+    <Radio
+      key={image.url}
+      className="slider__conrol"
+      value={index}
+      icon={<div className="slider__control_icon" />}
+      checkedIcon={<div className="slider__control_icon--checked" />}
+      checked={index === currentSlide}
+    />
+  ));
+
   const handleNextSlide = (): void => {
     setCurrentSlide((prevSlide) =>
       prevSlide + 1 < images.length ? prevSlide + 1 : 0
@@ -66,6 +79,19 @@ function Slider({ product }: PropsType): ReactElement {
       >
         {slider}
       </Box>
+      {images.length > 1 && (
+        <Box className="slider__btns-row">
+          <IconButton onClick={handlePrevSlide}>
+            <ArrowCircleLeftIcon color="success" fontSize="large" />
+          </IconButton>
+          <RadioGroup row className="slider__controls-container">
+            {controls}
+          </RadioGroup>
+          <IconButton onClick={handleNextSlide}>
+            <ArrowCircleRightIcon color="success" fontSize="large" />
+          </IconButton>
+        </Box>
+      )}
     </div>
   );
 }
