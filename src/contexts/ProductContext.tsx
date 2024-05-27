@@ -2,6 +2,7 @@ import {
   ReactElement,
   ReactNode,
   useCallback,
+  useEffect,
   useMemo,
   useReducer,
 } from "react";
@@ -9,6 +10,7 @@ import { toast } from "react-toastify";
 import API from "api/API";
 import toastOptions from "helpers/toastOptions";
 import {
+  CurrentCategory,
   ProductContext,
   ProductInitialState,
   getCategories,
@@ -17,8 +19,10 @@ import {
   getProducts,
   loading,
   productReducer,
+  setCurrentCategory,
 } from "reducers/productReducer";
 import { Product } from "types/API/Product";
+import { useLocation } from "react-router-dom";
 
 interface ProviderProps {
   children: ReactNode;
@@ -27,6 +31,7 @@ interface ProviderProps {
 export function ProductProvider(props: ProviderProps): ReactElement {
   const { children } = props;
   const [state, dispatch] = useReducer(productReducer, ProductInitialState);
+  const { pathname } = useLocation();
 
   const getProductsData = useCallback(async () => {
     dispatch(loading(true));
@@ -91,14 +96,25 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
+  const setCategory = useCallback((category: CurrentCategory) => {
+    dispatch(setCurrentCategory(category));
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       ...state,
       getProductsData,
       getCategoriesData,
       getProductsCategory,
+      setCategory,
     }),
-    [state, getProductsData, getCategoriesData, getProductsCategory]
+    [
+      state,
+      getProductsData,
+      getCategoriesData,
+      getProductsCategory,
+      setCategory,
+    ]
   );
 
   return (

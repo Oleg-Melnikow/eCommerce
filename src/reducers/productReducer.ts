@@ -2,9 +2,12 @@ import { createContext } from "react";
 import { Category } from "types/API/Category";
 import { Product, ProductData, ProductPage } from "types/API/Product";
 
+export type CurrentCategory = { id: string; key: string } | null;
+
 interface ProductStateType extends ProductPage {
   products: Product[];
   categories: Category[];
+  currentCategory: CurrentCategory;
   parentCategories: Category[];
   currentProduct: ProductData | null;
   isLoading: boolean;
@@ -17,6 +20,7 @@ export const ProductInitialState: ProductStateType = {
   total: 0,
   products: [],
   categories: [],
+  currentCategory: null,
   parentCategories: [],
   currentProduct: null,
   isLoading: false,
@@ -31,7 +35,8 @@ export const productReducer = (
     case "products/eCommerce/SET-IS-LOADING":
     case "products/eCommerce/GET-PRODUCT-PAGE":
     case "products/eCommerce/GET-CATEGORIES":
-    case "products/eCommerce/GET-PAREBT-CATEGORIES":
+    case "products/eCommerce/GET-PARENT-CATEGORIES":
+    case "products/eCommerce/SET-CURRENT-CATEGORY":
       return {
         ...state,
         ...action.payload,
@@ -52,8 +57,14 @@ export const getCategories = (categories: Category[]) =>
 
 export const getParentCategories = (parentCategories: Category[]) =>
   ({
-    type: "products/eCommerce/GET-PAREBT-CATEGORIES",
+    type: "products/eCommerce/GET-PARENT-CATEGORIES",
     payload: { parentCategories },
+  }) as const;
+
+export const setCurrentCategory = (currentCategory: CurrentCategory) =>
+  ({
+    type: "products/eCommerce/SET-CURRENT-CATEGORY",
+    payload: { currentCategory },
   }) as const;
 
 export const getProductPageData = (pageData: ProductPage) =>
@@ -73,12 +84,14 @@ type ActionsType =
   | ReturnType<typeof loading>
   | ReturnType<typeof getProductPageData>
   | ReturnType<typeof getCategories>
-  | ReturnType<typeof getParentCategories>;
+  | ReturnType<typeof getParentCategories>
+  | ReturnType<typeof setCurrentCategory>;
 
 export interface ProductContextValue extends ProductStateType {
   getProductsData: () => Promise<void>;
   getCategoriesData: () => Promise<void>;
   getProductsCategory: (id: string) => Promise<void>;
+  setCategory: (category: CurrentCategory) => void;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
@@ -86,4 +99,5 @@ export const ProductContext = createContext<ProductContextValue>({
   getProductsData: () => Promise.resolve(),
   getCategoriesData: () => Promise.resolve(),
   getProductsCategory: () => Promise.resolve(),
+  setCategory: () => {},
 });
