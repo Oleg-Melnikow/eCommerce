@@ -1,24 +1,27 @@
 import { ReactElement, useEffect } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import useProduct from "hooks/use-product";
 import ProductCard from "components/ProductCard/ProductCard";
 import { CategoriesMenu } from "components/CategoriesMenu/CategoriesMenu";
 import { BreadcrumbsBlock } from "components/BreadcrumbsBlock/BreadcrumbsBlock";
+import LoaderItem from "components/LoaderItem/LoaderItem";
+import { ButtonShowMenu } from "components/CategoriesMenu/ButtonShowMenu";
 import "./Catalog.scss";
 
 function CatalogPage(): ReactElement {
-  const { getProductsData, products } = useProduct();
+  const { getProductsData, products, isLoading, isInitialize } = useProduct();
 
   useEffect(() => {
-    getProductsData();
-  }, [getProductsData]);
+    if (isInitialize) {
+      getProductsData();
+    }
+  }, []);
 
   return (
     <div className="catalog-page">
-      <Typography gutterBottom variant="h5" component="div">
-        All Products
-      </Typography>
+      {isLoading && <LoaderItem />}
       <BreadcrumbsBlock />
+      <ButtonShowMenu />
       <Grid container sx={{ mt: 2 }} justifyContent="space-between">
         <Box className="category-list">
           <CategoriesMenu />
