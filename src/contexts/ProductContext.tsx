@@ -5,6 +5,7 @@ import {
   useEffect,
   useMemo,
   useReducer,
+  useState,
 } from "react";
 import { toast } from "react-toastify";
 import API from "api/API";
@@ -20,6 +21,7 @@ import {
   loading,
   productReducer,
   setCurrentCategory,
+  setInitialize,
 } from "reducers/productReducer";
 import { Product } from "types/API/Product";
 import { useLocation } from "react-router-dom";
@@ -82,10 +84,24 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       const categories = await clientAPI?.getcategories();
       if (categories) {
         dispatch(getCategories(categories.results));
+
         const parentCategories = categories.results.filter(
           (item) => !item.ancestors.length
         );
+
         dispatch(getParentCategories(parentCategories));
+
+        const category = pathname.split("/");
+        const categoryName = category[category.length - 1];
+        const current = categories.results.find(
+          (el) => el.key === categoryName
+        );
+
+        if (current) {
+          await getProductsCategory(current.id);
+        } else {
+          await getProductsData();
+        }
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -94,11 +110,39 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     } finally {
       dispatch(loading(false));
     }
-  }, []);
+  }, [getProductsCategory, getProductsData, pathname]);
 
-  const setCategory = useCallback((category: CurrentCategory) => {
-    dispatch(setCurrentCategory(category));
-  }, []);
+  const setCategory = useCallback(
+    async (category: CurrentCategory) => {
+      dispatch(setCurrentCategory(category));
+      if (category) {
+        await await getProductsCategory(category.id);
+      } else {
+        await getProductsData();
+      }
+    },
+    [getProductsCategory, getProductsData]
+  );
+
+  const initializeCatalog = useCallback(async (): Promise<void> => {
+    dispatch(loading(false));
+    try {
+      await getCategoriesData();
+      dispatch(setInitialize(true));
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error?.message, toastOptions);
+      }
+    } finally {
+      dispatch(loading(false));
+    }
+  }, [getCategoriesData]);
+
+  useEffect(() => {
+    if (!state.parentCategories.length && pathname.includes("catalog")) {
+      initializeCatalog();
+    }
+  }, [initializeCatalog, pathname, state.parentCategories.length]);
 
   const contextValue = useMemo(
     () => ({

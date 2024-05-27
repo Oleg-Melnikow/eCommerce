@@ -11,6 +11,7 @@ interface ProductStateType extends ProductPage {
   parentCategories: Category[];
   currentProduct: ProductData | null;
   isLoading: boolean;
+  isInitialize: boolean;
 }
 
 export const ProductInitialState: ProductStateType = {
@@ -24,6 +25,7 @@ export const ProductInitialState: ProductStateType = {
   parentCategories: [],
   currentProduct: null,
   isLoading: false,
+  isInitialize: false,
 };
 
 export const productReducer = (
@@ -37,6 +39,7 @@ export const productReducer = (
     case "products/eCommerce/GET-CATEGORIES":
     case "products/eCommerce/GET-PARENT-CATEGORIES":
     case "products/eCommerce/SET-CURRENT-CATEGORY":
+    case "products/eCommerce/SET-IS-INITIALAZE":
       return {
         ...state,
         ...action.payload,
@@ -79,19 +82,26 @@ export const loading = (isLoading: boolean) =>
     payload: { isLoading },
   }) as const;
 
+export const setInitialize = (isInitialize: boolean) =>
+  ({
+    type: "products/eCommerce/SET-IS-INITIALAZE",
+    payload: { isInitialize },
+  }) as const;
+
 type ActionsType =
   | ReturnType<typeof getProducts>
   | ReturnType<typeof loading>
   | ReturnType<typeof getProductPageData>
   | ReturnType<typeof getCategories>
   | ReturnType<typeof getParentCategories>
-  | ReturnType<typeof setCurrentCategory>;
+  | ReturnType<typeof setCurrentCategory>
+  | ReturnType<typeof setInitialize>;
 
 export interface ProductContextValue extends ProductStateType {
   getProductsData: () => Promise<void>;
   getCategoriesData: () => Promise<void>;
   getProductsCategory: (id: string) => Promise<void>;
-  setCategory: (category: CurrentCategory) => void;
+  setCategory: (category: CurrentCategory) => Promise<void>;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
@@ -99,5 +109,5 @@ export const ProductContext = createContext<ProductContextValue>({
   getProductsData: () => Promise.resolve(),
   getCategoriesData: () => Promise.resolve(),
   getProductsCategory: () => Promise.resolve(),
-  setCategory: () => {},
+  setCategory: () => Promise.resolve(),
 });
