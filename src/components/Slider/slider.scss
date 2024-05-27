@@ -19,12 +19,23 @@
       &:hover {
         cursor: pointer;
         box-shadow: colors.$accent-shadow;
+        scale: 1.05;
       }
     }
   }
+
   .slider__image-wrap {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+
     .slider__image {
+      position: absolute;
+      top: 0;
+      left: 0;
       max-width: 100%;
+      border-radius: 10px;
     }
   }
 }
