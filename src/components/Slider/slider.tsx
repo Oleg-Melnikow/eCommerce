@@ -11,6 +11,11 @@ type PropsType = {
 
 function Slider({ product }: PropsType): ReactElement {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [initialX, setInitialX] = useState(0);
+  const [deltaX, setDeltaX] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<"right" | "left">(
+    "left"
+  );
   const containerRef = useRef<HTMLElement>(null);
   const thumbRef = useRef<HTMLElement>(null);
   const { images } = product.masterData.current.masterVariant;
@@ -31,13 +36,52 @@ function Slider({ product }: PropsType): ReactElement {
     </Box>
   ));
 
+  const handleNextSlide = async (): Promise<void> => {
+    await setSlideDirection("left");
+    await setCurrentSlide((prevSlide) =>
+      prevSlide + 1 < images.length ? prevSlide + 1 : 0
+    );
+    thumbRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  };
+
+  const handlePrevSlide = async (): Promise<void> => {
+    await setSlideDirection("right");
+    await setCurrentSlide((prevSlide) =>
+      prevSlide > 0 ? prevSlide - 1 : images.length - 1
+    );
+    thumbRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  };
+
+  const handleTouchStart = (event: React.TouchEvent<HTMLElement>): void => {
+    setInitialX(event.touches[0].clientX);
+  };
+
+  const handleTouchMove = (event: React.TouchEvent<HTMLElement>): void => {
+    const currentX = event.touches[0].clientX;
+    setDeltaX(currentX - initialX);
+  };
+
+  const handleTouchEnd = (): void => {
+    if (deltaX <= -10) handleNextSlide();
+    if (deltaX > -10) handlePrevSlide();
+  };
+
   const slider = images.map((image, index) => (
     <Slide
       key={image.url}
-      direction="left"
+      direction={slideDirection}
       in={currentSlide === index}
       appear={false}
       container={containerRef.current}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <img
         className="slider__image"
@@ -59,34 +103,10 @@ function Slider({ product }: PropsType): ReactElement {
     />
   ));
 
-  const handleNextSlide = async (): Promise<void> => {
-    await setCurrentSlide((prevSlide) =>
-      prevSlide + 1 < images.length ? prevSlide + 1 : 0
-    );
-    thumbRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-    });
-  };
-
-  const handlePrevSlide = async (): Promise<void> => {
-    await setCurrentSlide((prevSlide) =>
-      prevSlide > 0 ? prevSlide - 1 : images.length - 1
-    );
-    thumbRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-    });
-  };
-
   return (
     <div className="slider">
       <div className="slider__thumbs-container">{thumbs} </div>
-      <Box
-        className="slider__image-wrap"
-        onClick={handleNextSlide}
-        ref={containerRef}
-      >
+      <Box className="slider__image-wrap" ref={containerRef}>
         {slider}
       </Box>
       {images.length > 1 && (
