@@ -5,15 +5,22 @@
   gap: 10px;
   grid-template-columns: 1fr 4fr;
   grid-template-rows: 350px auto;
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 
   &__thumbs-container {
     display: flex;
     gap: 10px;
     flex-direction: column;
     max-width: 100%;
-    overflow: auto;
+    padding: 5px;
+    overflow-y: auto;
     &::-webkit-scrollbar {
       width: 0;
+    }
+    @media screen and (max-width: 768px) {
+      display: none;
     }
 
     .slider__thumb-wraper {
@@ -22,8 +29,8 @@
     }
 
     .slider__thumb {
-      width: 100%;
-      object-fit: contain;
+      max-height: 100px;
+      object-fit: cover;
       border-radius: 10px;
       transition: 250ms;
       &--active {
@@ -38,8 +45,9 @@
   }
 
   &__image-wrap {
+    display: flex;
+    justify-content: center;
     position: relative;
-    width: 100%;
     overflow: hidden;
     cursor: pointer;
 
@@ -55,11 +63,14 @@
   }
 
   .slider__btns-row {
-    grid-column: span 2;
+    grid-column-start: 2;
     display: flex;
     align-items: center;
     justify-content: space-around;
     border-radius: 10px;
+    @media screen and (max-width: 768px) {
+      grid-column-start: auto;
+    }
   }
 
   @mixin control__icon {
@@ -68,7 +79,7 @@
     background-color: colors.$main-color;
     transition: 0.25s;
   }
-  
+
   .slider__control_icon {
     @include control__icon();
     width: 8px;
