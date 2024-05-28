@@ -12,6 +12,7 @@ type PropsType = {
 function Slider({ product }: PropsType): ReactElement {
   const [currentSlide, setCurrentSlide] = useState(0);
   const containerRef = useRef<HTMLElement>(null);
+  const thumbRef = useRef<HTMLElement>(null);
   const { images } = product.masterData.current.masterVariant;
 
   const thumbs = images.map((image, index) => (
@@ -19,6 +20,7 @@ function Slider({ product }: PropsType): ReactElement {
       key={`${image.url}`}
       className="slider__tumb-wraper"
       onClick={() => setCurrentSlide(index)}
+      ref={currentSlide === index ? thumbRef : null}
     >
       <img
         className={`slider__thumb ${currentSlide === index ? "slider__thumb--active" : ""}`}
@@ -57,16 +59,24 @@ function Slider({ product }: PropsType): ReactElement {
     />
   ));
 
-  const handleNextSlide = (): void => {
-    setCurrentSlide((prevSlide) =>
+  const handleNextSlide = async (): Promise<void> => {
+    await setCurrentSlide((prevSlide) =>
       prevSlide + 1 < images.length ? prevSlide + 1 : 0
     );
+    thumbRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   };
 
-  const handlePrevSlide = (): void => {
-    setCurrentSlide((prevSlide) =>
+  const handlePrevSlide = async (): Promise<void> => {
+    await setCurrentSlide((prevSlide) =>
       prevSlide > 0 ? prevSlide - 1 : images.length - 1
     );
+    thumbRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   };
 
   return (
