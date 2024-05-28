@@ -40,6 +40,7 @@ export const productReducer = (
     case "products/eCommerce/GET-PARENT-CATEGORIES":
     case "products/eCommerce/SET-CURRENT-CATEGORY":
     case "products/eCommerce/SET-IS-INITIALAZE":
+    case "products/eCommerce/SET-CURRENT-PRODUCT":
       return {
         ...state,
         ...action.payload,
@@ -76,6 +77,12 @@ export const getProductPageData = (pageData: ProductPage) =>
     payload: { ...pageData },
   }) as const;
 
+export const setCurrentProduct = (currentProduct: ProductData | null) =>
+  ({
+    type: "products/eCommerce/SET-CURRENT-PRODUCT",
+    payload: { currentProduct },
+  }) as const;
+
 export const loading = (isLoading: boolean) =>
   ({
     type: "products/eCommerce/SET-IS-LOADING",
@@ -92,6 +99,7 @@ type ActionsType =
   | ReturnType<typeof getProducts>
   | ReturnType<typeof loading>
   | ReturnType<typeof getProductPageData>
+  | ReturnType<typeof setCurrentProduct>
   | ReturnType<typeof getCategories>
   | ReturnType<typeof getParentCategories>
   | ReturnType<typeof setCurrentCategory>
@@ -102,6 +110,7 @@ export interface ProductContextValue extends ProductStateType {
   getCategoriesData: () => Promise<void>;
   getProductsCategory: (id: string) => Promise<void>;
   setCategory: (category: CurrentCategory) => Promise<void>;
+  chooseProduct: (id: string) => Promise<void>;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
@@ -110,4 +119,5 @@ export const ProductContext = createContext<ProductContextValue>({
   getCategoriesData: () => Promise.resolve(),
   getProductsCategory: () => Promise.resolve(),
   setCategory: () => Promise.resolve(),
+  chooseProduct: () => Promise.resolve(),
 });

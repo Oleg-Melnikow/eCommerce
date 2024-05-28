@@ -1,0 +1,60 @@
+.profile-page__form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  .form__field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    max-width: 420px;
+    width: 100%;
+
+    .form__field_label {
+      display: flex;
+      padding: 10px 0px;
+      max-width: 240px;
+      width: 100%;
+      text-transform: uppercase;
+      font-size: 16px;
+      font-weight: 700;
+      color: rgb(114, 114, 114);
+    }
+
+    .form__field_content,
+    .form__field_content-input {
+      padding: 10px 10px;
+      width: 100%;
+      font-size: 15px;
+      color: rgb(70, 163, 88);
+      background-color: rgb(251, 251, 251);
+    }
+
+    .form__field_content-input {
+      padding: 0px;
+
+      .MuiInputBase-input {
+        padding: 10px;
+        font-family: "Noto Sans", sans-serif;
+        font-size: 15px;
+        color: rgb(70, 163, 88);
+      }
+    }
+  }
+
+  .profile-page__form_button {
+    width: 100px;
+    border: none;
+    border-radius: 3px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(70, 163, 88);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: rgba(70, 163, 88, 0.8);
+    }
+  }
+}

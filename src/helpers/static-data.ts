@@ -2,6 +2,7 @@ import LogIn from "assets/LogIn.svg";
 import Register from "assets/Register.svg";
 import LogOut from "assets/LogOut.svg";
 import Basket from "assets/Basket.svg";
+import UserProfile from "assets/UserProfile.svg";
 
 interface LinkAccount {
   id: string;
@@ -35,6 +36,14 @@ const navLinksToAccount: LinkAccount[] = [
     title: "Log Out",
     className: "header__inner_link-logout",
     imgSrc: LogOut,
+    permission: "logined",
+  },
+  {
+    id: "userProfile",
+    path: "/profile",
+    title: "UserProfile",
+    className: "header__inner_link-profile",
+    imgSrc: UserProfile,
     permission: "logined",
   },
   {

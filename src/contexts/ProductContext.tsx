@@ -5,7 +5,6 @@ import {
   useEffect,
   useMemo,
   useReducer,
-  useState,
 } from "react";
 import { toast } from "react-toastify";
 import API from "api/API";
@@ -22,6 +21,7 @@ import {
   productReducer,
   setCurrentCategory,
   setInitialize,
+  setCurrentProduct,
 } from "reducers/productReducer";
 import { Product } from "types/API/Product";
 import { useLocation } from "react-router-dom";
@@ -155,6 +155,18 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     state.parentCategories.length,
   ]);
 
+  const chooseProduct = useCallback(async (id: string) => {
+    dispatch(loading(true));
+    try {
+      const product = await API.getInstance()?.getProductById(id);
+      if (product) dispatch(setCurrentProduct(product));
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    } finally {
+      dispatch(loading(false));
+    }
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       ...state,
@@ -162,6 +174,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       getCategoriesData,
       getProductsCategory,
       setCategory,
+      chooseProduct,
     }),
     [
       state,
@@ -169,6 +182,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       getCategoriesData,
       getProductsCategory,
       setCategory,
+      chooseProduct,
     ]
   );
 

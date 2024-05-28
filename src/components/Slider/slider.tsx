@@ -1,25 +1,26 @@
 import { ReactElement } from "react";
 import "./slider.scss";
-import img1 from "../../assets/product/1ab58d21463d86aa3768f5c6c78f8a1f.png";
-import img2 from "../../assets/product/90effae17498640571679183299f774e.jpeg";
+import { ProductData } from "types/API/Product";
 
-function Slider(): ReactElement {
-  const thumbs = [
-    { image: img1, title: "image1" },
-    { image: img2, title: "image2" },
-  ].map((item) => (
+type PropsType = {
+  product: ProductData;
+};
+
+function Slider({ product }: PropsType): ReactElement {
+  const { images } = product.masterData.current.masterVariant;
+  const thumbs = images.map((image) => (
     <img
-      key={item.title}
+      key={`${image.url}`}
       className="slider__thumb"
-      src={item.image}
-      alt={item.title}
+      src={image.url}
+      alt={image.label}
     />
   ));
   return (
     <div className="slider">
       <div className="slider__thumbs-wrapper">{thumbs} </div>
       <div className="slider__image-wrap">
-        <img className="slider__image" src={img1} alt="imag" />
+        <img className="slider__image" src={thumbs[0].props.src} alt="imag" />
       </div>
     </div>
   );

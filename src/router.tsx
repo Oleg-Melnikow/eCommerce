@@ -1,13 +1,12 @@
 import { RouteObject, Navigate } from "react-router-dom";
-
 import MainPage from "pages/MainPage/MainPage";
 import LoginPage from "pages/LoginPage/LoginPage";
 import RegistrationPage from "pages/RegistrationPage/RegistrationPage";
+import UserProfilePage from "pages/UserProfilePage/UserProfilePage";
 import AboutPage from "pages/AboutPage/AboutPage";
 import CatalogPage from "pages/CatalogPage/Catalog";
 import BasketPage from "pages/BasketPage/BasketPage";
 import NotFound from "pages/NotFound/NotFound";
-
 import ProductPage from "pages/ProductPage/ProductPage";
 import Layout from "./layouts/Layout/Layout";
 
@@ -33,9 +32,9 @@ const routes: RouteObject[] = [
       },
       { path: "/login", element: <LoginPage /> },
       { path: "/registration", element: <RegistrationPage /> },
-      { path: "/profile", element: <div>User Profile</div> },
+      { path: "/profile", element: <UserProfilePage /> },
       {
-        path: "/product",
+        path: "/product/:id",
         element: <ProductPage />,
       },
     ],
