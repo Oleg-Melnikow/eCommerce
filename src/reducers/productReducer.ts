@@ -108,7 +108,7 @@ type ActionsType =
 export interface ProductContextValue extends ProductStateType {
   getProductsData: () => Promise<void>;
   getCategoriesData: () => Promise<void>;
-  getProductsCategory: (id: string) => Promise<void>;
+  getProductsCategory: (id?: string, search?: string) => Promise<void>;
   setCategory: (category: CurrentCategory) => Promise<void>;
   chooseProduct: (id: string) => Promise<void>;
 }

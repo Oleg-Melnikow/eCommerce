@@ -24,7 +24,7 @@ import {
   setCurrentProduct,
 } from "reducers/productReducer";
 import { Product } from "types/API/Product";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 interface ProviderProps {
   children: ReactNode;
@@ -33,7 +33,8 @@ interface ProviderProps {
 export function ProductProvider(props: ProviderProps): ReactElement {
   const { children } = props;
   const [state, dispatch] = useReducer(productReducer, ProductInitialState);
-  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
+  const { pathname, search } = useLocation();
 
   const getProductsData = useCallback(async () => {
     dispatch(loading(true));
@@ -58,24 +59,31 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
-  const getProductsCategory = useCallback(async (id: string) => {
-    dispatch(loading(true));
-    try {
-      const clientAPI = API.getInstance();
-      const response = await clientAPI?.getProductsProjection(id);
-      if (response) {
-        const { count, limit, offset, results, total } = response;
-        dispatch(getProducts(results));
-        dispatch(getProductPageData({ count, limit, offset, total }));
+  const getProductsCategory = useCallback(
+    async (id?: string, searchValue?: string) => {
+      dispatch(loading(true));
+      try {
+        let filter = `categories.id: subtree("${id}")`;
+        if (searchValue) {
+          filter = `searchKeywords.en.text:"${searchValue}"`;
+        }
+        const clientAPI = API.getInstance();
+        const response = await clientAPI?.getProductsProjection(filter);
+        if (response) {
+          const { count, limit, offset, results, total } = response;
+          dispatch(getProducts(results));
+          dispatch(getProductPageData({ count, limit, offset, total }));
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error?.message, toastOptions);
+        }
+      } finally {
+        dispatch(loading(false));
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error?.message, toastOptions);
-      }
-    } finally {
-      dispatch(loading(false));
-    }
-  }, []);
+    },
+    []
+  );
 
   const getCategoriesData = useCallback(async () => {
     dispatch(loading(true));
@@ -99,6 +107,12 @@ export function ProductProvider(props: ProviderProps): ReactElement {
 
         if (current) {
           await getProductsCategory(current.id);
+        } else if (searchParams) {
+          const searchKeywords = searchParams.get("search");
+
+          if (searchKeywords) {
+            await getProductsCategory(undefined, searchKeywords);
+          }
         } else {
           await getProductsData();
         }
@@ -110,16 +124,18 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     } finally {
       dispatch(loading(false));
     }
-  }, [getProductsCategory, getProductsData, pathname]);
+  }, [getProductsCategory, getProductsData, pathname, searchParams]);
 
   const setCategory = useCallback(
     async (category: CurrentCategory) => {
       dispatch(setCurrentCategory(category));
       if (category) {
         await await getProductsCategory(category.id);
+      } else if (!search) {
+        await getProductsData();
       }
     },
-    [getProductsCategory]
+    [getProductsCategory, getProductsData, search]
   );
 
   const initializeCatalog = useCallback(async (): Promise<void> => {
@@ -143,12 +159,9 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     }
     if (!isCatalog) {
       dispatch(setCurrentCategory(null));
-    }
-    if (!state.currentCategory && isCatalog) {
-      getProductsData();
+      dispatch(getProducts([]));
     }
   }, [
-    getProductsData,
     initializeCatalog,
     pathname,
     state.currentCategory,

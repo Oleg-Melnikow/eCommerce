@@ -250,12 +250,12 @@ export default class API {
       });
   }
 
-  public async getProductsProjection(id: string): Promise<ProductsSearch> {
+  public async getProductsProjection(filter: string): Promise<ProductsSearch> {
     return this.createAPI()
       .then(async () => {
         const response = await this.apiInstance?.get(
           "/product-projections/search",
-          { params: { filter: `categories.id: subtree("${id}")` } }
+          { params: { filter } }
         );
         return response?.data as ProductsSearch;
       })
