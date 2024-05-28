@@ -9,6 +9,10 @@ interface Products extends ProductPage {
   results: ProductData[];
 }
 
+interface ProductsSearch extends ProductPage {
+  results: Product[];
+}
+
 interface ProductImage {
   url: string;
   label: string;
@@ -46,17 +50,37 @@ interface ProductData {
   id: string;
   key: string;
   masterData: {
-    current: {
-      name: Languages;
-      description: Languages;
-      masterVariant: {
-        images: ProductImage[];
-        key: string;
-        sku: string;
-        prices: Price[];
-      };
-    };
+    current: ProductCurrent;
   };
 }
 
-export { Products, ProductData, ProductImage, ProductPage, Price };
+interface ProductCurrent {
+  name: Languages;
+  description: Languages;
+  categories: {
+    typeId: string;
+    id: string;
+  }[];
+  slug: Languages;
+  masterVariant: {
+    images: ProductImage[];
+    key: string;
+    sku: string;
+    prices: Price[];
+  };
+}
+
+interface Product extends ProductCurrent {
+  id: string;
+  key: string;
+}
+
+export {
+  Products,
+  ProductData,
+  ProductImage,
+  ProductPage,
+  Price,
+  Product,
+  ProductsSearch,
+};

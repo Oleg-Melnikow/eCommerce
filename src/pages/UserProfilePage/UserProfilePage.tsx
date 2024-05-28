@@ -1,5 +1,5 @@
 import "./UserProfilePage.scss";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";

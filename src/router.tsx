@@ -1,5 +1,4 @@
 import { RouteObject, Navigate } from "react-router-dom";
-
 import MainPage from "pages/MainPage/MainPage";
 import LoginPage from "pages/LoginPage/LoginPage";
 import RegistrationPage from "pages/RegistrationPage/RegistrationPage";
@@ -8,7 +7,6 @@ import AboutPage from "pages/AboutPage/AboutPage";
 import CatalogPage from "pages/CatalogPage/Catalog";
 import BasketPage from "pages/BasketPage/BasketPage";
 import NotFound from "pages/NotFound/NotFound";
-
 import ProductPage from "pages/ProductPage/ProductPage";
 import Layout from "./layouts/Layout/Layout";
 
@@ -25,10 +23,9 @@ const routes: RouteObject[] = [
         path: "/about",
         element: <AboutPage />,
       },
-      {
-        path: "/catalog",
-        element: <CatalogPage />,
-      },
+      { path: "/catalog", element: <CatalogPage /> },
+      { path: "/catalog/:category", element: <CatalogPage /> },
+      { path: "/catalog/:category/:child", element: <CatalogPage /> },
       {
         path: "/basket",
         element: <BasketPage />,
@@ -40,7 +37,6 @@ const routes: RouteObject[] = [
         path: "/product/:id",
         element: <ProductPage />,
       },
-
     ],
   },
 

@@ -1,10 +1,17 @@
 import { createContext } from "react";
-import { ProductData, ProductPage } from "types/API/Product";
+import { Category } from "types/API/Category";
+import { Product, ProductData, ProductPage } from "types/API/Product";
+
+export type CurrentCategory = { id: string; key: string } | null;
 
 interface ProductStateType extends ProductPage {
-  products: ProductData[];
+  products: Product[];
+  categories: Category[];
+  currentCategory: CurrentCategory;
+  parentCategories: Category[];
   currentProduct: ProductData | null;
   isLoading: boolean;
+  isInitialize: boolean;
 }
 
 export const ProductInitialState: ProductStateType = {
@@ -13,8 +20,12 @@ export const ProductInitialState: ProductStateType = {
   offset: 0,
   total: 0,
   products: [],
+  categories: [],
+  currentCategory: null,
+  parentCategories: [],
   currentProduct: null,
   isLoading: false,
+  isInitialize: false,
 };
 
 export const productReducer = (
@@ -25,6 +36,10 @@ export const productReducer = (
     case "products/eCommerce/GET-PRODUCTS":
     case "products/eCommerce/SET-IS-LOADING":
     case "products/eCommerce/GET-PRODUCT-PAGE":
+    case "products/eCommerce/GET-CATEGORIES":
+    case "products/eCommerce/GET-PARENT-CATEGORIES":
+    case "products/eCommerce/SET-CURRENT-CATEGORY":
+    case "products/eCommerce/SET-IS-INITIALAZE":
     case "products/eCommerce/SET-CURRENT-PRODUCT":
       return {
         ...state,
@@ -35,8 +50,26 @@ export const productReducer = (
   }
 };
 
-export const getProducts = (products: ProductData[]) =>
+export const getProducts = (products: Product[]) =>
   ({ type: "products/eCommerce/GET-PRODUCTS", payload: { products } }) as const;
+
+export const getCategories = (categories: Category[]) =>
+  ({
+    type: "products/eCommerce/GET-CATEGORIES",
+    payload: { categories },
+  }) as const;
+
+export const getParentCategories = (parentCategories: Category[]) =>
+  ({
+    type: "products/eCommerce/GET-PARENT-CATEGORIES",
+    payload: { parentCategories },
+  }) as const;
+
+export const setCurrentCategory = (currentCategory: CurrentCategory) =>
+  ({
+    type: "products/eCommerce/SET-CURRENT-CATEGORY",
+    payload: { currentCategory },
+  }) as const;
 
 export const getProductPageData = (pageData: ProductPage) =>
   ({
@@ -56,19 +89,35 @@ export const loading = (isLoading: boolean) =>
     payload: { isLoading },
   }) as const;
 
+export const setInitialize = (isInitialize: boolean) =>
+  ({
+    type: "products/eCommerce/SET-IS-INITIALAZE",
+    payload: { isInitialize },
+  }) as const;
+
 type ActionsType =
   | ReturnType<typeof getProducts>
   | ReturnType<typeof loading>
   | ReturnType<typeof getProductPageData>
-  | ReturnType<typeof setCurrentProduct>;
+  | ReturnType<typeof setCurrentProduct>
+  | ReturnType<typeof getCategories>
+  | ReturnType<typeof getParentCategories>
+  | ReturnType<typeof setCurrentCategory>
+  | ReturnType<typeof setInitialize>;
 
 export interface ProductContextValue extends ProductStateType {
   getProductsData: () => Promise<void>;
+  getCategoriesData: () => Promise<void>;
+  getProductsCategory: (id: string) => Promise<void>;
+  setCategory: (category: CurrentCategory) => Promise<void>;
   chooseProduct: (id: string) => Promise<void>;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
   ...ProductInitialState,
   getProductsData: () => Promise.resolve(),
-  chooseProduct: (id: string) => Promise.resolve(),
+  getCategoriesData: () => Promise.resolve(),
+  getProductsCategory: () => Promise.resolve(),
+  setCategory: () => Promise.resolve(),
+  chooseProduct: () => Promise.resolve(),
 });
