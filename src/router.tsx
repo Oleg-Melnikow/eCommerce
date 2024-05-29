@@ -40,7 +40,6 @@ const routes: RouteObject[] = [
         path: "/product",
         element: <ProductPage />,
       },
-
     ],
   },
 

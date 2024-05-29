@@ -11,7 +11,8 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import CustomTabPanel from "../TabPanel/TabPanel";
-import TabPanelContent from "../TabPanelContent/TabPanelContent";
+import TabPersonalData from "../TabPanelContent/TabUserPersonalData/TabPersonalData";
+import BasicTable from "../TabPanelContent/TabAddressesData/TabAddressesData";
 
 interface A11yPropsReturn {
   id: string;
@@ -28,41 +29,16 @@ function BasicTabs(): JSX.Element {
   const [value, setValue] = React.useState(0);
   const { user } = useAuth();
 
-  const [userPersonalData, setUserPersonalData] =
-    useState<UserPersonalData | null>(null);
-  const [userAddressesData, setAddressesData] =
-    useState<UserAddressesData | null>(null);
+  const [userPersonalData, setUserPersonalData] = useState<UserPersonalData>();
+  const [userAddressesData, setUserAddressesData] = useState<
+    UserAddressesData[]
+  >([]);
 
   useEffect(() => {
     if (user) {
-      const {
-        firstName,
-        lastName,
-        dateOfBirth,
-        billingAddressIds,
-        shippingAddressIds,
-        addresses,
-      } = user;
-
-      if (billingAddressIds && shippingAddressIds) {
-        const [shippingAddress] = shippingAddressIds;
-        const [billingAddress] = billingAddressIds;
-
-        const addressData = addresses.find(
-          (item) => item.id === billingAddress
-        );
-        const { city, country, postalCode } = addressData ?? {};
-        setAddressesData({
-          shippingAddress,
-          country,
-          city,
-          postalCode,
-          billingAddress,
-        });
-        console.log(addressData);
-      }
-
+      const { firstName, lastName, dateOfBirth, addresses } = user;
       setUserPersonalData({ firstName, lastName, dateOfBirth });
+      setUserAddressesData(addresses);
     }
   }, [user]);
 
@@ -87,10 +63,10 @@ function BasicTabs(): JSX.Element {
       </Box>
 
       <CustomTabPanel value={value} index={0}>
-        {userPersonalData && <TabPanelContent userData={userPersonalData} />}
+        {userPersonalData && <TabPersonalData userData={userPersonalData} />}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        {userAddressesData && <TabPanelContent userData={userAddressesData} />}
+        <BasicTable addressesData={userAddressesData} />
       </CustomTabPanel>
     </Box>
   );
