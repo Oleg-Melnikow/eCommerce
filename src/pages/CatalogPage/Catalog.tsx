@@ -8,17 +8,30 @@ import LoaderItem from "components/LoaderItem/LoaderItem";
 import { ButtonShowMenu } from "components/CategoriesMenu/ButtonShowMenu";
 import { ProductSearch } from "components/ProductSearch/ProductSearch";
 import { useLocation } from "react-router-dom";
+import { Sorting } from "components/Sorting/Sorting";
 import "./Catalog.scss";
 
 function CatalogPage(): ReactElement {
-  const { products, isLoading, isInitialize, getProductsData } = useProduct();
+  const {
+    products,
+    isLoading,
+    isInitialize,
+    getProductsCurrentData,
+    categories,
+  } = useProduct();
   const { search } = useLocation();
 
   useEffect(() => {
-    if (isInitialize && !products.length && !search) {
-      getProductsData();
+    if (isInitialize && !products.length) {
+      getProductsCurrentData(categories);
     }
-  }, [getProductsData, isInitialize, products.length, search]);
+  }, [
+    categories,
+    getProductsCurrentData,
+    isInitialize,
+    products.length,
+    search,
+  ]);
 
   return (
     <div className="catalog-page">
@@ -26,7 +39,12 @@ function CatalogPage(): ReactElement {
       <Grid container sx={{ mb: 1, alignSelf: "center" }} item md={8} xs={12}>
         <ProductSearch />
       </Grid>
-      <BreadcrumbsBlock />
+      <Grid container spacing={1}>
+        <Grid item md={8} xs={12}>
+          <BreadcrumbsBlock />
+        </Grid>
+        <Sorting />
+      </Grid>
       <ButtonShowMenu />
       <Grid container sx={{ mt: 2 }} justifyContent="space-between">
         <Box className="category-list">
