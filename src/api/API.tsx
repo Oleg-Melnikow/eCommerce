@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import {
+  Customer,
   CustomerSignInResult,
   MyCustomerDraft,
   MyCustomerSignin,
@@ -9,6 +10,7 @@ import { ProductData, Products, ProductsSearch } from "types/API/Product";
 import { Categories } from "types/API/Category";
 import { AuthContextValue } from "reducers/authReducer";
 import errorHandler from "helpers/errorHandler";
+import { AddressForm } from "types/RegisterForm";
 
 export default class API {
   protected static instance: API | null = null;
@@ -274,5 +276,31 @@ export default class API {
       const message = errorHandler(err);
       throw new Error(message);
     }
+  }
+
+  public async updateAddress(
+    id: string,
+    version: number,
+    addressId: string,
+    address: AddressForm
+  ): Promise<Customer> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.post(`/customers/${id}`, {
+          version,
+          actions: [
+            {
+              action: "changeAddress",
+              addressId: `${addressId}`,
+              address,
+            },
+          ],
+        });
+        return response?.data as Customer;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
   }
 }
