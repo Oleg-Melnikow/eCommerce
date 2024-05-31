@@ -22,7 +22,7 @@ interface StoreResourceIdentifier {
   id?: string;
 }
 
-interface Address {
+export interface Address {
   title?: string;
   streetNumber?: string;
   streetName?: string;
