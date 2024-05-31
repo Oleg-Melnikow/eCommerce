@@ -12,7 +12,9 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Address, Customer } from "types/API/Customer";
+import { checkAddressType } from "helpers/checkAddressType";
 import { UpdateAddressForm } from "./UpdateAddressForm";
+import { AddressTypeUpdate } from "./AddressTypeUpdate";
 
 type PropsType = {
   address: Address;
@@ -33,10 +35,6 @@ function AddressType({ user, id }: AddressTypePropsType): ReactElement {
     defaultShippingAddressId,
   } = user;
 
-  const checkAddress = (arrayId: string[] | undefined): boolean => {
-    return !!arrayId?.includes(id);
-  };
-
   return (
     <TableCell align="center">
       <Box
@@ -49,8 +47,8 @@ function AddressType({ user, id }: AddressTypePropsType): ReactElement {
       >
         {defaultBillingAddressId === id && <Chip label="Default billing" />}
         {defaultShippingAddressId === id && <Chip label="Default shipping" />}
-        {checkAddress(billingAddressIds) && <Chip label="Billing" />}
-        {checkAddress(shippingAddressIds) && <Chip label="Shipping" />}
+        {checkAddressType(billingAddressIds, id) && <Chip label="Billing" />}
+        {checkAddressType(shippingAddressIds, id) && <Chip label="Shipping" />}
       </Box>
     </TableCell>
   );
@@ -62,7 +60,7 @@ export function AddressListItem({
   handleOpenAddress: handleOpenProduct,
 }: PropsType): ReactElement {
   const { country, city, streetName, postalCode, id } = address;
-  const { user, deleteUserAdress } = useAuth();
+  const { user, changeUserAdress } = useAuth();
 
   const open = id === openAddress;
 
@@ -72,7 +70,12 @@ export function AddressListItem({
 
   const removeAddress = async (): Promise<void> => {
     if (user && id) {
-      await deleteUserAdress(user.version, user.id, id);
+      await changeUserAdress({
+        action: "removeAddress",
+        addressId: id,
+        id: user.id,
+        version: user.version,
+      });
     }
   };
 
@@ -137,6 +140,7 @@ export function AddressListItem({
             }}
           >
             <UpdateAddressForm address={address} />
+            <AddressTypeUpdate id={id} />
           </TableCell>
         </TableRow>
       )}
