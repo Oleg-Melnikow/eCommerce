@@ -73,12 +73,9 @@ export function UpdateAddressForm({ address }: PropsType): ReactElement {
     const result = { ...dataForm, id };
     console.log(result);
 
-    await updateUserAdress(
-      user?.id || "",
-      user?.version || 3,
-      id || "",
-      dataForm
-    );
+    if (user && id) {
+      await updateUserAdress(user.id, user.version, id, dataForm);
+    }
   };
 
   return (

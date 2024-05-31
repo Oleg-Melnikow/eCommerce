@@ -1,18 +1,13 @@
-import "./Tabs.scss";
 import React, { useEffect, useState } from "react";
 import useAuth from "hooks/use-auth";
-
-import {
-  UserPersonalData,
-  UserAddressesData,
-} from "types/UserProfileDataProps/UserProfileDataProps";
-
+import { UserPersonalData } from "types/UserProfileDataProps/UserProfileDataProps";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import CustomTabPanel from "../TabPanel/TabPanel";
 import TabPersonalData from "../TabPanelContent/TabUserPersonalData/TabPersonalData";
-import BasicTable from "../TabPanelContent/TabAddressesData/TabAddressesData";
+import AddressesTable from "../TabPanelContent/TabAddressesData/TabAddressesData";
+import "./Tabs.scss";
 
 interface A11yPropsReturn {
   id: string;
@@ -30,15 +25,11 @@ function BasicTabs(): JSX.Element {
   const { user } = useAuth();
 
   const [userPersonalData, setUserPersonalData] = useState<UserPersonalData>();
-  const [userAddressesData, setUserAddressesData] = useState<
-    UserAddressesData[]
-  >([]);
 
   useEffect(() => {
     if (user) {
-      const { firstName, lastName, dateOfBirth, addresses } = user;
+      const { firstName, lastName, dateOfBirth } = user;
       setUserPersonalData({ firstName, lastName, dateOfBirth });
-      setUserAddressesData(addresses);
     }
   }, [user]);
 
@@ -66,7 +57,7 @@ function BasicTabs(): JSX.Element {
         {userPersonalData && <TabPersonalData userData={userPersonalData} />}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <BasicTable addressesData={userAddressesData} />
+        <AddressesTable />
       </CustomTabPanel>
     </Box>
   );
