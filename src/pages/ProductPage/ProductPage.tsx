@@ -5,9 +5,10 @@ import ProductDetails from "components/ProductDetails/ProductDetails";
 import ProductDescription from "components/ProductDescription/ProductDescription";
 import useProduct from "hooks/use-product";
 import { useParams } from "react-router-dom";
+import LoaderItem from "components/LoaderItem/LoaderItem";
 
 function ProductPage(): ReactElement {
-  const { currentProduct, chooseProduct } = useProduct();
+  const { currentProduct, chooseProduct, isLoading } = useProduct();
   const { id } = useParams();
   useEffect(() => {
     if (id) chooseProduct(id);
@@ -15,6 +16,7 @@ function ProductPage(): ReactElement {
 
   return (
     <div className="product-page">
+      {isLoading && <LoaderItem />}
       {currentProduct && (
         <>
           <Slider product={currentProduct} />
