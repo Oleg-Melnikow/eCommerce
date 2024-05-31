@@ -22,11 +22,7 @@ function CustomTabPanel({
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ padding: "16px" }}>
-          <Box>{children}</Box>
-        </Box>
-      )}
+      {value === index && <Box sx={{ padding: "16px" }}>{children}</Box>}
     </div>
   );
 }

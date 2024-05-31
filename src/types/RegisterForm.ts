@@ -1,4 +1,4 @@
-type Address = {
+export type AddressForm = {
   country: string;
   city: string;
   streetName: string;
@@ -12,6 +12,28 @@ export type FormTypeRegister = {
   email: string;
   password: string;
   confirmPassword: string;
-  shippingAddress: Address;
-  billingAddress: Address;
+  shippingAddress: AddressForm;
+  billingAddress: AddressForm;
 };
+
+export type ActionAddressType = {
+  action: string;
+  address: AddressForm;
+  addressId?: string;
+};
+
+export type DeleteParamsType = {
+  version: number;
+  id: string;
+  addressId: string;
+  action: AddressActionType;
+};
+
+export type AddressActionType =
+  | "removeAddress"
+  | "setDefaultShippingAddress"
+  | "setDefaultBillingAddress"
+  | "addShippingAddressId"
+  | "removeShippingAddressId"
+  | "addBillingAddressId"
+  | "removeBillingAddressId";

@@ -11,7 +11,12 @@ import { toast } from "react-toastify";
 import { LoginType } from "types/InputTagProps";
 import API from "api/API";
 import toastOptions from "helpers/toastOptions";
-import { MyCustomerDraft } from "types/API/Customer";
+import { Customer, MyCustomerDraft } from "types/API/Customer";
+import {
+  ActionAddressType,
+  AddressForm,
+  DeleteParamsType,
+} from "types/RegisterForm";
 import {
   AuthContext,
   AuthInitialState,
@@ -30,6 +35,60 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
   const [state, dispatch] = useReducer(authReducer, AuthInitialState);
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
+  const saveUserData = (response: Customer): void => {
+    localStorage.setItem("userProfile", JSON.stringify(response));
+    dispatch(initialize(true, response));
+  };
+
+  const updateUserAdress = useCallback(
+    async (
+      id: string,
+      version: number,
+      address: AddressForm,
+      addressId?: string
+    ): Promise<void> => {
+      dispatch(loading(true));
+      try {
+        let action: ActionAddressType = {
+          action: addressId ? "changeAddress" : "addAddress",
+          address,
+        };
+        if (addressId) {
+          action = { ...action, addressId };
+        }
+        const clientAPI = API.getInstance();
+        const response = await clientAPI?.updateAddress(id, version, action);
+        if (response) {
+          saveUserData(response);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error?.message, toastOptions);
+        }
+      } finally {
+        dispatch(loading(false));
+      }
+    },
+    []
+  );
+
+  const changeUserAdress = useCallback(async (params: DeleteParamsType) => {
+    dispatch(loading(true));
+    try {
+      const clientAPI = API.getInstance();
+      const response = await clientAPI?.changeAddress(params);
+      if (response) {
+        saveUserData(response);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error?.message, toastOptions);
+      }
+    } finally {
+      dispatch(loading(false));
+    }
+  }, []);
 
   const initializeAccount = async (): Promise<void> => {
     try {
@@ -130,8 +189,24 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
   }, [pathname, navigate]);
 
   const contextValue = useMemo(
-    () => ({ ...state, logoutAccount, login, signup, tokenReceiving }),
-    [state, logoutAccount, login, signup, tokenReceiving]
+    () => ({
+      ...state,
+      logoutAccount,
+      login,
+      signup,
+      tokenReceiving,
+      updateUserAdress,
+      changeUserAdress,
+    }),
+    [
+      state,
+      logoutAccount,
+      login,
+      signup,
+      tokenReceiving,
+      updateUserAdress,
+      changeUserAdress,
+    ]
   );
 
   return (
