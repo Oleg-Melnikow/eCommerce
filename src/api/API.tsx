@@ -303,4 +303,28 @@ export default class API {
         throw new Error(message);
       });
   }
+
+  public async deleteAddress(
+    version: number,
+    id: string,
+    addressId: string
+  ): Promise<Customer> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.post(`/customers/${id}`, {
+          version,
+          actions: [
+            {
+              action: "removeAddress",
+              addressId: `${addressId}`,
+            },
+          ],
+        });
+        return response?.data as Customer;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
+  }
 }

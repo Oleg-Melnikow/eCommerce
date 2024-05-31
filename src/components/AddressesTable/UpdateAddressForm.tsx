@@ -28,7 +28,7 @@ type PropsType = {
 
 export function UpdateAddressForm({ address }: PropsType): ReactElement {
   const { country, city, streetName, postalCode, id } = address;
-  const { user, updateUserAdress } = useAuth();
+  const { user, updateUserAdress, deleteUserAdress } = useAuth();
   const {
     control,
     handleSubmit,
@@ -69,9 +69,14 @@ export function UpdateAddressForm({ address }: PropsType): ReactElement {
     checkPostCode(value, countryValue);
   };
 
+  const removeAddress = async (): Promise<void> => {
+    if (user && id) {
+      await deleteUserAdress(user.version, user.id, id);
+    }
+  };
+
   const onSubmit: SubmitHandler<FormValues> = async (dataForm: FormValues) => {
     const result = { ...dataForm, id };
-    console.log(result);
 
     if (user && id) {
       await updateUserAdress(user.id, user.version, id, dataForm);
@@ -156,9 +161,12 @@ export function UpdateAddressForm({ address }: PropsType): ReactElement {
             />
           </Grid>
         </Grid>
-        <Box sx={{ display: "flex", py: 1 }}>
+        <Box sx={{ display: "flex", py: 1, gap: "10px" }}>
           <Button type="submit" variant="contained" color="success">
             Update
+          </Button>
+          <Button variant="contained" color="error" onClick={removeAddress}>
+            Delete
           </Button>
         </Box>
       </CardContent>
