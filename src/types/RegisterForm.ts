@@ -21,3 +21,19 @@ export type ActionAddressType = {
   address: AddressForm;
   addressId?: string;
 };
+
+export type DeleteParamsType = {
+  version: number;
+  id: string;
+  addressId: string;
+  action: AddressActionType;
+};
+
+export type AddressActionType =
+  | "removeAddress"
+  | "setDefaultShippingAddress"
+  | "setDefaultBillingAddress"
+  | "addShippingAddressId"
+  | "removeShippingAddressId"
+  | "addBillingAddressId"
+  | "removeBillingAddressId";

@@ -10,7 +10,7 @@ import { ProductData, Products, ProductsSearch } from "types/API/Product";
 import { Categories } from "types/API/Category";
 import { AuthContextValue } from "reducers/authReducer";
 import errorHandler from "helpers/errorHandler";
-import { ActionAddressType, AddressForm } from "types/RegisterForm";
+import { ActionAddressType, DeleteParamsType } from "types/RegisterForm";
 
 export default class API {
   protected static instance: API | null = null;
@@ -297,21 +297,17 @@ export default class API {
       });
   }
 
-  public async deleteAddress(
-    version: number,
-    id: string,
-    addressId: string
-  ): Promise<Customer> {
+  public async changeAddress({
+    action,
+    addressId,
+    id,
+    version,
+  }: DeleteParamsType): Promise<Customer> {
     return this.createAPI()
       .then(async () => {
         const response = await this.apiInstance?.post(`/customers/${id}`, {
           version,
-          actions: [
-            {
-              action: "removeAddress",
-              addressId: `${addressId}`,
-            },
-          ],
+          actions: [{ action, addressId }],
         });
         return response?.data as Customer;
       })

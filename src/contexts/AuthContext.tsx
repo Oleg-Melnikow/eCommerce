@@ -12,7 +12,11 @@ import { LoginType } from "types/InputTagProps";
 import API from "api/API";
 import toastOptions from "helpers/toastOptions";
 import { Customer, MyCustomerDraft } from "types/API/Customer";
-import { ActionAddressType, AddressForm } from "types/RegisterForm";
+import {
+  ActionAddressType,
+  AddressForm,
+  DeleteParamsType,
+} from "types/RegisterForm";
 import {
   AuthContext,
   AuthInitialState,
@@ -69,25 +73,22 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
     []
   );
 
-  const deleteUserAdress = useCallback(
-    async (version: number, id: string, addressId: string) => {
-      dispatch(loading(true));
-      try {
-        const clientAPI = API.getInstance();
-        const response = await clientAPI?.deleteAddress(version, id, addressId);
-        if (response) {
-          saveUserData(response);
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error?.message, toastOptions);
-        }
-      } finally {
-        dispatch(loading(false));
+  const changeUserAdress = useCallback(async (params: DeleteParamsType) => {
+    dispatch(loading(true));
+    try {
+      const clientAPI = API.getInstance();
+      const response = await clientAPI?.changeAddress(params);
+      if (response) {
+        saveUserData(response);
       }
-    },
-    []
-  );
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error?.message, toastOptions);
+      }
+    } finally {
+      dispatch(loading(false));
+    }
+  }, []);
 
   const initializeAccount = async (): Promise<void> => {
     try {
@@ -195,7 +196,7 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
       signup,
       tokenReceiving,
       updateUserAdress,
-      deleteUserAdress,
+      changeUserAdress,
     }),
     [
       state,
@@ -204,7 +205,7 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
       signup,
       tokenReceiving,
       updateUserAdress,
-      deleteUserAdress,
+      changeUserAdress,
     ]
   );
 
