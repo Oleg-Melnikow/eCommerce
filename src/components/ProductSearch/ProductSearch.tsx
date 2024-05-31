@@ -1,42 +1,50 @@
 import { Box, Divider, IconButton, Input, Paper } from "@mui/material";
-import { ChangeEvent, KeyboardEvent, ReactElement, useState } from "react";
+import { ChangeEvent, KeyboardEvent, ReactElement } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import useProduct from "hooks/use-product";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export function ProductSearch(): ReactElement {
-  const { getProductsCategory, currentCategory, setCategory, getProductsData } =
-    useProduct();
+  const {
+    getProductsCategory,
+    currentCategory,
+    setCategory,
+    getAllProducts,
+    querySearch,
+    querySearchUpdate,
+    setSort,
+  } = useProduct();
   const { search } = useLocation();
   const navigate = useNavigate();
-  const [searchValue, setSearchValue] = useState("");
 
   const onSearchProducts = async (): Promise<void> => {
-    if (searchValue.length >= 1) {
-      await getProductsCategory(undefined, searchValue);
+    if (querySearch.length >= 1) {
+      setSort("default");
+      await getProductsCategory(querySearch, "search");
+      navigate(`/catalog?search=${querySearch}`);
       if (currentCategory) {
-        setCategory(null);
+        setCategory(null, true);
       }
-      navigate(`/catalog?search=${searchValue}`);
     }
   };
 
   const handleQueryKeyup = (event: KeyboardEvent<HTMLInputElement>): void => {
-    if (event.code === "Enter" && searchValue) {
+    if (event.code === "Enter" && querySearch) {
       onSearchProducts();
     }
   };
 
   const handleQueryChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setSearchValue(event.target.value);
+    querySearchUpdate(event.target.value);
   };
 
   const resetSearch = async (): Promise<void> => {
-    setSearchValue("");
-    if (search) {
+    querySearchUpdate("");
+    if (search && querySearch) {
       navigate(`/catalog`);
-      await getProductsData();
+      setSort("default");
+      await getAllProducts();
     }
   };
 
@@ -70,7 +78,7 @@ export function ProductSearch(): ReactElement {
             onChange={handleQueryChange}
             onKeyUp={handleQueryKeyup}
             placeholder="Search product"
-            value={searchValue}
+            value={querySearch}
           />
         </Box>
         <IconButton onClick={onSearchProducts}>

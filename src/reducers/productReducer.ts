@@ -12,6 +12,8 @@ interface ProductStateType extends ProductPage {
   currentProduct: ProductData | null;
   isLoading: boolean;
   isInitialize: boolean;
+  querySearch: string;
+  sortValue: string;
 }
 
 export const ProductInitialState: ProductStateType = {
@@ -26,6 +28,8 @@ export const ProductInitialState: ProductStateType = {
   currentProduct: null,
   isLoading: false,
   isInitialize: false,
+  querySearch: "",
+  sortValue: "default",
 };
 
 export const productReducer = (
@@ -41,9 +45,19 @@ export const productReducer = (
     case "products/eCommerce/SET-CURRENT-CATEGORY":
     case "products/eCommerce/SET-IS-INITIALAZE":
     case "products/eCommerce/SET-CURRENT-PRODUCT":
+    case "products/eCommerce/SET-QUERY-SEARCH":
+    case "products/eCommerce/SET-SORT-TYPE":
       return {
         ...state,
         ...action.payload,
+      };
+    case "products/eCommerce/CLEAR-PRODUCTS":
+      return {
+        ...state,
+        currentCategory: null,
+        products: [],
+        querySearch: "",
+        sortValue: "default",
       };
     default:
       return state;
@@ -52,6 +66,9 @@ export const productReducer = (
 
 export const getProducts = (products: Product[]) =>
   ({ type: "products/eCommerce/GET-PRODUCTS", payload: { products } }) as const;
+
+export const clearProducts = () =>
+  ({ type: "products/eCommerce/CLEAR-PRODUCTS" }) as const;
 
 export const getCategories = (categories: Category[]) =>
   ({
@@ -95,6 +112,18 @@ export const setInitialize = (isInitialize: boolean) =>
     payload: { isInitialize },
   }) as const;
 
+export const setQuerySearch = (querySearch: string) =>
+  ({
+    type: "products/eCommerce/SET-QUERY-SEARCH",
+    payload: { querySearch },
+  }) as const;
+
+export const setSortType = (sortValue: string) =>
+  ({
+    type: "products/eCommerce/SET-SORT-TYPE",
+    payload: { sortValue },
+  }) as const;
+
 type ActionsType =
   | ReturnType<typeof getProducts>
   | ReturnType<typeof loading>
@@ -103,21 +132,36 @@ type ActionsType =
   | ReturnType<typeof getCategories>
   | ReturnType<typeof getParentCategories>
   | ReturnType<typeof setCurrentCategory>
-  | ReturnType<typeof setInitialize>;
+  | ReturnType<typeof setInitialize>
+  | ReturnType<typeof setQuerySearch>
+  | ReturnType<typeof clearProducts>
+  | ReturnType<typeof setSortType>;
 
 export interface ProductContextValue extends ProductStateType {
-  getProductsData: () => Promise<void>;
+  getAllProducts: () => Promise<void>;
   getCategoriesData: () => Promise<void>;
-  getProductsCategory: (id?: string, search?: string) => Promise<void>;
-  setCategory: (category: CurrentCategory) => Promise<void>;
+  getProductsCategory: (
+    value: string,
+    type: "id" | "search" | "sort",
+    filter?: { [key: string]: string } | null
+  ) => Promise<void>;
+  setCategory: (category: CurrentCategory, isSearch?: boolean) => Promise<void>;
   chooseProduct: (id: string) => Promise<void>;
+  sortProducts: (sort: string) => Promise<void>;
+  querySearchUpdate: (querySearch: string) => void;
+  getProductsCurrentData: (categories: Category[]) => Promise<void>;
+  setSort: (sort: string) => void;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
   ...ProductInitialState,
-  getProductsData: () => Promise.resolve(),
+  getAllProducts: () => Promise.resolve(),
   getCategoriesData: () => Promise.resolve(),
   getProductsCategory: () => Promise.resolve(),
   setCategory: () => Promise.resolve(),
   chooseProduct: () => Promise.resolve(),
+  sortProducts: () => Promise.resolve(),
+  getProductsCurrentData: () => Promise.resolve(),
+  querySearchUpdate: () => {},
+  setSort: () => {},
 });

@@ -22,9 +22,14 @@ import {
   setCurrentCategory,
   setInitialize,
   setCurrentProduct,
+  setQuerySearch,
+  clearProducts,
+  setSortType,
 } from "reducers/productReducer";
 import { Product } from "types/API/Product";
 import { useLocation, useSearchParams } from "react-router-dom";
+import { sortingData } from "helpers/static-data";
+import { Category } from "types/API/Category";
 
 interface ProviderProps {
   children: ReactNode;
@@ -34,9 +39,9 @@ export function ProductProvider(props: ProviderProps): ReactElement {
   const { children } = props;
   const [state, dispatch] = useReducer(productReducer, ProductInitialState);
   const [searchParams] = useSearchParams();
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
 
-  const getProductsData = useCallback(async () => {
+  const getAllProducts = useCallback(async () => {
     dispatch(loading(true));
     try {
       const clientAPI = API.getInstance();
@@ -60,15 +65,29 @@ export function ProductProvider(props: ProviderProps): ReactElement {
   }, []);
 
   const getProductsCategory = useCallback(
-    async (id?: string, searchValue?: string) => {
+    async (
+      value: string,
+      type: "id" | "search" | "sort",
+      filter?: { [key: string]: string | boolean } | null
+    ) => {
       dispatch(loading(true));
       try {
-        let filter = `categories.id: subtree("${id}")`;
-        if (searchValue) {
-          filter = `searchKeywords.en.text:"${searchValue}"`;
+        let params = {};
+        if (type === "id") {
+          params = { filter: `categories.id: subtree("${value}")` };
+        }
+        if (type === "search") {
+          // params = { filter: `searchKeywords.en.text:"${value}"` };
+          params = { "text.en": value, fuzzy: true };
+        }
+        if (type === "sort") {
+          params = { sort: value };
+          if (filter) {
+            params = { ...filter, ...params };
+          }
         }
         const clientAPI = API.getInstance();
-        const response = await clientAPI?.getProductsProjection(filter);
+        const response = await clientAPI?.getProductsProjection(params);
         if (response) {
           const { count, limit, offset, results, total } = response;
           dispatch(getProducts(results));
@@ -85,6 +104,57 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     []
   );
 
+  const sortProducts = useCallback(
+    async (sort: string) => {
+      if (sort !== "default") {
+        let filter = null;
+        if (state.currentCategory) {
+          const { id } = state.currentCategory;
+          filter = { filter: `categories.id: subtree("${id}")` };
+        }
+        if (state.querySearch) {
+          filter = { filter: `searchKeywords.en.text:"${state.querySearch}"` };
+          filter = { "text.en": state.querySearch, fuzzy: true };
+        }
+        await getProductsCategory(sort, "sort", filter);
+      } else if (state.currentCategory) {
+        await getProductsCategory(state.currentCategory.id, "id");
+      } else if (state.querySearch) {
+        await getProductsCategory(state.querySearch, "search");
+      }
+    },
+    [getProductsCategory, state.currentCategory, state.querySearch]
+  );
+
+  const getProductsCurrentData = useCallback(
+    async (categories: Category[]): Promise<void> => {
+      const category = pathname.split("/");
+      const categoryName = category[category.length - 1];
+      const current = categories.find((el) => el.key === categoryName);
+      if (current) {
+        await getProductsCategory(current.id, "id");
+        dispatch(setCurrentCategory(current));
+      } else if (searchParams.size) {
+        const searchKeywords = searchParams.get("search");
+        const sort = searchParams.get("sort");
+
+        if (searchKeywords) {
+          await getProductsCategory(searchKeywords, "search");
+        }
+        if (sort) {
+          const sortValue = sortingData.find((item) => item.query === sort);
+          if (sortValue) {
+            dispatch(setSortType(sortValue.value));
+            await sortProducts(sortValue.value);
+          }
+        }
+      } else {
+        await getAllProducts();
+      }
+    },
+    [getProductsCategory, getAllProducts, pathname, searchParams, sortProducts]
+  );
+
   const getCategoriesData = useCallback(async () => {
     dispatch(loading(true));
     try {
@@ -99,23 +169,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
 
         dispatch(getParentCategories(parentCategories));
 
-        const category = pathname.split("/");
-        const categoryName = category[category.length - 1];
-        const current = categories.results.find(
-          (el) => el.key === categoryName
-        );
-
-        if (current) {
-          await getProductsCategory(current.id);
-        } else if (searchParams) {
-          const searchKeywords = searchParams.get("search");
-
-          if (searchKeywords) {
-            await getProductsCategory(undefined, searchKeywords);
-          }
-        } else {
-          await getProductsData();
-        }
+        await getProductsCurrentData(categories.results);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -124,18 +178,20 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     } finally {
       dispatch(loading(false));
     }
-  }, [getProductsCategory, getProductsData, pathname, searchParams]);
+  }, [getProductsCurrentData]);
 
   const setCategory = useCallback(
-    async (category: CurrentCategory) => {
+    async (category: CurrentCategory, isSearch?: boolean) => {
       dispatch(setCurrentCategory(category));
+      dispatch(setQuerySearch(""));
+      dispatch(setSortType("default"));
       if (category) {
-        await await getProductsCategory(category.id);
-      } else if (!search) {
-        await getProductsData();
+        await getProductsCategory(category.id, "id");
+      } else if (!isSearch) {
+        await getAllProducts();
       }
     },
-    [getProductsCategory, getProductsData, search]
+    [getProductsCategory, getAllProducts]
   );
 
   const initializeCatalog = useCallback(async (): Promise<void> => {
@@ -158,15 +214,9 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       initializeCatalog();
     }
     if (!isCatalog) {
-      dispatch(setCurrentCategory(null));
-      dispatch(getProducts([]));
+      dispatch(clearProducts());
     }
-  }, [
-    initializeCatalog,
-    pathname,
-    state.currentCategory,
-    state.parentCategories.length,
-  ]);
+  }, [initializeCatalog, pathname, state.parentCategories.length]);
 
   const chooseProduct = useCallback(async (id: string) => {
     dispatch(loading(true));
@@ -180,22 +230,38 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
+  const querySearchUpdate = useCallback((querySearch: string): void => {
+    dispatch(setQuerySearch(querySearch));
+  }, []);
+
+  const setSort = useCallback((sort: string): void => {
+    dispatch(setSortType(sort));
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       ...state,
-      getProductsData,
+      getAllProducts,
       getCategoriesData,
       getProductsCategory,
       setCategory,
       chooseProduct,
+      sortProducts,
+      querySearchUpdate,
+      setSort,
+      getProductsCurrentData,
     }),
     [
       state,
-      getProductsData,
+      getAllProducts,
       getCategoriesData,
       getProductsCategory,
       setCategory,
       chooseProduct,
+      sortProducts,
+      querySearchUpdate,
+      setSort,
+      getProductsCurrentData,
     ]
   );
 

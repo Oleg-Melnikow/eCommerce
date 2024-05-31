@@ -62,9 +62,25 @@ const countriesData: CountryData[] = [
   { value: "US", label: "USA" },
 ];
 
-type CountryData = {
+interface CountryData {
   value: string;
   label: string;
-};
+}
 
-export { LinkAccount, navLinksToAccount, countriesData };
+interface SortingType extends CountryData {
+  query?: string;
+}
+
+const sortingData: SortingType[] = [
+  { value: "price asc", label: "By price (cheaper first)", query: "cheaper" },
+  {
+    value: "price desc",
+    label: "By price (more expensive first)",
+    query: "expensive",
+  },
+  { value: "name.en asc", label: "By name (ascending)", query: "nameASC" },
+  { value: "name.en desc", label: "By name (descending)", query: "nameDESC" },
+  { value: "default", label: "By default" },
+];
+
+export { LinkAccount, navLinksToAccount, countriesData, sortingData };
