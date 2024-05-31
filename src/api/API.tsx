@@ -10,7 +10,7 @@ import { ProductData, Products, ProductsSearch } from "types/API/Product";
 import { Categories } from "types/API/Category";
 import { AuthContextValue } from "reducers/authReducer";
 import errorHandler from "helpers/errorHandler";
-import { AddressForm } from "types/RegisterForm";
+import { ActionAddressType, AddressForm } from "types/RegisterForm";
 
 export default class API {
   protected static instance: API | null = null;
@@ -281,20 +281,13 @@ export default class API {
   public async updateAddress(
     id: string,
     version: number,
-    addressId: string,
-    address: AddressForm
+    action: ActionAddressType
   ): Promise<Customer> {
     return this.createAPI()
       .then(async () => {
         const response = await this.apiInstance?.post(`/customers/${id}`, {
           version,
-          actions: [
-            {
-              action: "changeAddress",
-              addressId: `${addressId}`,
-              address,
-            },
-          ],
+          actions: [{ ...action }],
         });
         return response?.data as Customer;
       })

@@ -69,8 +69,8 @@ export interface AuthContextValue extends AuthStateType {
   updateUserAdress: (
     id: string,
     version: number,
-    addressId: string,
-    address: AddressForm
+    address: AddressForm,
+    addressId?: string
   ) => Promise<void>;
   deleteUserAdress: (
     version: number,

@@ -23,12 +23,13 @@ type FormValues = {
 };
 
 type PropsType = {
-  address: Address;
+  address?: Address;
 };
 
-export function UpdateAddressForm({ address }: PropsType): ReactElement {
-  const { country, city, streetName, postalCode, id } = address;
-  const { user, updateUserAdress, deleteUserAdress } = useAuth();
+export function UpdateAddressForm({
+  address = undefined,
+}: PropsType): ReactElement {
+  const { user, updateUserAdress } = useAuth();
   const {
     control,
     handleSubmit,
@@ -41,6 +42,8 @@ export function UpdateAddressForm({ address }: PropsType): ReactElement {
     mode: "all",
     resolver: zodResolver(validateAdress),
   });
+
+  const size = address ? 6 : 12;
 
   const checkPostCode = (code: string, countryValue: string): void => {
     const error = validatePostalCode(code, countryValue);
@@ -69,17 +72,12 @@ export function UpdateAddressForm({ address }: PropsType): ReactElement {
     checkPostCode(value, countryValue);
   };
 
-  const removeAddress = async (): Promise<void> => {
-    if (user && id) {
-      await deleteUserAdress(user.version, user.id, id);
-    }
-  };
-
   const onSubmit: SubmitHandler<FormValues> = async (dataForm: FormValues) => {
-    const result = { ...dataForm, id };
-
-    if (user && id) {
-      await updateUserAdress(user.id, user.version, id, dataForm);
+    if (user && address?.id) {
+      await updateUserAdress(user.id, user.version, dataForm, address.id);
+    }
+    if (user && !address) {
+      await updateUserAdress(user.id, user.version, dataForm);
     }
   };
 
@@ -87,10 +85,10 @@ export function UpdateAddressForm({ address }: PropsType): ReactElement {
     <form onSubmit={handleSubmit(onSubmit)}>
       <CardContent>
         <Grid container xs={12} spacing={1} item>
-          <Grid item md={6} xs={12}>
+          <Grid item md={size} xs={12}>
             <Controller
               name="country"
-              defaultValue={country}
+              defaultValue={address?.country || ""}
               control={control}
               render={({ field: { onChange, value, name } }) => (
                 <SelectTag
@@ -106,10 +104,10 @@ export function UpdateAddressForm({ address }: PropsType): ReactElement {
               )}
             />
           </Grid>
-          <Grid item md={6} xs={12}>
+          <Grid item md={size} xs={12}>
             <Controller
               name="postalCode"
-              defaultValue={postalCode}
+              defaultValue={address?.postalCode || ""}
               control={control}
               render={({ field: { value, name } }) => (
                 <InputTag
@@ -124,10 +122,10 @@ export function UpdateAddressForm({ address }: PropsType): ReactElement {
               )}
             />
           </Grid>
-          <Grid item md={6} xs={12}>
+          <Grid item md={size} xs={12}>
             <Controller
               name="city"
-              defaultValue={city}
+              defaultValue={address?.city || ""}
               control={control}
               render={({ field: { onChange, value, name } }) => (
                 <InputTag
@@ -142,10 +140,10 @@ export function UpdateAddressForm({ address }: PropsType): ReactElement {
               )}
             />
           </Grid>
-          <Grid item md={6} xs={12}>
+          <Grid item md={size} xs={12}>
             <Controller
               name="streetName"
-              defaultValue={streetName}
+              defaultValue={address?.streetName || ""}
               control={control}
               render={({ field: { onChange, value, name } }) => (
                 <InputTag
@@ -161,12 +159,9 @@ export function UpdateAddressForm({ address }: PropsType): ReactElement {
             />
           </Grid>
         </Grid>
-        <Box sx={{ display: "flex", py: 1, gap: "10px" }}>
+        <Box sx={{ py: 1 }}>
           <Button type="submit" variant="contained" color="success">
-            Update
-          </Button>
-          <Button variant="contained" color="error" onClick={removeAddress}>
-            Delete
+            {address ? "Update" : "Add Address"}
           </Button>
         </Box>
       </CardContent>

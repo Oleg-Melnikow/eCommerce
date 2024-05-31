@@ -12,7 +12,7 @@ import { LoginType } from "types/InputTagProps";
 import API from "api/API";
 import toastOptions from "helpers/toastOptions";
 import { Customer, MyCustomerDraft } from "types/API/Customer";
-import { AddressForm } from "types/RegisterForm";
+import { ActionAddressType, AddressForm } from "types/RegisterForm";
 import {
   AuthContext,
   AuthInitialState,
@@ -41,18 +41,20 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
     async (
       id: string,
       version: number,
-      addressId: string,
-      address: AddressForm
+      address: AddressForm,
+      addressId?: string
     ): Promise<void> => {
       dispatch(loading(true));
       try {
+        let action: ActionAddressType = {
+          action: addressId ? "changeAddress" : "addAddress",
+          address,
+        };
+        if (addressId) {
+          action = { ...action, addressId };
+        }
         const clientAPI = API.getInstance();
-        const response = await clientAPI?.updateAddress(
-          id,
-          version,
-          addressId,
-          address
-        );
+        const response = await clientAPI?.updateAddress(id, version, action);
         if (response) {
           saveUserData(response);
         }

@@ -15,3 +15,9 @@ export type FormTypeRegister = {
   shippingAddress: AddressForm;
   billingAddress: AddressForm;
 };
+
+export type ActionAddressType = {
+  action: string;
+  address: AddressForm;
+  addressId?: string;
+};
