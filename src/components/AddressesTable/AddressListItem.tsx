@@ -1,9 +1,16 @@
 import { Fragment, ReactElement } from "react";
-import { Chip, IconButton, TableCell, TableRow } from "@mui/material";
+import {
+  Box,
+  Chip,
+  IconButton,
+  TableCell,
+  TableRow,
+  Tooltip,
+} from "@mui/material";
 import useAuth from "hooks/use-auth";
-
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { Address, Customer } from "types/API/Customer";
 import { UpdateAddressForm } from "./UpdateAddressForm";
 
@@ -31,11 +38,20 @@ function AddressType({ user, id }: AddressTypePropsType): ReactElement {
   };
 
   return (
-    <TableCell align="right" sx={{ display: "flex", gap: "5px" }}>
-      {defaultBillingAddressId === id && <Chip label="Default billing" />}
-      {defaultShippingAddressId === id && <Chip label="Default shipping" />}
-      {checkAddress(billingAddressIds) && <Chip label="Billing" />}
-      {checkAddress(shippingAddressIds) && <Chip label="Shipping" />}
+    <TableCell align="center">
+      <Box
+        sx={{
+          height: "100%",
+          display: "flex",
+          gap: "5px",
+          justifyContent: "center",
+        }}
+      >
+        {defaultBillingAddressId === id && <Chip label="Default billing" />}
+        {defaultShippingAddressId === id && <Chip label="Default shipping" />}
+        {checkAddress(billingAddressIds) && <Chip label="Billing" />}
+        {checkAddress(shippingAddressIds) && <Chip label="Shipping" />}
+      </Box>
     </TableCell>
   );
 }
@@ -46,12 +62,18 @@ export function AddressListItem({
   handleOpenAddress: handleOpenProduct,
 }: PropsType): ReactElement {
   const { country, city, streetName, postalCode, id } = address;
-  const { user } = useAuth();
+  const { user, deleteUserAdress } = useAuth();
 
   const open = id === openAddress;
 
   const openAddressForm = (): void => {
     handleOpenProduct(id || "");
+  };
+
+  const removeAddress = async (): Promise<void> => {
+    if (user && id) {
+      await deleteUserAdress(user.version, user.id, id);
+    }
   };
 
   return (
@@ -88,6 +110,13 @@ export function AddressListItem({
         <TableCell align="center">{streetName}</TableCell>
         <TableCell align="center">{postalCode}</TableCell>
         {user && <AddressType user={user} id={id || ""} />}
+        <TableCell align="right">
+          <Tooltip title="Delete">
+            <IconButton onClick={removeAddress}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </TableCell>
       </TableRow>
       {open && (
         <TableRow sx={{ background: "#fafafa" }}>
