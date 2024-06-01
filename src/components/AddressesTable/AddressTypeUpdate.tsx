@@ -27,8 +27,6 @@ export function AddressTypeUpdate({ id }: PropsType): ReactElement {
         version: user.version,
       });
     }
-
-    console.log(event.target.checked, event.target.name);
   };
 
   const onChangeAddressType = async (
