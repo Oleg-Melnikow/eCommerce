@@ -1,5 +1,18 @@
 import { z } from "zod";
 
+const passwordValid = z
+  .string({ message: "Password is a required field" })
+  .regex(/^\S*$/, "Leading spaces are not allowed")
+  .regex(/(?=.*[A-Z])/, "Must contain at least one uppercase letter")
+  .regex(/(?=.*[a-z])/, "Must contain at least one lowercase letter")
+  .regex(/(?=.*[0-9])/, "Must contain at least one digit")
+  .regex(
+    /(?=.*[!@#\\$%\\^&\\*])/,
+    "Must contain at least one special character"
+  )
+  .min(8)
+  .max(32);
+
 const loginSchema = z.object({
   email: z
     .string({ message: "Email is a required field" })
@@ -7,18 +20,7 @@ const loginSchema = z.object({
     .includes("@", { message: `Email must be include '@'` })
     .regex(/@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/, "Domain not allowed")
     .email({ message: "Email is not valid" }),
-  password: z
-    .string({ message: "Password is a required field" })
-    .regex(/^\S*$/, "Leading spaces are not allowed")
-    .regex(/(?=.*[A-Z])/, "Must contain at least one uppercase letter")
-    .regex(/(?=.*[a-z])/, "Must contain at least one lowercase letter")
-    .regex(/(?=.*[0-9])/, "Must contain at least one digit")
-    .regex(
-      /(?=.*[!@#\\$%\\^&\\*])/,
-      "Must contain at least one special character"
-    )
-    .min(8)
-    .max(32),
+  password: passwordValid,
 });
 
 const validateAdress = z.object({
@@ -47,8 +49,19 @@ const registrationSchema = z.object({
   billingAddress: validateAdress,
 });
 
+const changePasswordSchema = z.object({
+  currentPassword: passwordValid,
+  newPassword: passwordValid,
+});
+
 const registration = registrationSchema.merge(loginSchema);
 
 const registrationFull = registration.omit({ billingAddress: true });
 
-export { registration, loginSchema, registrationFull, validateAdress };
+export {
+  registration,
+  loginSchema,
+  registrationFull,
+  validateAdress,
+  changePasswordSchema,
+};

@@ -37,3 +37,10 @@ export type AddressActionType =
   | "removeShippingAddressId"
   | "addBillingAddressId"
   | "removeBillingAddressId";
+
+export interface ChangePasswordType {
+  id: string;
+  version: number;
+  currentPassword: string;
+  newPassword: string;
+}
