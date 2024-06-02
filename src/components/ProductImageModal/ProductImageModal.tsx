@@ -24,7 +24,8 @@ function ProductImageModal({
       key={`${image.url}`}
       sx={{
         display: `${index === currentImageIndex ? "block" : "none"}`,
-        maxWidth: "100%",
+        maxWidth: "90%",
+        minHeight: "calc(80vh - 100px)",
       }}
     >
       <img
@@ -33,7 +34,9 @@ function ProductImageModal({
         draggable="false"
         style={{
           maxWidth: "100%",
+          height: "100%",
           objectFit: "contain",
+          objectPosition: "top",
         }}
       />
     </Box>
@@ -43,8 +46,9 @@ function ProductImageModal({
     <Backdrop
       open={open}
       sx={{
-        display: "flex",
-        alignItems: "center",
+        maxWidth: "100vw",
+        alignItems: "start",
+        pt: "100px",
         zIndex: (theme) => theme.zIndex.drawer + 1,
         backdropFilter: "blur(10px)",
       }}
@@ -55,10 +59,10 @@ function ProductImageModal({
           position: "absolute",
           top: "25px",
           right: "25px",
-          height: "20px",
-          width: "20px",
+          height: "40px",
+          width: "40px",
           color: "#fff",
-          backgroundColor: "#727272",
+          backgroundColor: "#000",
         }}
       >
         <CloseIcon />
@@ -67,7 +71,8 @@ function ProductImageModal({
         className="product-modal__slider-wrap"
         sx={{
           display: "flex",
-          maxHeight: "80vh",
+          justifyContent: "center",
+          height: "80%",
           maxWidth: "100%",
         }}
       >
