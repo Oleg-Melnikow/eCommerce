@@ -1,10 +1,17 @@
 import { Box, Button } from "@mui/material";
-import "./MainPage.scss";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import { NavLink } from "react-router-dom";
+import "./MainPage.scss";
 
 function MainPage(): ReactElement {
-  const links = ["about", "catalog", "basket", "login", "registration"];
+  const links = [
+    "about",
+    "catalog",
+    "basket",
+    "login",
+    "registration",
+    "profile",
+  ];
 
   return (
     <div className="main-page" style={{ marginTop: "50px" }}>

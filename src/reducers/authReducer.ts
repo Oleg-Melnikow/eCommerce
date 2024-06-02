@@ -5,6 +5,7 @@ import {
   AddressForm,
   ChangePasswordType,
   DeleteParamsType,
+  PersonalDataType,
 } from "types/RegisterForm";
 
 interface AuthStateType {
@@ -78,6 +79,7 @@ export interface AuthContextValue extends AuthStateType {
   ) => Promise<void>;
   changeUserAdress: (params: DeleteParamsType) => Promise<void>;
   changePassword: (passwordData: ChangePasswordType) => Promise<void>;
+  changePersonalData: (personalData: PersonalDataType) => Promise<void>;
   tokenReceiving: () => void;
 }
 
@@ -89,5 +91,6 @@ export const AuthContext = createContext<AuthContextValue>({
   updateUserAdress: () => Promise.resolve(),
   changeUserAdress: () => Promise.resolve(),
   changePassword: () => Promise.resolve(),
+  changePersonalData: () => Promise.resolve(),
   tokenReceiving: () => {},
 });

@@ -88,7 +88,7 @@ export interface Customer {
   email: string;
   defaultShippingAddressId?: string;
   defaultBillingAddressId?: string;
-  dateOfBirth?: Date;
+  dateOfBirth?: string;
   customerNumber?: string;
   createdBy?: CreatedBy;
   createdAt: Date;

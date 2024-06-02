@@ -14,6 +14,7 @@ import {
   ActionAddressType,
   ChangePasswordType,
   DeleteParamsType,
+  PersonalDataType,
 } from "types/RegisterForm";
 
 export default class API {
@@ -330,6 +331,45 @@ export default class API {
       .then(async () => {
         const response = await this.apiInstance?.post(`/customers/password`, {
           ...passwordData,
+        });
+        return response?.data as Customer;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
+  }
+
+  public async changePersonalData({
+    dateOfBirth,
+    email,
+    firstName,
+    id,
+    lastName,
+    version,
+  }: PersonalDataType): Promise<Customer> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.post(`/customers/${id}`, {
+          version,
+          actions: [
+            {
+              action: "changeEmail",
+              email,
+            },
+            {
+              action: "setFirstName",
+              firstName,
+            },
+            {
+              action: "setLastName",
+              lastName,
+            },
+            {
+              action: "setDateOfBirth",
+              dateOfBirth,
+            },
+          ],
         });
         return response?.data as Customer;
       })
