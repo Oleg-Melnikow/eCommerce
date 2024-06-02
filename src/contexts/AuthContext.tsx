@@ -17,6 +17,7 @@ import {
   AddressForm,
   ChangePasswordType,
   DeleteParamsType,
+  PersonalDataType,
 } from "types/RegisterForm";
 import {
   AuthContext,
@@ -41,6 +42,30 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
     localStorage.setItem("userProfile", JSON.stringify(response));
     dispatch(initialize(true, response));
   };
+
+  const changePersonalData = useCallback(
+    async (personalData: PersonalDataType) => {
+      dispatch(loading(true));
+      try {
+        const clientAPI = API.getInstance();
+        const response = await clientAPI?.changePersonalData(personalData);
+        if (response) {
+          saveUserData(response);
+        }
+        toast.success(
+          "Personal information was changed successfully!",
+          toastOptions
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error?.message, toastOptions);
+        }
+      } finally {
+        dispatch(loading(false));
+      }
+    },
+    []
+  );
 
   const changePassword = useCallback(
     async (passwordData: ChangePasswordType) => {
@@ -215,6 +240,9 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
         navigate("/");
       }
     }
+    if (pathname.includes("profile") && !userLogined) {
+      navigate("/login");
+    }
   }, [pathname, navigate]);
 
   const contextValue = useMemo(
@@ -227,6 +255,7 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
       updateUserAdress,
       changeUserAdress,
       changePassword,
+      changePersonalData,
     }),
     [
       state,
@@ -237,6 +266,7 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
       updateUserAdress,
       changeUserAdress,
       changePassword,
+      changePersonalData,
     ]
   );
 
