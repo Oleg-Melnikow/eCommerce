@@ -1,24 +1,13 @@
-import React, { SyntheticEvent, useEffect, useState } from "react";
-import useAuth from "hooks/use-auth";
-import { UserPersonalData } from "types/UserProfileDataProps/UserProfileDataProps";
+import React, { SyntheticEvent } from "react";
 import { ChangePasswordProfile } from "components/ChangePasswordProfile/ChangePasswordProfile";
+import { PersonalInformation } from "components/PersonalInformation/PersonalInformation";
 import { Box, Tab, Tabs } from "@mui/material";
 import CustomTabPanel from "../TabPanel/TabPanel";
-import TabPersonalData from "../TabPanelContent/TabUserPersonalData/TabPersonalData";
 import AddressesTable from "../TabPanelContent/TabAddressesData/TabAddressesData";
 import "./Tabs.scss";
 
 function BasicTabs(): JSX.Element {
-  const { user } = useAuth();
   const [value, setValue] = React.useState(0);
-  const [userPersonalData, setUserPersonalData] = useState<UserPersonalData>();
-
-  useEffect(() => {
-    if (user) {
-      const { firstName, lastName, dateOfBirth } = user;
-      setUserPersonalData({ firstName, lastName, dateOfBirth });
-    }
-  }, [user]);
 
   const handleChange = (event: SyntheticEvent, newValue: number): void => {
     setValue(newValue);
@@ -34,7 +23,7 @@ function BasicTabs(): JSX.Element {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        {userPersonalData && <TabPersonalData userData={userPersonalData} />}
+        <PersonalInformation />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <ChangePasswordProfile />

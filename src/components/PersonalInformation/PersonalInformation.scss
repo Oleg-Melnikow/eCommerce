@@ -1,0 +1,18 @@
+.user-personal {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  max-width: 320px;
+  gap: 10px;
+  h5 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
