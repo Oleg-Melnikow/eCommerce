@@ -151,6 +151,7 @@ export interface ProductContextValue extends ProductStateType {
   querySearchUpdate: (querySearch: string) => void;
   getProductsCurrentData: (categories: Category[]) => Promise<void>;
   setSort: (sort: string) => void;
+  getSearchProducts: (querySearch: string | null) => Promise<void>;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
@@ -162,6 +163,7 @@ export const ProductContext = createContext<ProductContextValue>({
   chooseProduct: () => Promise.resolve(),
   sortProducts: () => Promise.resolve(),
   getProductsCurrentData: () => Promise.resolve(),
+  getSearchProducts: () => Promise.resolve(),
   querySearchUpdate: () => {},
   setSort: () => {},
 });

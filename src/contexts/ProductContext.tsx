@@ -238,6 +238,21 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     dispatch(setSortType(sort));
   }, []);
 
+  const getSearchProducts = useCallback(
+    async (querySearch: string | null): Promise<void> => {
+      setSort("default");
+      if (state.currentCategory) {
+        dispatch(setCurrentCategory(null));
+      }
+      if (querySearch) {
+        await getProductsCategory(querySearch, "search");
+      } else {
+        await getAllProducts();
+      }
+    },
+    [getAllProducts, getProductsCategory, setSort, state.currentCategory]
+  );
+
   const contextValue = useMemo(
     () => ({
       ...state,
@@ -250,6 +265,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       querySearchUpdate,
       setSort,
       getProductsCurrentData,
+      getSearchProducts,
     }),
     [
       state,
@@ -262,6 +278,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       querySearchUpdate,
       setSort,
       getProductsCurrentData,
+      getSearchProducts,
     ]
   );
 
