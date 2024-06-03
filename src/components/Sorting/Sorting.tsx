@@ -62,7 +62,7 @@ export function Sorting(): ReactElement {
         display: "flex",
         alignSelf: "flex-end",
         justifyContent: "flex-end",
-        "@media (max-width: 510px)": {
+        "@media (max-width: 800px)": {
           justifyContent: "flex-start",
         },
       }}

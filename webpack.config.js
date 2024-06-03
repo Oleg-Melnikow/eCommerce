@@ -3,6 +3,11 @@ const Dotenv = require("dotenv-webpack");
 
 module.exports = {
   entry: path.resolve(__dirname, "./src/index"),
+  output: {
+    path: `${__dirname}/dist`,
+    filename: "bundle.js",
+    publicPath: "/",
+  },
   module: {
     rules: [
       {
