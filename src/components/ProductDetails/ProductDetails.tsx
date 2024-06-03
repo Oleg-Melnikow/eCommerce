@@ -1,15 +1,19 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import "./ProductDetails.scss";
 import ProductDetailsRadio from "components/ProductDetailsRadio/ProductDetailsRadio";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
 import { ProductData } from "types/API/Product";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
+import useProduct from "hooks/use-product";
 
 type PropsType = {
   product: ProductData;
 };
 
 function ProductDetails({ product }: PropsType): ReactElement {
+  const { getCategoriesCurrentProduct, currentProductCategories } =
+    useProduct();
+
   const line = (
     <div
       className="product-details__line"
@@ -22,13 +26,19 @@ function ProductDetails({ product }: PropsType): ReactElement {
     />
   );
 
+  useEffect(() => {
+    product?.masterData.current.categories.forEach(async (category) => {
+      await getCategoriesCurrentProduct(category.id);
+    });
+  }, [getCategoriesCurrentProduct, product?.masterData]);
+
   const { name, masterVariant, searchKeywords } = product.masterData.current;
   const { sku, prices } = masterVariant;
   const [price] = prices;
   const [title, categories, tags] = [
     name.en,
-    ["Potter Plants"],
-    searchKeywords.en.map((keyword) => keyword.text),
+    currentProductCategories.map((category) => category.name.en),
+    searchKeywords.en?.map((keyword) => keyword.text) ?? [],
   ];
   return (
     <div className="product-details">

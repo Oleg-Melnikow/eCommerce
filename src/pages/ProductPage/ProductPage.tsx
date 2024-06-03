@@ -11,7 +11,9 @@ function ProductPage(): ReactElement {
   const { currentProduct, chooseProduct, isLoading } = useProduct();
   const { id } = useParams();
   useEffect(() => {
-    if (id) chooseProduct(id);
+    if (id) {
+      chooseProduct(id);
+    }
   }, [id, chooseProduct]);
 
   return (

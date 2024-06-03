@@ -25,6 +25,7 @@ import {
   setQuerySearch,
   clearProducts,
   setSortType,
+  setCurrentProductCategories,
 } from "reducers/productReducer";
 import { Product } from "types/API/Product";
 import { useLocation, useSearchParams } from "react-router-dom";
@@ -238,6 +239,25 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     dispatch(setSortType(sort));
   }, []);
 
+  const getCategoriesCurrentProduct = useCallback(async (id: string) => {
+    try {
+      const categories: Category[] = [];
+      const category = await API.getInstance()?.getCategoriesById(id);
+      if (category) {
+        categories.push(category);
+        category.ancestors.forEach(async (ancestor) => {
+          const ancestorCategory = await API.getInstance()?.getCategoriesById(
+            ancestor.id
+          );
+          if (ancestorCategory) categories.push(ancestorCategory);
+          dispatch(setCurrentProductCategories(categories));
+        });
+      }
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    }
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       ...state,
@@ -250,6 +270,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       querySearchUpdate,
       setSort,
       getProductsCurrentData,
+      getCategoriesCurrentProduct,
     }),
     [
       state,
@@ -262,6 +283,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       querySearchUpdate,
       setSort,
       getProductsCurrentData,
+      getCategoriesCurrentProduct,
     ]
   );
 

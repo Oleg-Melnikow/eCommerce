@@ -14,6 +14,7 @@ interface ProductStateType extends ProductPage {
   isInitialize: boolean;
   querySearch: string;
   sortValue: string;
+  currentProductCategories: Category[];
 }
 
 export const ProductInitialState: ProductStateType = {
@@ -30,6 +31,7 @@ export const ProductInitialState: ProductStateType = {
   isInitialize: false,
   querySearch: "",
   sortValue: "default",
+  currentProductCategories: [],
 };
 
 export const productReducer = (
@@ -47,6 +49,7 @@ export const productReducer = (
     case "products/eCommerce/SET-CURRENT-PRODUCT":
     case "products/eCommerce/SET-QUERY-SEARCH":
     case "products/eCommerce/SET-SORT-TYPE":
+    case "products/eCommerce/SET-CURRENT-PRODUCT-CATEGORIES":
       return {
         ...state,
         ...action.payload,
@@ -124,6 +127,14 @@ export const setSortType = (sortValue: string) =>
     payload: { sortValue },
   }) as const;
 
+export const setCurrentProductCategories = (
+  currentProductCategories: Category[]
+) =>
+  ({
+    type: "products/eCommerce/SET-CURRENT-PRODUCT-CATEGORIES",
+    payload: { currentProductCategories },
+  }) as const;
+
 type ActionsType =
   | ReturnType<typeof getProducts>
   | ReturnType<typeof loading>
@@ -135,7 +146,8 @@ type ActionsType =
   | ReturnType<typeof setInitialize>
   | ReturnType<typeof setQuerySearch>
   | ReturnType<typeof clearProducts>
-  | ReturnType<typeof setSortType>;
+  | ReturnType<typeof setSortType>
+  | ReturnType<typeof setCurrentProductCategories>;
 
 export interface ProductContextValue extends ProductStateType {
   getAllProducts: () => Promise<void>;
@@ -151,6 +163,7 @@ export interface ProductContextValue extends ProductStateType {
   querySearchUpdate: (querySearch: string) => void;
   getProductsCurrentData: (categories: Category[]) => Promise<void>;
   setSort: (sort: string) => void;
+  getCategoriesCurrentProduct: (id: string) => Promise<void>;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
@@ -164,4 +177,5 @@ export const ProductContext = createContext<ProductContextValue>({
   getProductsCurrentData: () => Promise.resolve(),
   querySearchUpdate: () => {},
   setSort: () => {},
+  getCategoriesCurrentProduct: () => Promise.resolve(),
 });
