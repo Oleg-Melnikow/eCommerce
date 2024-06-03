@@ -68,6 +68,9 @@ interface ProductCurrent {
     sku: string;
     prices: Price[];
   };
+  searchKeywords: {
+    en: { text: string }[];
+  };
 }
 
 interface Product extends ProductCurrent {

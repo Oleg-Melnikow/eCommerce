@@ -22,13 +22,13 @@ function ProductDetails({ product }: PropsType): ReactElement {
     />
   );
 
-  const { name, masterVariant } = product.masterData.current;
+  const { name, masterVariant, searchKeywords } = product.masterData.current;
   const { sku, prices } = masterVariant;
   const [price] = prices;
   const [title, categories, tags] = [
     name.en,
     ["Potter Plants"],
-    ["Home", "Garden", "Plants"],
+    searchKeywords.en.map((keyword) => keyword.text),
   ];
   return (
     <div className="product-details">
