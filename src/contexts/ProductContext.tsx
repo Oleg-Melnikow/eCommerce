@@ -113,7 +113,6 @@ export function ProductProvider(props: ProviderProps): ReactElement {
           filter = { filter: `categories.id: subtree("${id}")` };
         }
         if (state.querySearch) {
-          filter = { filter: `searchKeywords.en.text:"${state.querySearch}"` };
           filter = { "text.en": state.querySearch, fuzzy: true };
         }
         await getProductsCategory(sort, "sort", filter);
@@ -121,9 +120,16 @@ export function ProductProvider(props: ProviderProps): ReactElement {
         await getProductsCategory(state.currentCategory.id, "id");
       } else if (state.querySearch) {
         await getProductsCategory(state.querySearch, "search");
+      } else {
+        await getAllProducts();
       }
     },
-    [getProductsCategory, state.currentCategory, state.querySearch]
+    [
+      state.currentCategory,
+      state.querySearch,
+      getProductsCategory,
+      getAllProducts,
+    ]
   );
 
   const getProductsCurrentData = useCallback(
