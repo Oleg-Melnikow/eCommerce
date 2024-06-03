@@ -89,8 +89,6 @@ export function ProductProvider(props: ProviderProps): ReactElement {
           params = { "text.en": value, fuzzy: true };
         }
         if (type === "sort") {
-          // debugger;
-          console.log("sort getProductsCategory");
           params = { sort: value };
           if (filter) {
             params = { ...filter, ...params };
@@ -127,7 +125,6 @@ export function ProductProvider(props: ProviderProps): ReactElement {
 
   const sortProducts = useCallback(
     async (sort: string) => {
-      debugger;
       if (sort !== "default") {
         let filter: Array<object | string> = [];
         if (state.currentCategory) {
@@ -146,7 +143,6 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       } else if (state.querySearch) {
         await getProductsCategory(state.querySearch, "search");
       } else {
-        console.log("sortProducts");
         await getAllProducts();
       }
     },
@@ -182,7 +178,6 @@ export function ProductProvider(props: ProviderProps): ReactElement {
           }
         }
       } else {
-        console.log("getProductsCurrentData");
         await getAllProducts();
       }
     },
@@ -222,7 +217,6 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       if (category) {
         await getProductsCategory(category.id, "id");
       } else if (!isSearch) {
-        console.log("setCategory");
         await getAllProducts();
       }
     },
@@ -277,9 +271,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     async (filters: string[]): Promise<void> => {
       dispatch(setProductsFilters(filters));
       dispatch(setSortType("default"));
-      debugger;
       if (filters.length) {
-        console.log(state.currentCategory);
         let filterArray = [...filters];
         if (state.currentCategory) {
           const { id } = state.currentCategory;
@@ -289,7 +281,6 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       } else if (state.currentCategory) {
         await getProductsCategory(state.currentCategory.id, "id");
       } else if (!searchParams.size) {
-        console.log("setFilters");
         await getAllProducts();
       }
     },
@@ -310,7 +301,6 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       if (querySearch) {
         await getProductsCategory(querySearch, "search");
       } else {
-        console.log("getSearchProducts");
         await getAllProducts();
       }
     },

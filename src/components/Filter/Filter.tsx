@@ -91,7 +91,6 @@ export function Filter(): ReactElement {
   };
 
   useEffect(() => {
-    console.log(search);
     if (search.includes("search")) {
       resetFilter();
     }
