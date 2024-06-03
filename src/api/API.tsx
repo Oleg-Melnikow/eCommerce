@@ -257,7 +257,6 @@ export default class API {
       });
   }
 
-
   public async getCategoriesById(id: string): Promise<Category> {
     try {
       const response = await this.apiInstance?.get(`/categories/${id}`);
@@ -268,7 +267,6 @@ export default class API {
       throw new Error(message);
     }
   }
-
 
   public async getProductsProjection(params: object): Promise<ProductsSearch> {
     return this.createAPI()

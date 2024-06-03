@@ -156,7 +156,7 @@ type ActionsType =
   | ReturnType<typeof setQuerySearch>
   | ReturnType<typeof clearProducts>
   | ReturnType<typeof setSortType>
-  | ReturnType<typeof setCurrentProductCategories>;
+  | ReturnType<typeof setCurrentProductCategories>
   | ReturnType<typeof setProductsFilters>;
 
 export interface ProductContextValue extends ProductStateType {
