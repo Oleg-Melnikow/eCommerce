@@ -230,7 +230,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
   );
 
   const initializeCatalog = useCallback(async (): Promise<void> => {
-    dispatch(loading(false));
+    dispatch(loading(true));
     try {
       await getCategoriesData();
       dispatch(setInitialize(true));

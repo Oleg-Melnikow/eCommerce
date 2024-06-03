@@ -40,7 +40,7 @@ function ProductImageModal({
     <Box
       sx={{
         display: "flex",
-        justifyContent: "space-between",
+        justifyContent: "space-around",
         backgroundColor: "#3d3d3d3d",
         width: "100%",
         borderRadius: "20px",
@@ -101,7 +101,7 @@ function ProductImageModal({
         >
           {imagesContent}
         </Box>
-        {controlsBox}
+        {images.length > 1 && controlsBox}
       </Box>
     </Backdrop>
   );
