@@ -83,4 +83,23 @@ const sortingData: SortingType[] = [
   { value: "default", label: "By default" },
 ];
 
-export { LinkAccount, navLinksToAccount, countriesData, sortingData };
+const crownShape = ["Cone-shaped", "Pyramidal", "Globular", "Spreading"];
+const colorsTree = [
+  "Blue",
+  "Green",
+  "Yellow-green",
+  "Grey",
+  "Dark Green",
+  "Yellow",
+  "Red",
+  "Bluish-green",
+];
+
+export {
+  LinkAccount,
+  navLinksToAccount,
+  countriesData,
+  sortingData,
+  crownShape,
+  colorsTree,
+};

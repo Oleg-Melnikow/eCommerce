@@ -26,6 +26,7 @@ import {
   clearProducts,
   setSortType,
   setCurrentProductCategories,
+  setProductsFilters,
 } from "reducers/productReducer";
 import { Product } from "types/API/Product";
 import { useLocation, useSearchParams } from "react-router-dom";
@@ -68,25 +69,45 @@ export function ProductProvider(props: ProviderProps): ReactElement {
   const getProductsCategory = useCallback(
     async (
       value: string,
-      type: "id" | "search" | "sort",
-      filter?: { [key: string]: string | boolean } | null
+      type: "id" | "search" | "sort" | "filter",
+      filter?: object | null,
+      filterArray?: string[]
     ) => {
       dispatch(loading(true));
       try {
-        let params = {};
+        let params: object = {};
+
         if (type === "id") {
-          params = { filter: `categories.id: subtree("${value}")` };
+          params = {
+            filter: [`categories.id: subtree("${value}")`],
+          };
+        }
+        if (type === "filter" && filterArray) {
+          params = { filter: [...filterArray] };
         }
         if (type === "search") {
           // params = { filter: `searchKeywords.en.text:"${value}"` };
           params = { "text.en": value, fuzzy: true };
         }
         if (type === "sort") {
+          // debugger;
+          console.log("sort getProductsCategory");
           params = { sort: value };
           if (filter) {
             params = { ...filter, ...params };
           }
+          if (state.filters.length && type !== "sort") {
+            params = { ...params, filter: [...state.filters] };
+          }
         }
+        params = {
+          facet: [
+            "variants.attributes.crown-shape.key",
+            "variants.attributes.foliage-color.key",
+          ],
+          ...params,
+        };
+
         const clientAPI = API.getInstance();
         const response = await clientAPI?.getProductsProjection(params);
         if (response) {
@@ -102,29 +123,41 @@ export function ProductProvider(props: ProviderProps): ReactElement {
         dispatch(loading(false));
       }
     },
-    []
+    [state.filters]
   );
 
   const sortProducts = useCallback(
     async (sort: string) => {
+      debugger;
       if (sort !== "default") {
-        let filter = null;
+        let filter: Array<object | string> = [];
         if (state.currentCategory) {
           const { id } = state.currentCategory;
-          filter = { filter: `categories.id: subtree("${id}")` };
+          filter = [`categories.id: subtree("${id}")`];
         }
         if (state.querySearch) {
-          filter = { filter: `searchKeywords.en.text:"${state.querySearch}"` };
-          filter = { "text.en": state.querySearch, fuzzy: true };
+          filter = [{ "text.en": state.querySearch, fuzzy: true }];
         }
-        await getProductsCategory(sort, "sort", filter);
+        if (state.filters.length) {
+          filter = [...state.filters, ...filter];
+        }
+        await getProductsCategory(sort, "sort", { filter });
       } else if (state.currentCategory) {
         await getProductsCategory(state.currentCategory.id, "id");
       } else if (state.querySearch) {
         await getProductsCategory(state.querySearch, "search");
+      } else {
+        console.log("sortProducts");
+        await getAllProducts();
       }
     },
-    [getProductsCategory, state.currentCategory, state.querySearch]
+    [
+      state.currentCategory,
+      state.querySearch,
+      state.filters,
+      getProductsCategory,
+      getAllProducts,
+    ]
   );
 
   const getProductsCurrentData = useCallback(
@@ -150,6 +183,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
           }
         }
       } else {
+        console.log("getProductsCurrentData");
         await getAllProducts();
       }
     },
@@ -189,6 +223,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       if (category) {
         await getProductsCategory(category.id, "id");
       } else if (!isSearch) {
+        console.log("setCategory");
         await getAllProducts();
       }
     },
@@ -258,6 +293,50 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
+  const setFilters = useCallback(
+    async (filters: string[]): Promise<void> => {
+      dispatch(setProductsFilters(filters));
+      dispatch(setSortType("default"));
+      debugger;
+      if (filters.length) {
+        console.log(state.currentCategory);
+        let filterArray = [...filters];
+        if (state.currentCategory) {
+          const { id } = state.currentCategory;
+          filterArray = [...filterArray, `categories.id: subtree("${id}")`];
+        }
+        await getProductsCategory("", "filter", null, filterArray);
+      } else if (state.currentCategory) {
+        await getProductsCategory(state.currentCategory.id, "id");
+      } else if (!searchParams.size) {
+        console.log("setFilters");
+        await getAllProducts();
+      }
+    },
+    [
+      getAllProducts,
+      getProductsCategory,
+      searchParams.size,
+      state.currentCategory,
+    ]
+  );
+
+  const getSearchProducts = useCallback(
+    async (querySearch: string | null): Promise<void> => {
+      setSort("default");
+      if (state.currentCategory) {
+        dispatch(setCurrentCategory(null));
+      }
+      if (querySearch) {
+        await getProductsCategory(querySearch, "search");
+      } else {
+        console.log("getSearchProducts");
+        await getAllProducts();
+      }
+    },
+    [getAllProducts, getProductsCategory, setSort, state.currentCategory]
+  );
+
   const contextValue = useMemo(
     () => ({
       ...state,
@@ -271,6 +350,8 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       setSort,
       getProductsCurrentData,
       getCategoriesCurrentProduct,
+      setFilters,
+      getSearchProducts,
     }),
     [
       state,
@@ -284,6 +365,8 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       setSort,
       getProductsCurrentData,
       getCategoriesCurrentProduct,
+      setFilters,
+      getSearchProducts,
     ]
   );
 

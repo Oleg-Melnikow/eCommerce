@@ -1,52 +1,68 @@
-import { MouseEvent, ReactElement, useState } from "react";
+import { ReactElement, useState } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import { Menu } from "@mui/material";
+import { Box, Divider, Drawer, Typography } from "@mui/material";
+import { Filter } from "components/Filter/Filter";
 import { CategoriesMenu } from "./CategoriesMenu";
 
 export function ButtonShowMenu(): ReactElement {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const [openBar, setOpen] = useState(false);
 
-  const handleClick = (event: MouseEvent<HTMLElement>): void => {
-    setAnchorEl(event.currentTarget);
+  const toggleDrawer = (): void => {
+    setOpen(!openBar);
   };
-  const handleClose = (): void => {
-    setAnchorEl(null);
+
+  const handleClick = (): void => {
+    toggleDrawer();
   };
 
   return (
-    <Stack
-      sx={{
-        width: "100%",
-        alignItems: "flex-start",
-        zIndex: 20,
-        mt: 2,
-        display: "none",
-        "@media (max-width: 510px)": {
-          display: "flex",
-        },
-      }}
-    >
-      <Button
-        variant="contained"
-        color="success"
-        sx={{ alignItems: "flex-start" }}
-        onClick={handleClick}
-      >
-        Categories List
-      </Button>
-      <Menu
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
-        anchorEl={anchorEl}
-        MenuListProps={{
-          style: { maxHeight: "500px", padding: 0 },
+    <>
+      <Drawer
+        open={openBar}
+        onClose={toggleDrawer}
+        sx={{
+          "&.MuiPaper-root.MuiDrawer-paper": {
+            p: 1,
+          },
         }}
       >
-        <CategoriesMenu />
-      </Menu>
-    </Stack>
+        <Box sx={{ padding: "10px", width: "100%" }}>
+          <Typography gutterBottom variant="h6" component="div">
+            Filter
+          </Typography>
+          <Divider sx={{ mb: 1 }} />
+          <Box sx={{ maxWidth: "300px" }}>
+            <Filter />
+          </Box>
+          <Typography sx={{ m: 1 }} variant="h6" component="div">
+            Categories
+          </Typography>
+          <Divider sx={{ mb: 1 }} />
+          <CategoriesMenu />
+        </Box>
+      </Drawer>
+      <Stack
+        sx={{
+          width: "100%",
+          alignItems: "flex-start",
+          zIndex: 20,
+          mt: 1,
+          display: "none",
+          "@media (max-width: 800px)": {
+            display: "flex",
+          },
+        }}
+      >
+        <Button
+          variant="contained"
+          color="success"
+          sx={{ alignItems: "flex-start" }}
+          onClick={handleClick}
+        >
+          Categories List
+        </Button>
+      </Stack>
+    </>
   );
 }

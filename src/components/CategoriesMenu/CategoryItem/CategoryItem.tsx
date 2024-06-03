@@ -108,7 +108,7 @@ export function CategoryItem({ category }: PropsType): ReactElement {
             right: "-210px",
             top: 0,
             background: "#eaeaea",
-            "@media (max-width: 510px)": {
+            "@media (max-width: 800px)": {
               position: "relative",
               background: "#cacaca",
               right: 0,
