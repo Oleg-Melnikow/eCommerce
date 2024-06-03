@@ -101,7 +101,7 @@ function ProductImageModal({
         >
           {imagesContent}
         </Box>
-        {controlsBox}
+        {images.length > 1 && controlsBox}
       </Box>
     </Backdrop>
   );
