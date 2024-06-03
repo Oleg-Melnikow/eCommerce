@@ -87,6 +87,7 @@ function ProductImageModal({
           gap: "15px",
           height: "100%",
           width: "100%",
+          px: 2,
         }}
       >
         <Box
