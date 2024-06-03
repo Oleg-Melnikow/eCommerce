@@ -8,10 +8,11 @@
 }
 
 .category-list {
-  @media (max-width: 680px) {
-    max-width: 230px;
-  }
-  @media (max-width: 510px) {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 230px;
+  @media (max-width: 800px) {
     display: none;
   }
 }
