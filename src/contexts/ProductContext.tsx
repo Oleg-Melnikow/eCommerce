@@ -25,6 +25,7 @@ import {
   setQuerySearch,
   clearProducts,
   setSortType,
+  setCurrentProductCategories,
   setProductsFilters,
 } from "reducers/productReducer";
 import { Product } from "types/API/Product";
@@ -273,6 +274,25 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     dispatch(setSortType(sort));
   }, []);
 
+  const getCategoriesCurrentProduct = useCallback(async (id: string) => {
+    try {
+      const categories: Category[] = [];
+      const category = await API.getInstance()?.getCategoriesById(id);
+      if (category) {
+        categories.push(category);
+        category.ancestors.forEach(async (ancestor) => {
+          const ancestorCategory = await API.getInstance()?.getCategoriesById(
+            ancestor.id
+          );
+          if (ancestorCategory) categories.push(ancestorCategory);
+          dispatch(setCurrentProductCategories(categories));
+        });
+      }
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    }
+  }, []);
+
   const setFilters = useCallback(
     async (filters: string[]): Promise<void> => {
       dispatch(setProductsFilters(filters));
@@ -329,6 +349,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       querySearchUpdate,
       setSort,
       getProductsCurrentData,
+      getCategoriesCurrentProduct,
       setFilters,
       getSearchProducts,
     }),
@@ -343,6 +364,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       querySearchUpdate,
       setSort,
       getProductsCurrentData,
+      getCategoriesCurrentProduct,
       setFilters,
       getSearchProducts,
     ]

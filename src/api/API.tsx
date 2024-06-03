@@ -7,7 +7,7 @@ import {
   MyCustomerSignin,
 } from "types/API/Customer";
 import { ProductData, Products, ProductsSearch } from "types/API/Product";
-import { Categories } from "types/API/Category";
+import { Categories, Category } from "types/API/Category";
 import { AuthContextValue } from "reducers/authReducer";
 import errorHandler from "helpers/errorHandler";
 import {
@@ -256,6 +256,19 @@ export default class API {
         throw new Error(message);
       });
   }
+
+
+  public async getCategoriesById(id: string): Promise<Category> {
+    try {
+      const response = await this.apiInstance?.get(`/categories/${id}`);
+      const category = response?.data as Category;
+      return category;
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
+  }
+
 
   public async getProductsProjection(params: object): Promise<ProductsSearch> {
     return this.createAPI()

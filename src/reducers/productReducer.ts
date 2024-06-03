@@ -14,6 +14,7 @@ interface ProductStateType extends ProductPage {
   isInitialize: boolean;
   querySearch: string;
   sortValue: string;
+  currentProductCategories: Category[];
   filters: string[];
 }
 
@@ -31,6 +32,7 @@ export const ProductInitialState: ProductStateType = {
   isInitialize: false,
   querySearch: "",
   sortValue: "default",
+  currentProductCategories: [],
   filters: [],
 };
 
@@ -49,6 +51,7 @@ export const productReducer = (
     case "products/eCommerce/SET-CURRENT-PRODUCT":
     case "products/eCommerce/SET-QUERY-SEARCH":
     case "products/eCommerce/SET-SORT-TYPE":
+    case "products/eCommerce/SET-CURRENT-PRODUCT-CATEGORIES":
     case "products/eCommerce/SET-PRODUCTS-FILTERS":
       return {
         ...state,
@@ -133,6 +136,14 @@ export const setSortType = (sortValue: string) =>
     payload: { sortValue },
   }) as const;
 
+export const setCurrentProductCategories = (
+  currentProductCategories: Category[]
+) =>
+  ({
+    type: "products/eCommerce/SET-CURRENT-PRODUCT-CATEGORIES",
+    payload: { currentProductCategories },
+  }) as const;
+
 type ActionsType =
   | ReturnType<typeof getProducts>
   | ReturnType<typeof loading>
@@ -145,6 +156,7 @@ type ActionsType =
   | ReturnType<typeof setQuerySearch>
   | ReturnType<typeof clearProducts>
   | ReturnType<typeof setSortType>
+  | ReturnType<typeof setCurrentProductCategories>;
   | ReturnType<typeof setProductsFilters>;
 
 export interface ProductContextValue extends ProductStateType {
@@ -162,6 +174,7 @@ export interface ProductContextValue extends ProductStateType {
   querySearchUpdate: (querySearch: string) => void;
   getProductsCurrentData: (categories: Category[]) => Promise<void>;
   setSort: (sort: string) => void;
+  getCategoriesCurrentProduct: (id: string) => Promise<void>;
   setFilters: (filters: string[]) => Promise<void>;
   getSearchProducts: (querySearch: string | null) => Promise<void>;
 }
@@ -179,4 +192,5 @@ export const ProductContext = createContext<ProductContextValue>({
   setFilters: () => Promise.resolve(),
   querySearchUpdate: () => {},
   setSort: () => {},
+  getCategoriesCurrentProduct: () => Promise.resolve(),
 });
