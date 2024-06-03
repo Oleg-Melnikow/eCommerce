@@ -17,7 +17,10 @@ export default function errorHandler(axiosError: unknown): string {
       errorMessageInner =
         "Error registration user: re-registration of an already registered user.\nPlease, login or use another email address.";
       break;
-
+    case "The given current password does not match.":
+      errorMessageInner =
+        "The given current password does not match. Please enter the correct password.";
+      break;
     default:
       errorMessageInner =
         "Something went wrong during the registration process. Please, should try again later.";

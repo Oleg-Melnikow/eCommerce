@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 20px;
   max-width: 100%;
   width: 100%;
 
@@ -11,15 +11,15 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    gap: 10px;
 
     .wrapper__content_title {
-      padding: 18px 18px;
+      padding: 10px;
       font-family: "Noto Sans", sans-serif;
-      font-size: 18px;
+      font-size: 22px;
       font-weight: 700;
       line-height: 16px;
       color: rgb(61, 61, 61);
-      background-color: rgb(251, 251, 251);
     }
   }
 }

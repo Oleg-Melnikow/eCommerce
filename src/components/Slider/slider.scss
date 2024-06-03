@@ -80,7 +80,7 @@
     transition: 0.25s;
   }
 
-  .slider__control_icon {
+  &__control_icon {
     @include control__icon();
     width: 8px;
   }

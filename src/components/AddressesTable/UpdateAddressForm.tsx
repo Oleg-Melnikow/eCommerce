@@ -12,7 +12,13 @@ import { validatePostalCode } from "helpers/validatePostalCode";
 import { validateAdress } from "helpers/validatioinSchemes";
 import useAuth from "hooks/use-auth";
 import { ChangeEvent, ReactElement } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import {
+  Controller,
+  FieldErrors,
+  SubmitErrorHandler,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 import { Address } from "types/API/Customer";
 
 type FormValues = {
@@ -57,6 +63,12 @@ export function UpdateAddressForm({
     }
   };
 
+  const validateCode = (): void => {
+    const country = getValues(`country`);
+    const code = getValues(`postalCode`);
+    checkPostCode(code, country);
+  };
+
   const onChangeSelect = (event: SelectChangeEvent): void => {
     const { value } = event.target;
     const post = getValues("postalCode");
@@ -73,16 +85,26 @@ export function UpdateAddressForm({
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (dataForm: FormValues) => {
-    if (user && address?.id) {
-      await updateUserAdress(user.id, user.version, dataForm, address.id);
-    }
-    if (user && !address) {
-      await updateUserAdress(user.id, user.version, dataForm);
+    validateCode();
+    if (!Object.keys(errors).length) {
+      if (user && address?.id) {
+        await updateUserAdress(user.id, user.version, dataForm, address.id);
+      }
+      if (user && !address) {
+        await updateUserAdress(user.id, user.version, dataForm);
+      }
     }
   };
 
+  const onInvalid: SubmitErrorHandler<FormValues> = (
+    error: FieldErrors<FormValues>
+  ): void => {
+    console.log(error);
+    validateCode();
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
       <CardContent>
         <Grid container xs={12} spacing={1} item>
           <Grid item md={size} xs={12}>

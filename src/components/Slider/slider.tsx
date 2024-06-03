@@ -110,6 +110,20 @@ function Slider({ product }: PropsType): ReactElement {
     />
   ));
 
+  const controlsGroup = (
+    <>
+      <IconButton onClick={handlePrevSlide}>
+        <ArrowCircleLeftIcon color="success" fontSize="large" />
+      </IconButton>
+      <RadioGroup row className="slider__controls-container">
+        {controls}
+      </RadioGroup>
+      <IconButton onClick={handleNextSlide}>
+        <ArrowCircleRightIcon color="success" fontSize="large" />
+      </IconButton>
+    </>
+  );
+
   return (
     <>
       <ProductImageModal
@@ -117,6 +131,7 @@ function Slider({ product }: PropsType): ReactElement {
         open={openModal}
         currentImageIndex={currentSlide}
         setOpenModal={setOpenModal}
+        controls={controlsGroup}
       />
       <div className="slider">
         <div className="slider__thumbs-container">{thumbs} </div>
@@ -124,17 +139,7 @@ function Slider({ product }: PropsType): ReactElement {
           {slider}
         </Box>
         {images.length > 1 && (
-          <Box className="slider__btns-row">
-            <IconButton onClick={handlePrevSlide}>
-              <ArrowCircleLeftIcon color="success" fontSize="large" />
-            </IconButton>
-            <RadioGroup row className="slider__controls-container">
-              {controls}
-            </RadioGroup>
-            <IconButton onClick={handleNextSlide}>
-              <ArrowCircleRightIcon color="success" fontSize="large" />
-            </IconButton>
-          </Box>
+          <Box className="slider__btns-row">{controlsGroup} </Box>
         )}
       </div>
     </>

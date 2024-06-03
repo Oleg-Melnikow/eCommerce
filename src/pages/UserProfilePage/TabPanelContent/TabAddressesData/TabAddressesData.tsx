@@ -2,8 +2,6 @@ import { ReactElement, useState } from "react";
 import { AddressListItem } from "components/AddressesTable/AddressListItem";
 import useAuth from "hooks/use-auth";
 import {
-  Button,
-  Dialog,
   Paper,
   Table,
   TableBody,
@@ -13,11 +11,12 @@ import {
   TableRow,
 } from "@mui/material";
 import { AddAddressModal } from "components/AddressesTable/AddAddressModal";
+import LoaderItem from "components/LoaderItem/LoaderItem";
 
 const addressesTitle = ["Country", "City", "Street", "PostalCode"];
 
 function AddressesTable(): ReactElement {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
 
   const [openAddress, setOpenAddress] = useState<string>("");
 
@@ -27,6 +26,7 @@ function AddressesTable(): ReactElement {
 
   return (
     <>
+      {isLoading && <LoaderItem />}
       <AddAddressModal />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 380 }} aria-label="simple table">

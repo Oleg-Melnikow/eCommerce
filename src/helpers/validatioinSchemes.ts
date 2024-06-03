@@ -1,24 +1,28 @@
 import { z } from "zod";
 
+const passwordValid = z
+  .string({ message: "Password is a required field" })
+  .regex(/^\S*$/, "Leading spaces are not allowed")
+  .regex(/(?=.*[A-Z])/, "Must contain at least one uppercase letter")
+  .regex(/(?=.*[a-z])/, "Must contain at least one lowercase letter")
+  .regex(/(?=.*[0-9])/, "Must contain at least one digit")
+  .regex(
+    /(?=.*[!@#\\$%\\^&\\*])/,
+    "Must contain at least one special character"
+  )
+  .min(8)
+  .max(32);
+
+const emailValid = z
+  .string({ message: "Email is a required field" })
+  .regex(/^(?!\s)/, "Leading spaces are not allowed")
+  .includes("@", { message: `Email must be include '@'` })
+  .regex(/@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/, "Domain not allowed")
+  .email({ message: "Email is not valid" });
+
 const loginSchema = z.object({
-  email: z
-    .string({ message: "Email is a required field" })
-    .regex(/^(?!\s)/, "Leading spaces are not allowed")
-    .includes("@", { message: `Email must be include '@'` })
-    .regex(/@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/, "Domain not allowed")
-    .email({ message: "Email is not valid" }),
-  password: z
-    .string({ message: "Password is a required field" })
-    .regex(/^\S*$/, "Leading spaces are not allowed")
-    .regex(/(?=.*[A-Z])/, "Must contain at least one uppercase letter")
-    .regex(/(?=.*[a-z])/, "Must contain at least one lowercase letter")
-    .regex(/(?=.*[0-9])/, "Must contain at least one digit")
-    .regex(
-      /(?=.*[!@#\\$%\\^&\\*])/,
-      "Must contain at least one special character"
-    )
-    .min(8)
-    .max(32),
+  email: emailValid,
+  password: passwordValid,
 });
 
 const validateAdress = z.object({
@@ -28,14 +32,16 @@ const validateAdress = z.object({
   city: z
     .string({ message: "City is a required field" })
     .regex(/^[a-zA-Z\s]+$/, "City only letter")
-    .min(1),
+    .min(1)
+    .max(15),
 });
 
 const validateNames = (name: string): z.ZodString => {
   return z
     .string({ message: `${name} name is a required field` })
     .regex(/^[a-zA-Z\s]+$/, `${name} name only letter`)
-    .min(1);
+    .min(1)
+    .max(15);
 };
 
 const registrationSchema = z.object({
@@ -47,8 +53,27 @@ const registrationSchema = z.object({
   billingAddress: validateAdress,
 });
 
+const changePasswordSchema = z.object({
+  currentPassword: passwordValid,
+  newPassword: passwordValid,
+});
+
+const personalDataSchema = z.object({
+  firstName: validateNames("First"),
+  lastName: validateNames("Last"),
+  email: emailValid,
+  dateOfBirth: z.string({ message: "Date is a required field" }).date(),
+});
+
 const registration = registrationSchema.merge(loginSchema);
 
 const registrationFull = registration.omit({ billingAddress: true });
 
-export { registration, loginSchema, registrationFull, validateAdress };
+export {
+  registration,
+  loginSchema,
+  registrationFull,
+  validateAdress,
+  changePasswordSchema,
+  personalDataSchema,
+};

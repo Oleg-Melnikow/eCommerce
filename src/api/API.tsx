@@ -10,7 +10,12 @@ import { ProductData, Products, ProductsSearch } from "types/API/Product";
 import { Categories } from "types/API/Category";
 import { AuthContextValue } from "reducers/authReducer";
 import errorHandler from "helpers/errorHandler";
-import { ActionAddressType, DeleteParamsType } from "types/RegisterForm";
+import {
+  ActionAddressType,
+  ChangePasswordType,
+  DeleteParamsType,
+  PersonalDataType,
+} from "types/RegisterForm";
 
 export default class API {
   protected static instance: API | null = null;
@@ -310,6 +315,61 @@ export default class API {
         const response = await this.apiInstance?.post(`/customers/${id}`, {
           version,
           actions: [{ action, addressId }],
+        });
+        return response?.data as Customer;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
+  }
+
+  public async changePassword(
+    passwordData: ChangePasswordType
+  ): Promise<Customer> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.post(`/customers/password`, {
+          ...passwordData,
+        });
+        return response?.data as Customer;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
+  }
+
+  public async changePersonalData({
+    dateOfBirth,
+    email,
+    firstName,
+    id,
+    lastName,
+    version,
+  }: PersonalDataType): Promise<Customer> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.post(`/customers/${id}`, {
+          version,
+          actions: [
+            {
+              action: "changeEmail",
+              email,
+            },
+            {
+              action: "setFirstName",
+              firstName,
+            },
+            {
+              action: "setLastName",
+              lastName,
+            },
+            {
+              action: "setDateOfBirth",
+              dateOfBirth,
+            },
+          ],
         });
         return response?.data as Customer;
       })

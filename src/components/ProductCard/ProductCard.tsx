@@ -25,6 +25,7 @@ function ProductCard({ product }: PropsType): ReactElement {
 
   return (
     <Card
+      className="product-card"
       sx={{ width: 250, position: "relative", overflow: "visible" }}
       onClick={onClickProduct}
     >
