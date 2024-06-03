@@ -14,6 +14,7 @@ interface ProductStateType extends ProductPage {
   isInitialize: boolean;
   querySearch: string;
   sortValue: string;
+  filters: string[];
 }
 
 export const ProductInitialState: ProductStateType = {
@@ -30,6 +31,7 @@ export const ProductInitialState: ProductStateType = {
   isInitialize: false,
   querySearch: "",
   sortValue: "default",
+  filters: [],
 };
 
 export const productReducer = (
@@ -47,6 +49,7 @@ export const productReducer = (
     case "products/eCommerce/SET-CURRENT-PRODUCT":
     case "products/eCommerce/SET-QUERY-SEARCH":
     case "products/eCommerce/SET-SORT-TYPE":
+    case "products/eCommerce/SET-PRODUCTS-FILTERS":
       return {
         ...state,
         ...action.payload,
@@ -63,6 +66,12 @@ export const productReducer = (
       return state;
   }
 };
+
+export const setProductsFilters = (filters: string[]) =>
+  ({
+    type: "products/eCommerce/SET-PRODUCTS-FILTERS",
+    payload: { filters },
+  }) as const;
 
 export const getProducts = (products: Product[]) =>
   ({ type: "products/eCommerce/GET-PRODUCTS", payload: { products } }) as const;
@@ -135,15 +144,17 @@ type ActionsType =
   | ReturnType<typeof setInitialize>
   | ReturnType<typeof setQuerySearch>
   | ReturnType<typeof clearProducts>
-  | ReturnType<typeof setSortType>;
+  | ReturnType<typeof setSortType>
+  | ReturnType<typeof setProductsFilters>;
 
 export interface ProductContextValue extends ProductStateType {
   getAllProducts: () => Promise<void>;
   getCategoriesData: () => Promise<void>;
   getProductsCategory: (
     value: string,
-    type: "id" | "search" | "sort",
-    filter?: { [key: string]: string } | null
+    type: "id" | "search" | "sort" | "filter",
+    filter?: { [key: string]: string } | null,
+    filterArray?: string[]
   ) => Promise<void>;
   setCategory: (category: CurrentCategory, isSearch?: boolean) => Promise<void>;
   chooseProduct: (id: string) => Promise<void>;
@@ -151,6 +162,8 @@ export interface ProductContextValue extends ProductStateType {
   querySearchUpdate: (querySearch: string) => void;
   getProductsCurrentData: (categories: Category[]) => Promise<void>;
   setSort: (sort: string) => void;
+  setFilters: (filters: string[]) => Promise<void>;
+  getSearchProducts: (querySearch: string | null) => Promise<void>;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
@@ -162,6 +175,8 @@ export const ProductContext = createContext<ProductContextValue>({
   chooseProduct: () => Promise.resolve(),
   sortProducts: () => Promise.resolve(),
   getProductsCurrentData: () => Promise.resolve(),
+  getSearchProducts: () => Promise.resolve(),
+  setFilters: () => Promise.resolve(),
   querySearchUpdate: () => {},
   setSort: () => {},
 });

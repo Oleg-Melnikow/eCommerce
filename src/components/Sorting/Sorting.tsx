@@ -13,6 +13,7 @@ import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { sortingData } from "helpers/static-data";
 import { useLocation, useNavigate } from "react-router-dom";
 import useProduct from "hooks/use-product";
+import { getSortQuery } from "helpers/getSortQuery";
 
 export function Sorting(): ReactElement {
   const { sortProducts, sortValue, setSort } = useProduct();
@@ -22,16 +23,6 @@ export function Sorting(): ReactElement {
   const open = Boolean(anchorEl);
 
   const [sortName, setSortName] = useState("Produnct sorting");
-
-  function getSortQuery(value: string): null | string {
-    if (value !== "default") {
-      const currentSort = sortingData.find((sort) => sort.value === value);
-      if (currentSort) {
-        return `sort=${currentSort.query}`;
-      }
-    }
-    return null;
-  }
 
   const changeButton = (value: string): void => {
     const currentSort = sortingData.find((sort) => sort.value === value);
@@ -44,25 +35,9 @@ export function Sorting(): ReactElement {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { value } = event.target;
+    const urlPath = getSortQuery(value, pathname, search);
+    navigate(urlPath);
     setSort(value);
-
-    let querySearch = search;
-
-    if (search.includes("sort")) {
-      const [searchItem] = querySearch.split("&");
-      querySearch = searchItem.includes("sort") ? "" : searchItem;
-    }
-
-    const urlPath = `${pathname}${querySearch}`;
-    const querySymbol = querySearch ? "&" : "?";
-
-    const queryValue = getSortQuery(value);
-
-    if (queryValue) {
-      navigate(`${urlPath}${querySymbol}${queryValue}`);
-    } else {
-      navigate(`${urlPath}`);
-    }
     sortProducts(value);
   };
 
@@ -87,7 +62,7 @@ export function Sorting(): ReactElement {
         display: "flex",
         alignSelf: "flex-end",
         justifyContent: "flex-end",
-        "@media (max-width: 510px)": {
+        "@media (max-width: 800px)": {
           justifyContent: "flex-start",
         },
       }}

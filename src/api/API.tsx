@@ -257,9 +257,7 @@ export default class API {
       });
   }
 
-  public async getProductsProjection(params: {
-    [key: string]: string;
-  }): Promise<ProductsSearch> {
+  public async getProductsProjection(params: object): Promise<ProductsSearch> {
     return this.createAPI()
       .then(async () => {
         const response = await this.apiInstance?.get(

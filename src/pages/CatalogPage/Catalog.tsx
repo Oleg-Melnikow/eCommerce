@@ -7,8 +7,8 @@ import { BreadcrumbsBlock } from "components/BreadcrumbsBlock/BreadcrumbsBlock";
 import LoaderItem from "components/LoaderItem/LoaderItem";
 import { ButtonShowMenu } from "components/CategoriesMenu/ButtonShowMenu";
 import { ProductSearch } from "components/ProductSearch/ProductSearch";
-import { useLocation } from "react-router-dom";
 import { Sorting } from "components/Sorting/Sorting";
+import { Filter } from "components/Filter/Filter";
 import "./Catalog.scss";
 
 function CatalogPage(): ReactElement {
@@ -19,19 +19,12 @@ function CatalogPage(): ReactElement {
     getProductsCurrentData,
     categories,
   } = useProduct();
-  const { search } = useLocation();
 
   useEffect(() => {
     if (isInitialize && !products.length) {
       getProductsCurrentData(categories);
     }
-  }, [
-    categories,
-    getProductsCurrentData,
-    isInitialize,
-    products.length,
-    search,
-  ]);
+  }, []);
 
   return (
     <div className="catalog-page">
@@ -49,14 +42,16 @@ function CatalogPage(): ReactElement {
       <Grid container sx={{ mt: 2 }} justifyContent="space-between">
         <Box className="category-list">
           <CategoriesMenu />
+          <Filter />
         </Box>
         <Grid
           container
           sx={{
+            height: "100%",
             display: "flex",
             gap: "10px",
             maxWidth: "calc(100% - 250px)",
-            "@media (max-width: 510px)": {
+            "@media (max-width: 800px)": {
               maxWidth: "100%",
               justifyContent: "center",
             },

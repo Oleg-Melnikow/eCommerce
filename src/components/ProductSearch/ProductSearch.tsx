@@ -6,26 +6,14 @@ import useProduct from "hooks/use-product";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export function ProductSearch(): ReactElement {
-  const {
-    getProductsCategory,
-    currentCategory,
-    setCategory,
-    getAllProducts,
-    querySearch,
-    querySearchUpdate,
-    setSort,
-  } = useProduct();
+  const { getSearchProducts, querySearch, querySearchUpdate } = useProduct();
   const { search } = useLocation();
   const navigate = useNavigate();
 
   const onSearchProducts = async (): Promise<void> => {
     if (querySearch.length >= 1) {
-      setSort("default");
-      await getProductsCategory(querySearch, "search");
+      await getSearchProducts(querySearch);
       navigate(`/catalog?search=${querySearch}`);
-      if (currentCategory) {
-        setCategory(null, true);
-      }
     }
   };
 
@@ -43,8 +31,7 @@ export function ProductSearch(): ReactElement {
     querySearchUpdate("");
     if (search && querySearch) {
       navigate(`/catalog`);
-      setSort("default");
-      await getAllProducts();
+      await getSearchProducts(null);
     }
   };
 
