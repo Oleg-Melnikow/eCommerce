@@ -40,7 +40,7 @@ function ProductImageModal({
     <Box
       sx={{
         display: "flex",
-        justifyContent: "space-between",
+        justifyContent: "space-arround",
         backgroundColor: "#3d3d3d3d",
         width: "100%",
         borderRadius: "20px",
