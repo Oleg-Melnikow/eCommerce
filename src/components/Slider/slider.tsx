@@ -4,6 +4,7 @@ import { ProductData } from "types/API/Product";
 import { Box, IconButton, Radio, RadioGroup, Slide } from "@mui/material";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
+import ProductImageModal from "components/ProductImageModal/ProductImageModal";
 
 type PropsType = {
   product: ProductData;
@@ -16,6 +17,7 @@ function Slider({ product }: PropsType): ReactElement {
   const [slideDirection, setSlideDirection] = useState<"right" | "left">(
     "left"
   );
+  const [openModal, setOpenModal] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
   const thumbRef = useRef<HTMLElement>(null);
   const { images } = product.masterData.current.masterVariant;
@@ -72,6 +74,10 @@ function Slider({ product }: PropsType): ReactElement {
     if (deltaX > -10) handlePrevSlide();
   };
 
+  const handleOpenModal = (): void => {
+    setOpenModal(true);
+  };
+
   const slider = images.map((image, index) => (
     <Slide
       key={image.url}
@@ -82,6 +88,7 @@ function Slider({ product }: PropsType): ReactElement {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onClick={handleOpenModal}
     >
       <img
         className="slider__image"
@@ -103,26 +110,39 @@ function Slider({ product }: PropsType): ReactElement {
     />
   ));
 
+  const controlsGroup = (
+    <>
+      <IconButton onClick={handlePrevSlide}>
+        <ArrowCircleLeftIcon color="success" fontSize="large" />
+      </IconButton>
+      <RadioGroup row className="slider__controls-container">
+        {controls}
+      </RadioGroup>
+      <IconButton onClick={handleNextSlide}>
+        <ArrowCircleRightIcon color="success" fontSize="large" />
+      </IconButton>
+    </>
+  );
+
   return (
-    <div className="slider">
-      <div className="slider__thumbs-container">{thumbs} </div>
-      <Box className="slider__image-wrap" ref={containerRef}>
-        {slider}
-      </Box>
-      {images.length > 1 && (
-        <Box className="slider__btns-row">
-          <IconButton onClick={handlePrevSlide}>
-            <ArrowCircleLeftIcon color="success" fontSize="large" />
-          </IconButton>
-          <RadioGroup row className="slider__controls-container">
-            {controls}
-          </RadioGroup>
-          <IconButton onClick={handleNextSlide}>
-            <ArrowCircleRightIcon color="success" fontSize="large" />
-          </IconButton>
+    <>
+      <ProductImageModal
+        product={product}
+        open={openModal}
+        currentImageIndex={currentSlide}
+        setOpenModal={setOpenModal}
+        controls={controlsGroup}
+      />
+      <div className="slider">
+        <div className="slider__thumbs-container">{thumbs} </div>
+        <Box className="slider__image-wrap" ref={containerRef}>
+          {slider}
         </Box>
-      )}
-    </div>
+        {images.length > 1 && (
+          <Box className="slider__btns-row">{controlsGroup} </Box>
+        )}
+      </div>
+    </>
   );
 }
 
