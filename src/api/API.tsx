@@ -395,7 +395,6 @@ export default class API {
       if (response?.status === 200) return response.data as Cart;
       throw new AxiosError("Error fething cart");
     } catch (err) {
-      console.log(err);
       if (err instanceof AxiosError && err.response?.status === 404)
         return this.createCart();
       const message = errorHandler(err);
