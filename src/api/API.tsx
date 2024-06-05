@@ -16,7 +16,7 @@ import {
   DeleteParamsType,
   PersonalDataType,
 } from "types/RegisterForm";
-import { MyCartDraft } from "../types/API/Cart";
+import { Cart, MyCartDraft } from "../types/API/Cart";
 
 export default class API {
   protected static instance: API | null = null;
@@ -389,25 +389,47 @@ export default class API {
       });
   }
 
-  public async getCart(): Promise<void> {
+  public async getCart(): Promise<Cart> {
     try {
       const response = await this.apiInstance?.get(`/me/active-cart`);
+      if (response?.status === 200) return response.data as Cart;
+      throw new AxiosError("Error fething cart");
     } catch (err) {
       console.log(err);
       if (err instanceof AxiosError && err.response?.status === 404)
-        this.createCart().then(() => this.getCart());
-      else {
-        const message = errorHandler(err);
-        throw new Error(message);
-      }
+        return this.createCart();
+      const message = errorHandler(err);
+      throw new Error(message);
     }
   }
 
-  private async createCart(): Promise<void> {
+  private async createCart(): Promise<Cart> {
     try {
       const myCartDraft: MyCartDraft = { currency: "EUR" };
       const response = await this.apiInstance?.post(`/me/carts`, myCartDraft);
-      console.log(response);
+      if (response?.status === 201) return response.data as Cart;
+      throw new AxiosError("Error creating cart");
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
+  }
+
+  public async addProductToCart(
+    product: ProductData,
+    cart: Cart,
+    quantity: number
+  ): Promise<void> {
+    try {
+      const action = {
+        action: "addLineItem",
+        sku: product.masterData.current.masterVariant.sku,
+        quantity,
+      };
+      const response = await this.apiInstance?.post(`/me/carts/${cart.id}`, {
+        version: cart.version,
+        actions: [action],
+      });
     } catch (err) {
       const message = errorHandler(err);
       throw new Error(message);
