@@ -22,7 +22,7 @@ interface StoreResourceIdentifier {
   id?: string;
 }
 
-interface Address {
+export interface Address {
   title?: string;
   streetNumber?: string;
   streetName?: string;
@@ -88,7 +88,7 @@ export interface Customer {
   email: string;
   defaultShippingAddressId?: string;
   defaultBillingAddressId?: string;
-  dateOfBirth?: Date;
+  dateOfBirth?: string;
   customerNumber?: string;
   createdBy?: CreatedBy;
   createdAt: Date;

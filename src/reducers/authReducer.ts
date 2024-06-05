@@ -1,6 +1,12 @@
 import { createContext } from "react";
 import { Customer, MyCustomerDraft } from "types/API/Customer";
 import { LoginType } from "types/InputTagProps";
+import {
+  AddressForm,
+  ChangePasswordType,
+  DeleteParamsType,
+  PersonalDataType,
+} from "types/RegisterForm";
 
 interface AuthStateType {
   isAuthenticated: boolean;
@@ -65,6 +71,15 @@ export interface AuthContextValue extends AuthStateType {
   logoutAccount: () => void;
   login: (data: LoginType) => Promise<void>;
   signup: (customer: MyCustomerDraft) => Promise<void>;
+  updateUserAdress: (
+    id: string,
+    version: number,
+    address: AddressForm,
+    addressId?: string
+  ) => Promise<void>;
+  changeUserAdress: (params: DeleteParamsType) => Promise<void>;
+  changePassword: (passwordData: ChangePasswordType) => Promise<void>;
+  changePersonalData: (personalData: PersonalDataType) => Promise<void>;
   tokenReceiving: () => void;
 }
 
@@ -73,5 +88,9 @@ export const AuthContext = createContext<AuthContextValue>({
   logoutAccount: () => {},
   login: () => Promise.resolve(),
   signup: () => Promise.resolve(),
+  updateUserAdress: () => Promise.resolve(),
+  changeUserAdress: () => Promise.resolve(),
+  changePassword: () => Promise.resolve(),
+  changePersonalData: () => Promise.resolve(),
   tokenReceiving: () => {},
 });

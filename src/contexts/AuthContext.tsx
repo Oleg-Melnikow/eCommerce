@@ -11,7 +11,14 @@ import { toast } from "react-toastify";
 import { LoginType } from "types/InputTagProps";
 import API from "api/API";
 import toastOptions from "helpers/toastOptions";
-import { MyCustomerDraft } from "types/API/Customer";
+import { Customer, MyCustomerDraft } from "types/API/Customer";
+import {
+  ActionAddressType,
+  AddressForm,
+  ChangePasswordType,
+  DeleteParamsType,
+  PersonalDataType,
+} from "types/RegisterForm";
 import {
   AuthContext,
   AuthInitialState,
@@ -30,6 +37,112 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
   const [state, dispatch] = useReducer(authReducer, AuthInitialState);
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
+  const saveUserData = (response: Customer): void => {
+    localStorage.setItem("userProfile", JSON.stringify(response));
+    dispatch(initialize(true, response));
+  };
+
+  const changePersonalData = useCallback(
+    async (personalData: PersonalDataType) => {
+      dispatch(loading(true));
+      try {
+        const clientAPI = API.getInstance();
+        const response = await clientAPI?.changePersonalData(personalData);
+        if (response) {
+          saveUserData(response);
+        }
+        toast.success(
+          "Personal information was changed successfully!",
+          toastOptions
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error?.message, toastOptions);
+        }
+      } finally {
+        dispatch(loading(false));
+      }
+    },
+    []
+  );
+
+  const changePassword = useCallback(
+    async (passwordData: ChangePasswordType) => {
+      dispatch(loading(true));
+      try {
+        const clientAPI = API.getInstance();
+        const response = await clientAPI?.changePassword(passwordData);
+        if (response) {
+          saveUserData(response);
+        }
+        toast.success("Password was changed successfully!", toastOptions);
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error?.message, toastOptions);
+        }
+      } finally {
+        dispatch(loading(false));
+      }
+    },
+    []
+  );
+
+  const updateUserAdress = useCallback(
+    async (
+      id: string,
+      version: number,
+      address: AddressForm,
+      addressId?: string
+    ): Promise<void> => {
+      dispatch(loading(true));
+      try {
+        let action: ActionAddressType = {
+          action: addressId ? "changeAddress" : "addAddress",
+          address,
+        };
+        if (addressId) {
+          action = { ...action, addressId };
+        }
+        const clientAPI = API.getInstance();
+        const response = await clientAPI?.updateAddress(id, version, action);
+        if (response) {
+          saveUserData(response);
+        }
+        toast.success(
+          `Address was ${addressId ? "changed" : "added"} successfully!`,
+          toastOptions
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error?.message, toastOptions);
+        }
+      } finally {
+        dispatch(loading(false));
+      }
+    },
+    []
+  );
+
+  const changeUserAdress = useCallback(async (params: DeleteParamsType) => {
+    dispatch(loading(true));
+    try {
+      const clientAPI = API.getInstance();
+      const response = await clientAPI?.changeAddress(params);
+      if (response) {
+        saveUserData(response);
+      }
+      const message =
+        params.action === "removeAddress" ? "removed" : "changed type";
+      toast.success(`Address was ${message} successfully!`, toastOptions);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error?.message, toastOptions);
+      }
+    } finally {
+      dispatch(loading(false));
+    }
+  }, []);
 
   const initializeAccount = async (): Promise<void> => {
     try {
@@ -66,7 +179,6 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
         if (error instanceof Error) {
           toast.error(error?.message, toastOptions);
         }
-        console.log(error);
       } finally {
         dispatch(loading(false));
       }
@@ -93,7 +205,6 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
         if (error instanceof Error) {
           toast.error(error?.message, toastOptions);
         }
-        console.log(error);
       } finally {
         dispatch(loading(false));
       }
@@ -129,11 +240,34 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
         navigate("/");
       }
     }
+    if (pathname.includes("profile") && !userLogined) {
+      navigate("/login");
+    }
   }, [pathname, navigate]);
 
   const contextValue = useMemo(
-    () => ({ ...state, logoutAccount, login, signup, tokenReceiving }),
-    [state, logoutAccount, login, signup, tokenReceiving]
+    () => ({
+      ...state,
+      logoutAccount,
+      login,
+      signup,
+      tokenReceiving,
+      updateUserAdress,
+      changeUserAdress,
+      changePassword,
+      changePersonalData,
+    }),
+    [
+      state,
+      logoutAccount,
+      login,
+      signup,
+      tokenReceiving,
+      updateUserAdress,
+      changeUserAdress,
+      changePassword,
+      changePersonalData,
+    ]
   );
 
   return (

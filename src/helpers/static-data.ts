@@ -2,6 +2,7 @@ import LogIn from "assets/LogIn.svg";
 import Register from "assets/Register.svg";
 import LogOut from "assets/LogOut.svg";
 import Basket from "assets/Basket.svg";
+import UserProfile from "assets/UserProfile.svg";
 
 interface LinkAccount {
   id: string;
@@ -38,6 +39,14 @@ const navLinksToAccount: LinkAccount[] = [
     permission: "logined",
   },
   {
+    id: "userProfile",
+    path: "/profile",
+    title: "UserProfile",
+    className: "header__inner_link-profile",
+    imgSrc: UserProfile,
+    permission: "logined",
+  },
+  {
     id: "basket",
     path: "/basket",
     title: "Basket",
@@ -47,4 +56,50 @@ const navLinksToAccount: LinkAccount[] = [
   },
 ];
 
-export { LinkAccount, navLinksToAccount };
+const countriesData: CountryData[] = [
+  { value: "BY", label: "Belarus" },
+  { value: "UK", label: "The United Kingdom" },
+  { value: "US", label: "USA" },
+];
+
+interface CountryData {
+  value: string;
+  label: string;
+}
+
+interface SortingType extends CountryData {
+  query?: string;
+}
+
+const sortingData: SortingType[] = [
+  { value: "price asc", label: "By price (cheaper first)", query: "cheaper" },
+  {
+    value: "price desc",
+    label: "By price (more expensive first)",
+    query: "expensive",
+  },
+  { value: "name.en asc", label: "By name (ascending)", query: "nameASC" },
+  { value: "name.en desc", label: "By name (descending)", query: "nameDESC" },
+  { value: "default", label: "By default" },
+];
+
+const crownShape = ["Cone-shaped", "Pyramidal", "Globular", "Spreading"];
+const colorsTree = [
+  "Blue",
+  "Green",
+  "Yellow-green",
+  "Grey",
+  "Dark Green",
+  "Yellow",
+  "Red",
+  "Bluish-green",
+];
+
+export {
+  LinkAccount,
+  navLinksToAccount,
+  countriesData,
+  sortingData,
+  crownShape,
+  colorsTree,
+};

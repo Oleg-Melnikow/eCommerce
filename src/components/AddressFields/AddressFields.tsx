@@ -103,7 +103,7 @@ export function AddressFields({
         </Grid>
         <Grid item md={6} xs={12}>
           <Controller
-            name={`${nameField}.street`}
+            name={`${nameField}.streetName`}
             control={control}
             render={({ field: { onChange, value, name } }) => (
               <InputTag
@@ -112,8 +112,8 @@ export function AddressFields({
                 label="Street"
                 name={name}
                 onChange={onChange}
-                isError={Boolean(errorsField?.street)}
-                message={errorsField?.country?.message}
+                isError={Boolean(errorsField?.streetName)}
+                message={errorsField?.streetName?.message}
               />
             )}
           />

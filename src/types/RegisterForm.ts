@@ -1,7 +1,7 @@
-type Address = {
+export type AddressForm = {
   country: string;
   city: string;
-  street: string;
+  streetName: string;
   postalCode: string;
 };
 
@@ -12,6 +12,44 @@ export type FormTypeRegister = {
   email: string;
   password: string;
   confirmPassword: string;
-  shippingAddress: Address;
-  billingAddress: Address;
+  shippingAddress: AddressForm;
+  billingAddress: AddressForm;
 };
+
+export type ActionAddressType = {
+  action: string;
+  address: AddressForm;
+  addressId?: string;
+};
+
+export type DeleteParamsType = {
+  version: number;
+  id: string;
+  addressId: string;
+  action: AddressActionType;
+};
+
+export type AddressActionType =
+  | "removeAddress"
+  | "setDefaultShippingAddress"
+  | "setDefaultBillingAddress"
+  | "addShippingAddressId"
+  | "removeShippingAddressId"
+  | "addBillingAddressId"
+  | "removeBillingAddressId";
+
+export interface ChangePasswordType {
+  id: string;
+  version: number;
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface PersonalDataType {
+  id: string;
+  version: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+}

@@ -1,12 +1,21 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import {
+  Customer,
   CustomerSignInResult,
   MyCustomerDraft,
   MyCustomerSignin,
 } from "types/API/Customer";
+import { ProductData, Products, ProductsSearch } from "types/API/Product";
+import { Categories, Category } from "types/API/Category";
 import { AuthContextValue } from "reducers/authReducer";
-import errorHandler from "../helpers/errorHandler";
+import errorHandler from "helpers/errorHandler";
+import {
+  ActionAddressType,
+  ChangePasswordType,
+  DeleteParamsType,
+  PersonalDataType,
+} from "types/RegisterForm";
 
 export default class API {
   protected static instance: API | null = null;
@@ -220,5 +229,162 @@ export default class API {
         return false;
       }
     return false;
+  }
+
+  public async getProducts(): Promise<Products> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.get("/products");
+        return response?.data as Products;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
+  }
+
+  public async getcategories(): Promise<Categories> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.get("/categories", {
+          params: { limit: 40 },
+        });
+        return response?.data as Categories;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
+  }
+
+  public async getCategoriesById(id: string): Promise<Category> {
+    try {
+      const response = await this.apiInstance?.get(`/categories/${id}`);
+      const category = response?.data as Category;
+      return category;
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
+  }
+
+  public async getProductsProjection(params: object): Promise<ProductsSearch> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.get(
+          "/product-projections/search",
+          { params }
+        );
+        return response?.data as ProductsSearch;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
+  }
+
+  public async getProductById(id: string): Promise<ProductData> {
+    try {
+      const response = await this.apiInstance?.get(`/products/${id}`);
+      if (response?.status === 200) return response.data as ProductData;
+      throw new AxiosError(`Error fetching product by id: ${id}`);
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
+  }
+
+  public async updateAddress(
+    id: string,
+    version: number,
+    action: ActionAddressType
+  ): Promise<Customer> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.post(`/customers/${id}`, {
+          version,
+          actions: [{ ...action }],
+        });
+        return response?.data as Customer;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
+  }
+
+  public async changeAddress({
+    action,
+    addressId,
+    id,
+    version,
+  }: DeleteParamsType): Promise<Customer> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.post(`/customers/${id}`, {
+          version,
+          actions: [{ action, addressId }],
+        });
+        return response?.data as Customer;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
+  }
+
+  public async changePassword(
+    passwordData: ChangePasswordType
+  ): Promise<Customer> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.post(`/customers/password`, {
+          ...passwordData,
+        });
+        return response?.data as Customer;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
+  }
+
+  public async changePersonalData({
+    dateOfBirth,
+    email,
+    firstName,
+    id,
+    lastName,
+    version,
+  }: PersonalDataType): Promise<Customer> {
+    return this.createAPI()
+      .then(async () => {
+        const response = await this.apiInstance?.post(`/customers/${id}`, {
+          version,
+          actions: [
+            {
+              action: "changeEmail",
+              email,
+            },
+            {
+              action: "setFirstName",
+              firstName,
+            },
+            {
+              action: "setLastName",
+              lastName,
+            },
+            {
+              action: "setDateOfBirth",
+              dateOfBirth,
+            },
+          ],
+        });
+        return response?.data as Customer;
+      })
+      .catch((err) => {
+        const message = errorHandler(err);
+        throw new Error(message);
+      });
   }
 }

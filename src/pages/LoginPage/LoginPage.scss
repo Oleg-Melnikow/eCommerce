@@ -4,7 +4,7 @@
   align-items: center;
   max-width: 100%;
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh - 77px);
 
   .login-page__content {
     display: flex;
