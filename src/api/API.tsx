@@ -16,6 +16,7 @@ import {
   DeleteParamsType,
   PersonalDataType,
 } from "types/RegisterForm";
+import { MyCartDraft } from "../types/API/Cart";
 
 export default class API {
   protected static instance: API | null = null;
@@ -386,5 +387,30 @@ export default class API {
         const message = errorHandler(err);
         throw new Error(message);
       });
+  }
+
+  public async getCart(): Promise<void> {
+    try {
+      const response = await this.apiInstance?.get(`/me/active-cart`);
+    } catch (err) {
+      console.log(err);
+      if (err instanceof AxiosError && err.response?.status === 404)
+        this.createCart().then(() => this.getCart());
+      else {
+        const message = errorHandler(err);
+        throw new Error(message);
+      }
+    }
+  }
+
+  private async createCart(): Promise<void> {
+    try {
+      const myCartDraft: MyCartDraft = { currency: "EUR" };
+      const response = await this.apiInstance?.post(`/me/carts`, myCartDraft);
+      console.log(response);
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
   }
 }
