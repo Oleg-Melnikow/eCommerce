@@ -1,10 +1,11 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import "./ProductDetails.scss";
 import ProductDetailsRadio from "components/ProductDetailsRadio/ProductDetailsRadio";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
 import { ProductData } from "types/API/Product";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 import useProduct from "hooks/use-product";
+import API from "api/API";
 
 type PropsType = {
   product: ProductData;
@@ -13,6 +14,7 @@ type PropsType = {
 function ProductDetails({ product }: PropsType): ReactElement {
   const { getCategoriesCurrentProduct, currentProductCategories } =
     useProduct();
+  const [count, setCount] = useState(1);
 
   const line = (
     <div
@@ -40,13 +42,26 @@ function ProductDetails({ product }: PropsType): ReactElement {
     currentProductCategories.map((category) => category.name.en),
     searchKeywords.en?.map((keyword) => keyword.text) ?? [],
   ];
+
+  const onClickAddToCard = (): void => {
+    API.getInstance()
+      ?.getCart()
+      .then((cart) => {
+        API.getInstance()?.addProductToCart(product, cart, count);
+      });
+  };
+
   return (
     <div className="product-details">
       <h3 className="product-details__title">{title}</h3>
       <ProductPrice price={price} /> {line}
       <ProductDetailsRadio className="product-details" />
       <div className="product-details__btn-wrap">
-        <ProductDetailsCounter className="product-details" />
+        <ProductDetailsCounter
+          className="product-details"
+          count={count}
+          setCount={setCount}
+        />
         <button
           type="button"
           className="product-details__btn product-details__btn--buy"
@@ -56,6 +71,7 @@ function ProductDetails({ product }: PropsType): ReactElement {
         <button
           type="button"
           className="product-details__btn product-details__btn--add"
+          onClick={onClickAddToCard}
         >
           Add to Cart
         </button>
