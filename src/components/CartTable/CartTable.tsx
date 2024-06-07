@@ -20,14 +20,22 @@ type PropsType = {
 function CartTable({ cartItems }: PropsType): ReactElement {
   const tableHeadCells = ["Products", "Price", "Quantity", "Total"].map(
     (item) => (
-      <TableCell key={`Cart-Table-Head-Coloumn-${item}`}>{item}</TableCell>
+      <TableCell
+        key={`Cart-Table-Head-Coloumn-${item}`}
+        sx={{ fontWeight: "bold" }}
+      >
+        {item}
+      </TableCell>
     )
   );
 
   console.log(cartItems);
 
   const tableItems = cartItems.map((item) => (
-    <TableRow key={`Cart-Item-${item.name?.en}`}>
+    <TableRow
+      key={`Cart-Item-${item.name?.en}`}
+      sx={{ backgroundColor: "#FBFBFB" }}
+    >
       <TableCell
         sx={{
           display: "flex",
@@ -42,13 +50,18 @@ function CartTable({ cartItems }: PropsType): ReactElement {
             style={{ maxHeight: 100, objectFit: "contain" }}
           />
         )}
-        <Typography variant="body2" component="p" noWrap>
+        <Typography
+          variant="body2"
+          component="p"
+          noWrap
+          sx={{ fontWeight: "bold" }}
+        >
           {item.name && item.name.en}
         </Typography>
       </TableCell>
       <TableCell>{item.price && <ProductPrice price={item.price} />}</TableCell>
       <TableCell>{item.quantity}</TableCell>
-      <TableCell>
+      <TableCell sx={{ fontWeight: "bold" }}>
         <ProductPrice price={{ id: "", key: "", value: item.totalPrice }} />
       </TableCell>
     </TableRow>
@@ -56,7 +69,7 @@ function CartTable({ cartItems }: PropsType): ReactElement {
 
   return (
     <TableContainer>
-      <Table>
+      <Table size="small">
         <TableHead>
           <TableRow>{tableHeadCells}</TableRow>
         </TableHead>
