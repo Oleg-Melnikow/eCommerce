@@ -35,7 +35,6 @@ export function CartProvider(props: ProviderProps): ReactElement {
 
   useEffect(() => {
     fetchActiveCart();
-    console.log(state);
   }, [API.getInstance()]);
 
   const contextValue = useMemo(
