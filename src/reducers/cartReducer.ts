@@ -14,7 +14,7 @@ export const cartReducer = (
   action: ActionsType
 ): CartStateType => {
   switch (action.type) {
-    case "products/eCommerce/SET-ACTIVE-CART":
+    case "cart/eCommerce/SET-ACTIVE-CART":
       return {
         ...state,
         ...action.payload,
@@ -27,7 +27,7 @@ export const cartReducer = (
 
 export const setActiveCart = (activeCart: Cart) =>
   ({
-    type: "products/eCommerce/SET-ACTIVE-CART",
+    type: "cart/eCommerce/SET-ACTIVE-CART",
     payload: { activeCart },
   }) as const;
 
