@@ -29,8 +29,6 @@ function CartTable({ cartItems }: PropsType): ReactElement {
     )
   );
 
-  console.log(cartItems);
-
   const tableItems = cartItems.map((item) => (
     <TableRow
       key={`Cart-Item-${item.name?.en}`}
