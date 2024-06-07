@@ -1,5 +1,5 @@
 import { Address, CreatedBy, Customer } from "./Customer";
-import { Price } from "./Product";
+import { Price, PriceValue } from "./Product";
 
 interface MyCartDraft {
   taxMode?: TaxMode;
@@ -110,7 +110,7 @@ interface TaxPortion {
 
 interface LineItem {
   variant?: ProductVariant;
-  totalPrice: TypedMoney;
+  totalPrice: PriceValue;
   taxedPrice?: TaxedItemPrice;
   taxRate?: TaxRate;
   supplyChannel?: ChannelReference;
@@ -175,31 +175,6 @@ interface CartDiscountReference {
 
 type LocalizedString = Record<string, string>;
 
-type ReferenceTypeID =
-  | "cart"
-  | "cart-discount"
-  | "category"
-  | "channel"
-  | "customer"
-  | "customer-group"
-  | "discount-code"
-  | "key-value-document"
-  | "payment"
-  | "product"
-  | "product-type"
-  | "product-discount"
-  | "order"
-  | "review"
-  | "shopping-list"
-  | "shipping-method"
-  | "state"
-  | "store"
-  | "tax-category"
-  | "type"
-  | "zone"
-  | "inventory-entry"
-  | "order-edit";
-
 interface LastModifiedBy {
   externalUserId?: string;
   customer?: CustomerReference;
@@ -260,110 +235,110 @@ interface CustomLineItem {
 type CartState = string;
 
 interface ProductVariant {
-  SKU?: string;
-  ScopedPriceDiscounted: boolean;
-  ScopedPrice?: ScopedPrice;
-  Prices?: Price[];
-  Price?: Price;
-  Key?: string;
-  IsMatchingVariant: boolean;
-  Images?: Image[];
-  ID: number;
-  Availability?: ProductVariantAvailability;
-  Attributes?: Attribute[];
-  Assets?: Asset[];
+  sku?: string;
+  scopedPriceDiscounted: boolean;
+  scopedPrice?: ScopedPrice;
+  prices?: Price[];
+  price?: Price;
+  key?: string;
+  isMatchingVariant: boolean;
+  images?: Image[];
+  id: number;
+  availability?: ProductVariantAvailability;
+  attributes?: Attribute[];
+  assets?: Asset[];
 }
 
 interface ScopedPrice {
-  Value: TypedMoney;
-  ValidUntil?: Date;
-  ValidFrom?: Date;
-  ID: string;
-  Discounted?: DiscountedPrice;
-  CustomerGroup?: CustomerGroupReference;
-  CurrentValue: TypedMoney;
-  Country?: CountryCode;
-  Channel?: ChannelReference;
+  value: TypedMoney;
+  validUntil?: Date;
+  validFrom?: Date;
+  id: string;
+  discounted?: DiscountedPrice;
+  customerGroup?: CustomerGroupReference;
+  currentValue: TypedMoney;
+  country?: CountryCode;
+  channel?: ChannelReference;
 }
 
 interface Image {
-  URL: string;
-  Label?: string;
-  Dimensions: ImageDimensions;
+  url: string;
+  label?: string;
+  dimensions: ImageDimensions;
 }
 
 interface ImageDimensions {
-  W: number;
-  H: number;
+  w: number;
+  h: number;
 }
 
 interface AssetDimensions {
-  W: number;
-  H: number;
+  w: number;
+  h: number;
 }
 
 interface ProductVariantAvailability {
-  RestockableInDays?: number;
-  IsOnStock: boolean;
-  Channels?: ProductVariantChannelAvailabilityMap;
-  AvailableQuantity?: number;
+  restockableInDays?: number;
+  isOnStock: boolean;
+  channels?: ProductVariantChannelAvailabilityMap;
+  availableQuantity?: number;
 }
 
 type ProductVariantChannelAvailabilityMap = Record<string, unknown>;
 
 interface Attribute {
-  Value: unknown;
-  Name: string;
+  value: unknown;
+  name: string;
 }
 
 interface Asset {
-  Tags?: string[];
-  Sources: AssetSource[];
-  Name?: LocalizedString;
-  Key?: string;
-  ID: string;
-  Description?: LocalizedString;
+  tags?: string[];
+  sources: AssetSource[];
+  name?: LocalizedString;
+  key?: string;
+  id: string;
+  description?: LocalizedString;
 }
 
 interface AssetSource {
-  URI: string;
-  Key?: string;
-  Dimensions?: AssetDimensions;
-  ContentType?: string;
+  uri: string;
+  key?: string;
+  dimensions?: AssetDimensions;
+  contentType?: string;
 }
 
 interface TaxedItemPrice {
-  TotalNet: TypedMoney;
-  TotalGross: TypedMoney;
+  totalNet: TypedMoney;
+  totalGross: TypedMoney;
 }
 
 interface TaxRate {
-  SubRates?: SubRate[];
-  State?: string;
-  Name: string;
-  IncludedInPrice: boolean;
-  ID?: string;
-  Country: CountryCode;
-  Amount?: number;
+  subRates?: SubRate[];
+  state?: string;
+  name: string;
+  includedInPrice: boolean;
+  id?: string;
+  country: CountryCode;
+  amount?: number;
 }
 
 interface SubRate {
-  Name: string;
-  Amount?: number;
+  name: string;
+  amount?: number;
 }
 
 interface ChannelReference {
-  ID: string;
+  id: string;
   obj?: Record<string, string>;
 }
 
 interface ItemState {
-  State?: StateReference;
-  Quantity: number;
+  state?: StateReference;
+  quantity: number;
 }
 
 interface StateReference {
-  ID: string;
+  id: string;
   obj?: Record<string, string>;
 }
 
@@ -491,4 +466,4 @@ interface ProductDiscountReference {
   obj?: Record<string, string>;
 }
 
-export { MyCartDraft, Cart };
+export { MyCartDraft, Cart, LineItem };
