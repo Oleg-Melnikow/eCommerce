@@ -15,6 +15,7 @@ import {
   cartReducer,
   setActiveCart,
 } from "reducers/cartReducer";
+import { LineItem } from "types/API/Cart";
 import { ProductData } from "types/API/Product";
 
 interface ProviderProps {
@@ -39,7 +40,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
   }, [fetchActiveCart]);
 
   const addProductToActiveCart = useCallback(
-    async (product: ProductData, count: number): Promise<void> => {
+    async (product: ProductData | LineItem, count: number): Promise<void> => {
       try {
         const { activeCart } = state;
         if (activeCart) {

@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { Cart } from "types/API/Cart";
+import { Cart, LineItem } from "types/API/Cart";
 import { ProductData } from "types/API/Product";
 
 interface CartStateType {
@@ -36,7 +36,7 @@ type ActionsType = ReturnType<typeof setActiveCart>;
 
 export interface CartContextValue extends CartStateType {
   addProductToActiveCart: (
-    product: ProductData,
+    product: ProductData | LineItem,
     count: number
   ) => Promise<void>;
   fetchActiveCart: () => Promise<void>;

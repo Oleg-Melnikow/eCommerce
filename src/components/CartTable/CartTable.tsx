@@ -12,12 +12,14 @@ import {
 } from "@mui/material";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
+import useCart from "hooks/use-cart";
 
 type PropsType = {
   cartItems: LineItem[];
 };
 
 function CartTable({ cartItems }: PropsType): ReactElement {
+  const { addProductToActiveCart } = useCart();
   const tableHeadCells = ["Products", "Price", "Quantity", "Total"].map(
     (item) => (
       <TableCell
@@ -65,6 +67,8 @@ function CartTable({ cartItems }: PropsType): ReactElement {
           <ProductDetailsCounter
             count={item.quantity}
             className="product-details"
+            setCount={null}
+            addItemToCart={() => addProductToActiveCart(item, 1)}
           />
         </TableCell>
         <TableCell sx={{ fontWeight: "bold" }}>

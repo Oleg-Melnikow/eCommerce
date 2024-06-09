@@ -4,13 +4,15 @@ import "./ProductDetailsCounter.scss";
 type PropsType = {
   className: string;
   count: number;
-  setCount?: React.Dispatch<React.SetStateAction<number>>;
+  setCount: React.Dispatch<React.SetStateAction<number>> | null;
+  addItemToCart?: () => void;
 };
 
 function ProductDetailsCounter({
   className,
   count,
   setCount,
+  addItemToCart,
 }: PropsType): ReactElement {
   let [selfCount, setSelfCount] = useState(count);
   if (setCount) {
@@ -19,6 +21,7 @@ function ProductDetailsCounter({
   }
   const increment = (): void => {
     setSelfCount(selfCount + 1);
+    if (!setCount && addItemToCart) addItemToCart();
   };
   const decrement = (): void => {
     if (selfCount > 1) setSelfCount(selfCount - 1);

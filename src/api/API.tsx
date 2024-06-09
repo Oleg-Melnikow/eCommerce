@@ -16,7 +16,7 @@ import {
   DeleteParamsType,
   PersonalDataType,
 } from "types/RegisterForm";
-import { Cart, MyCartDraft } from "../types/API/Cart";
+import { Cart, LineItem, MyCartDraft } from "../types/API/Cart";
 
 export default class API {
   protected static instance: API | null = null;
@@ -415,14 +415,21 @@ export default class API {
   }
 
   public async addProductToCart(
-    product: ProductData,
+    product: ProductData | LineItem,
     cart: Cart,
     quantity: number
   ): Promise<Cart> {
     try {
+      const instanceOfProductData = (
+        obj: ProductData | LineItem
+      ): obj is ProductData => "masterData" in obj;
+
+      const sku = instanceOfProductData(product)
+        ? product.masterData.current.masterVariant.sku
+        : product.variant?.sku;
       const action = {
         action: "addLineItem",
-        sku: product.masterData.current.masterVariant.sku,
+        sku,
         quantity,
       };
       const response = await this.apiInstance?.post(`/me/carts/${cart.id}`, {
