@@ -30,6 +30,7 @@ function ProductDetailsCounter({
         className={`counter-btn ${className}__counter-btn`}
         onClick={decrement}
         type="button"
+        disabled={selfCount <= 1}
       >
         -
       </button>
