@@ -4,10 +4,12 @@ import { ProductData } from "types/API/Product";
 
 interface CartStateType {
   activeCart: Cart | null;
+  isLoading: boolean;
 }
 
 export const CartInitialState: CartStateType = {
   activeCart: null,
+  isLoading: false,
 };
 
 export const cartReducer = (
@@ -16,6 +18,7 @@ export const cartReducer = (
 ): CartStateType => {
   switch (action.type) {
     case "cart/eCommerce/SET-ACTIVE-CART":
+    case "cart/eCommerce/SET-IS-LOADING":
       return {
         ...state,
         ...action.payload,
@@ -32,7 +35,15 @@ export const setActiveCart = (activeCart: Cart) =>
     payload: { activeCart },
   }) as const;
 
-type ActionsType = ReturnType<typeof setActiveCart>;
+export const loading = (isLoading: boolean) =>
+  ({
+    type: "cart/eCommerce/SET-IS-LOADING",
+    payload: { isLoading },
+  }) as const;
+
+type ActionsType =
+  | ReturnType<typeof setActiveCart>
+  | ReturnType<typeof loading>;
 
 export interface CartContextValue extends CartStateType {
   addProductToActiveCart: (

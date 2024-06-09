@@ -14,6 +14,7 @@ import {
   CartInitialState,
   cartReducer,
   setActiveCart,
+  loading,
 } from "reducers/cartReducer";
 import { LineItem } from "types/API/Cart";
 import { ProductData } from "types/API/Product";
@@ -28,10 +29,13 @@ export function CartProvider(props: ProviderProps): ReactElement {
 
   const fetchActiveCart = useCallback(async (): Promise<void> => {
     try {
+      dispatch(loading(true));
       const cart = await API.getInstance()?.getCart();
       if (cart) dispatch(setActiveCart(cart));
     } catch (err) {
       if (err instanceof Error) toast.error(err.message, toastOptions);
+    } finally {
+      dispatch(loading(false));
     }
   }, []);
 
@@ -43,14 +47,19 @@ export function CartProvider(props: ProviderProps): ReactElement {
     async (product: ProductData | LineItem, count: number): Promise<void> => {
       try {
         const { activeCart } = state;
+        dispatch(loading(true));
         if (activeCart) {
-          API.getInstance()
-            ?.addProductToCart(product, activeCart, count)
-            .then((cart) => dispatch(setActiveCart(cart)))
-            .catch((err) => toast.error(err.message, toastOptions));
+          const cart = await API.getInstance()?.addProductToCart(
+            product,
+            activeCart,
+            count
+          );
+          if (cart) dispatch(setActiveCart(cart));
         }
       } catch (err) {
         if (err instanceof Error) toast.error(err.message, toastOptions);
+      } finally {
+        dispatch(loading(false));
       }
     },
     [state]
@@ -60,6 +69,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
     async (product: LineItem, quantity: number): Promise<void> => {
       try {
         const { activeCart } = state;
+        dispatch(loading(true));
         if (activeCart) {
           const cart = await API.getInstance()?.removeProductFromCart(
             product,
@@ -70,6 +80,8 @@ export function CartProvider(props: ProviderProps): ReactElement {
         }
       } catch (err) {
         if (err instanceof Error) toast.error(err.message, toastOptions);
+      } finally {
+        dispatch(loading(false));
       }
     },
     [state]
