@@ -5,7 +5,7 @@ import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetai
 import { ProductData } from "types/API/Product";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 import useProduct from "hooks/use-product";
-import API from "api/API";
+import useCart from "hooks/use-cart";
 
 type PropsType = {
   product: ProductData;
@@ -14,6 +14,7 @@ type PropsType = {
 function ProductDetails({ product }: PropsType): ReactElement {
   const { getCategoriesCurrentProduct, currentProductCategories } =
     useProduct();
+  const { addProductToActiveCart } = useCart();
   const [count, setCount] = useState(1);
 
   const line = (
@@ -43,14 +44,6 @@ function ProductDetails({ product }: PropsType): ReactElement {
     searchKeywords.en?.map((keyword) => keyword.text) ?? [],
   ];
 
-  const onClickAddToCard = (): void => {
-    API.getInstance()
-      ?.getCart()
-      .then((cart) => {
-        API.getInstance()?.addProductToCart(product, cart, count);
-      });
-  };
-
   return (
     <div className="product-details">
       <h3 className="product-details__title">{title}</h3>
@@ -71,7 +64,7 @@ function ProductDetails({ product }: PropsType): ReactElement {
         <button
           type="button"
           className="product-details__btn product-details__btn--add"
-          onClick={onClickAddToCard}
+          onClick={() => addProductToActiveCart(product, count)}
         >
           Add to Cart
         </button>

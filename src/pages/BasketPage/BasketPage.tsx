@@ -1,11 +1,10 @@
 import "./BasketPage.scss";
-import React, { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import useCart from "hooks/use-cart";
-import { LineItem } from "types/API/Cart";
 import CartTable from "components/CartTable/CartTable";
 
 function BasketPage(): ReactElement {
-  const { activeCart } = useCart();
+  const { activeCart, fetchActiveCart } = useCart();
   const cartItems = activeCart?.lineItems ?? [];
 
   return (

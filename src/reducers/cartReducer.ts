@@ -1,5 +1,6 @@
 import { createContext } from "react";
 import { Cart } from "types/API/Cart";
+import { ProductData } from "types/API/Product";
 
 interface CartStateType {
   activeCart: Cart | null;
@@ -33,8 +34,16 @@ export const setActiveCart = (activeCart: Cart) =>
 
 type ActionsType = ReturnType<typeof setActiveCart>;
 
-export interface CartContextValue extends CartStateType {}
+export interface CartContextValue extends CartStateType {
+  addProductToActiveCart: (
+    product: ProductData,
+    count: number
+  ) => Promise<void>;
+  fetchActiveCart: () => Promise<void>;
+}
 
 export const CartContext = createContext<CartContextValue>({
   ...CartInitialState,
+  addProductToActiveCart: () => Promise.resolve(),
+  fetchActiveCart: () => Promise.resolve(),
 });
