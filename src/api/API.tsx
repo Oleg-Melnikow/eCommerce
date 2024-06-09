@@ -443,4 +443,27 @@ export default class API {
       throw new Error(message);
     }
   }
+
+  public async removeProductFromCart(
+    product: LineItem,
+    cart: Cart,
+    quantity: number
+  ): Promise<Cart> {
+    try {
+      const action = {
+        action: "removeLineItem",
+        lineItemId: product.id,
+        quantity,
+      };
+      const response = await this.apiInstance?.post(`/me/carts/${cart.id}`, {
+        version: cart.version,
+        actions: [action],
+      });
+      if (response?.status === 200) return response.data as Cart;
+      throw new AxiosError("Failed to add item to cart");
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
+  }
 }

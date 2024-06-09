@@ -40,10 +40,15 @@ export interface CartContextValue extends CartStateType {
     count: number
   ) => Promise<void>;
   fetchActiveCart: () => Promise<void>;
+  removeProductFromActiveCart: (
+    product: LineItem,
+    quantity: number
+  ) => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextValue>({
   ...CartInitialState,
   addProductToActiveCart: () => Promise.resolve(),
   fetchActiveCart: () => Promise.resolve(),
+  removeProductFromActiveCart: () => Promise.resolve(),
 });

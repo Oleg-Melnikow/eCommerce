@@ -6,6 +6,7 @@ type PropsType = {
   count: number;
   setCount: React.Dispatch<React.SetStateAction<number>> | null;
   addItemToCart?: () => void;
+  removeItemFromCart?: () => void;
 };
 
 function ProductDetailsCounter({
@@ -13,6 +14,7 @@ function ProductDetailsCounter({
   count,
   setCount,
   addItemToCart,
+  removeItemFromCart,
 }: PropsType): ReactElement {
   let [selfCount, setSelfCount] = useState(count);
   if (setCount) {
@@ -24,7 +26,10 @@ function ProductDetailsCounter({
     if (!setCount && addItemToCart) addItemToCart();
   };
   const decrement = (): void => {
-    if (selfCount > 1) setSelfCount(selfCount - 1);
+    if (selfCount > 1) {
+      setSelfCount(selfCount - 1);
+      if (!setCount && removeItemFromCart) removeItemFromCart();
+    }
   };
 
   return (

@@ -56,13 +56,38 @@ export function CartProvider(props: ProviderProps): ReactElement {
     [state]
   );
 
+  const removeProductFromActiveCart = useCallback(
+    async (product: LineItem, quantity: number): Promise<void> => {
+      try {
+        const { activeCart } = state;
+        if (activeCart) {
+          const cart = await API.getInstance()?.removeProductFromCart(
+            product,
+            activeCart,
+            quantity
+          );
+          if (cart) dispatch(setActiveCart(cart));
+        }
+      } catch (err) {
+        if (err instanceof Error) toast.error(err.message, toastOptions);
+      }
+    },
+    [state]
+  );
+
   const contextValue = useMemo(
     () => ({
       ...state,
       fetchActiveCart,
       addProductToActiveCart,
+      removeProductFromActiveCart,
     }),
-    [state, fetchActiveCart, addProductToActiveCart]
+    [
+      state,
+      fetchActiveCart,
+      addProductToActiveCart,
+      removeProductFromActiveCart,
+    ]
   );
 
   return (

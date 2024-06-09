@@ -19,7 +19,7 @@ type PropsType = {
 };
 
 function CartTable({ cartItems }: PropsType): ReactElement {
-  const { addProductToActiveCart } = useCart();
+  const { addProductToActiveCart, removeProductFromActiveCart } = useCart();
   const tableHeadCells = ["Products", "Price", "Quantity", "Total"].map(
     (item) => (
       <TableCell
@@ -69,6 +69,7 @@ function CartTable({ cartItems }: PropsType): ReactElement {
             className="product-details"
             setCount={null}
             addItemToCart={() => addProductToActiveCart(item, 1)}
+            removeItemFromCart={() => removeProductFromActiveCart(item, 1)}
           />
         </TableCell>
         <TableCell sx={{ fontWeight: "bold" }}>
