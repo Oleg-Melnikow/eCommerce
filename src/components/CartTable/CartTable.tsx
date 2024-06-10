@@ -1,6 +1,6 @@
 import { LineItem } from "types/API/Cart";
 import "./CartTable.scss";
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import {
   Table,
   TableCell,
@@ -9,7 +9,9 @@ import {
   TableRow,
   TableBody,
   Typography,
+  IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
 import useCart from "hooks/use-cart";
@@ -20,7 +22,7 @@ type PropsType = {
 
 function CartTable({ cartItems }: PropsType): ReactElement {
   const { addProductToActiveCart, removeProductFromActiveCart } = useCart();
-  const tableHeadCells = ["Products", "Price", "Quantity", "Total"].map(
+  const tableHeadCells = ["Products", "Price", "Quantity", "Total", ""].map(
     (item) => (
       <TableCell
         key={`Cart-Table-Head-Coloumn-${item}`}
@@ -74,6 +76,13 @@ function CartTable({ cartItems }: PropsType): ReactElement {
         </TableCell>
         <TableCell sx={{ fontWeight: "bold" }}>
           <ProductPrice price={{ id: "", key: "", value: item.totalPrice }} />
+        </TableCell>
+        <TableCell>
+          <IconButton
+            onClick={() => removeProductFromActiveCart(item, item.quantity)}
+          >
+            <DeleteIcon />
+          </IconButton>
         </TableCell>
       </TableRow>
     );
