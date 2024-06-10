@@ -1,6 +1,5 @@
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { CartProvider } from "./contexts/CartContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProductProvider } from "./contexts/ProductContext";
 import App from "./App";
@@ -13,9 +12,7 @@ root.render(
   <BrowserRouter>
     <AuthProvider>
       <ProductProvider>
-        <CartProvider>
-          <App />
-        </CartProvider>
+        <App />
       </ProductProvider>
     </AuthProvider>
   </BrowserRouter>
