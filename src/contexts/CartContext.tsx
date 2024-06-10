@@ -15,6 +15,7 @@ import {
   cartReducer,
   setActiveCart,
 } from "reducers/cartReducer";
+import { ProductData } from "types/API/Product";
 
 interface ProviderProps {
   children: ReactNode;
@@ -35,13 +36,32 @@ export function CartProvider(props: ProviderProps): ReactElement {
 
   useEffect(() => {
     fetchActiveCart();
-  }, [API.getInstance()]);
+  }, [fetchActiveCart]);
+
+  const addProductToActiveCart = useCallback(
+    async (product: ProductData, count: number): Promise<void> => {
+      try {
+        const { activeCart } = state;
+        if (activeCart) {
+          API.getInstance()
+            ?.addProductToCart(product, activeCart, count)
+            .then((cart) => dispatch(setActiveCart(cart)))
+            .catch((err) => toast.error(err.message, toastOptions));
+        }
+      } catch (err) {
+        if (err instanceof Error) toast.error(err.message, toastOptions);
+      }
+    },
+    [state]
+  );
 
   const contextValue = useMemo(
     () => ({
       ...state,
+      fetchActiveCart,
+      addProductToActiveCart,
     }),
-    [state]
+    [state, fetchActiveCart, addProductToActiveCart]
   );
 
   return (

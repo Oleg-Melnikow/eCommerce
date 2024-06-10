@@ -418,7 +418,7 @@ export default class API {
     product: ProductData,
     cart: Cart,
     quantity: number
-  ): Promise<void> {
+  ): Promise<Cart> {
     try {
       const action = {
         action: "addLineItem",
@@ -429,6 +429,8 @@ export default class API {
         version: cart.version,
         actions: [action],
       });
+      if (response?.status === 200) return response.data as Cart;
+      throw new AxiosError("Failed to add item to cart");
     } catch (err) {
       const message = errorHandler(err);
       throw new Error(message);
