@@ -1,13 +1,15 @@
 import { createContext } from "react";
-import { Cart } from "types/API/Cart";
+import { Cart, LineItem } from "types/API/Cart";
 import { ProductData } from "types/API/Product";
 
 interface CartStateType {
   activeCart: Cart | null;
+  isLoading: boolean;
 }
 
 export const CartInitialState: CartStateType = {
   activeCart: null,
+  isLoading: false,
 };
 
 export const cartReducer = (
@@ -16,6 +18,7 @@ export const cartReducer = (
 ): CartStateType => {
   switch (action.type) {
     case "cart/eCommerce/SET-ACTIVE-CART":
+    case "cart/eCommerce/SET-IS-LOADING":
       return {
         ...state,
         ...action.payload,
@@ -32,18 +35,31 @@ export const setActiveCart = (activeCart: Cart) =>
     payload: { activeCart },
   }) as const;
 
-type ActionsType = ReturnType<typeof setActiveCart>;
+export const loading = (isLoading: boolean) =>
+  ({
+    type: "cart/eCommerce/SET-IS-LOADING",
+    payload: { isLoading },
+  }) as const;
+
+type ActionsType =
+  | ReturnType<typeof setActiveCart>
+  | ReturnType<typeof loading>;
 
 export interface CartContextValue extends CartStateType {
   addProductToActiveCart: (
-    product: ProductData,
+    product: ProductData | LineItem,
     count: number
   ) => Promise<void>;
   fetchActiveCart: () => Promise<void>;
+  removeProductFromActiveCart: (
+    product: LineItem,
+    quantity: number
+  ) => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextValue>({
   ...CartInitialState,
   addProductToActiveCart: () => Promise.resolve(),
   fetchActiveCart: () => Promise.resolve(),
+  removeProductFromActiveCart: () => Promise.resolve(),
 });

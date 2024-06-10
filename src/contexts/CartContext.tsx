@@ -14,7 +14,9 @@ import {
   CartInitialState,
   cartReducer,
   setActiveCart,
+  loading,
 } from "reducers/cartReducer";
+import { LineItem } from "types/API/Cart";
 import { ProductData } from "types/API/Product";
 
 interface ProviderProps {
@@ -27,10 +29,13 @@ export function CartProvider(props: ProviderProps): ReactElement {
 
   const fetchActiveCart = useCallback(async (): Promise<void> => {
     try {
+      dispatch(loading(true));
       const cart = await API.getInstance()?.getCart();
       if (cart) dispatch(setActiveCart(cart));
     } catch (err) {
       if (err instanceof Error) toast.error(err.message, toastOptions);
+    } finally {
+      dispatch(loading(false));
     }
   }, []);
 
@@ -39,17 +44,44 @@ export function CartProvider(props: ProviderProps): ReactElement {
   }, [fetchActiveCart]);
 
   const addProductToActiveCart = useCallback(
-    async (product: ProductData, count: number): Promise<void> => {
+    async (product: ProductData | LineItem, count: number): Promise<void> => {
       try {
         const { activeCart } = state;
+        dispatch(loading(true));
         if (activeCart) {
-          API.getInstance()
-            ?.addProductToCart(product, activeCart, count)
-            .then((cart) => dispatch(setActiveCart(cart)))
-            .catch((err) => toast.error(err.message, toastOptions));
+          const cart = await API.getInstance()?.addProductToCart(
+            product,
+            activeCart,
+            count
+          );
+          if (cart) dispatch(setActiveCart(cart));
         }
       } catch (err) {
         if (err instanceof Error) toast.error(err.message, toastOptions);
+      } finally {
+        dispatch(loading(false));
+      }
+    },
+    [state]
+  );
+
+  const removeProductFromActiveCart = useCallback(
+    async (product: LineItem, quantity: number): Promise<void> => {
+      try {
+        const { activeCart } = state;
+        dispatch(loading(true));
+        if (activeCart) {
+          const cart = await API.getInstance()?.removeProductFromCart(
+            product,
+            activeCart,
+            quantity
+          );
+          if (cart) dispatch(setActiveCart(cart));
+        }
+      } catch (err) {
+        if (err instanceof Error) toast.error(err.message, toastOptions);
+      } finally {
+        dispatch(loading(false));
       }
     },
     [state]
@@ -60,8 +92,14 @@ export function CartProvider(props: ProviderProps): ReactElement {
       ...state,
       fetchActiveCart,
       addProductToActiveCart,
+      removeProductFromActiveCart,
     }),
-    [state, fetchActiveCart, addProductToActiveCart]
+    [
+      state,
+      fetchActiveCart,
+      addProductToActiveCart,
+      removeProductFromActiveCart,
+    ]
   );
 
   return (

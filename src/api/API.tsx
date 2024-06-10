@@ -16,7 +16,7 @@ import {
   DeleteParamsType,
   PersonalDataType,
 } from "types/RegisterForm";
-import { Cart, MyCartDraft } from "../types/API/Cart";
+import { Cart, LineItem, MyCartDraft } from "../types/API/Cart";
 
 export default class API {
   protected static instance: API | null = null;
@@ -415,14 +415,44 @@ export default class API {
   }
 
   public async addProductToCart(
-    product: ProductData,
+    product: ProductData | LineItem,
+    cart: Cart,
+    quantity: number
+  ): Promise<Cart> {
+    try {
+      const instanceOfProductData = (
+        obj: ProductData | LineItem
+      ): obj is ProductData => "masterData" in obj;
+
+      const sku = instanceOfProductData(product)
+        ? product.masterData.current.masterVariant.sku
+        : product.variant?.sku;
+      const action = {
+        action: "addLineItem",
+        sku,
+        quantity,
+      };
+      const response = await this.apiInstance?.post(`/me/carts/${cart.id}`, {
+        version: cart.version,
+        actions: [action],
+      });
+      if (response?.status === 200) return response.data as Cart;
+      throw new AxiosError("Failed to add item to cart");
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
+  }
+
+  public async removeProductFromCart(
+    product: LineItem,
     cart: Cart,
     quantity: number
   ): Promise<Cart> {
     try {
       const action = {
-        action: "addLineItem",
-        sku: product.masterData.current.masterVariant.sku,
+        action: "removeLineItem",
+        lineItemId: product.id,
         quantity,
       };
       const response = await this.apiInstance?.post(`/me/carts/${cart.id}`, {

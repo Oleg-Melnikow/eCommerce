@@ -1,22 +1,35 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import "./ProductDetailsCounter.scss";
 
 type PropsType = {
   className: string;
   count: number;
-  setCount: React.Dispatch<React.SetStateAction<number>>;
+  setCount: React.Dispatch<React.SetStateAction<number>> | null;
+  addItemToCart?: () => void;
+  removeItemFromCart?: () => void;
 };
 
 function ProductDetailsCounter({
   className,
   count,
   setCount,
+  addItemToCart,
+  removeItemFromCart,
 }: PropsType): ReactElement {
+  let [selfCount, setSelfCount] = useState(count);
+  if (setCount) {
+    setSelfCount = setCount;
+    selfCount = count;
+  }
   const increment = (): void => {
-    setCount(count + 1);
+    setSelfCount(selfCount + 1);
+    if (!setCount && addItemToCart) addItemToCart();
   };
   const decrement = (): void => {
-    if (count > 1) setCount(count - 1);
+    if (selfCount > 1) {
+      setSelfCount(selfCount - 1);
+      if (!setCount && removeItemFromCart) removeItemFromCart();
+    }
   };
 
   return (
@@ -25,11 +38,12 @@ function ProductDetailsCounter({
         className={`counter-btn ${className}__counter-btn`}
         onClick={decrement}
         type="button"
+        disabled={selfCount <= 1}
       >
         -
       </button>
       <span className={`counter-value ${className}__counter-value`}>
-        {count}
+        {selfCount}
       </span>
       <button
         className={`counter-btn ${className}__counter-btn`}

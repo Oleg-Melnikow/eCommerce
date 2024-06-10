@@ -2,13 +2,19 @@ import "./BasketPage.scss";
 import { ReactElement, useEffect } from "react";
 import useCart from "hooks/use-cart";
 import CartTable from "components/CartTable/CartTable";
+import LoaderItem from "components/LoaderItem/LoaderItem";
 
 function BasketPage(): ReactElement {
-  const { activeCart, fetchActiveCart } = useCart();
+  const { activeCart, fetchActiveCart, isLoading } = useCart();
   const cartItems = activeCart?.lineItems ?? [];
+
+  useEffect(() => {
+    fetchActiveCart();
+  }, [fetchActiveCart]);
 
   return (
     <div className="basket-page" style={{ marginTop: "50px" }}>
+      {isLoading && <LoaderItem />}
       <CartTable cartItems={cartItems} />
     </div>
   );
