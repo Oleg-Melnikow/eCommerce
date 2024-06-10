@@ -6,6 +6,9 @@ import { ProductData } from "types/API/Product";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 import useProduct from "hooks/use-product";
 import useCart from "hooks/use-cart";
+import { toast } from "react-toastify";
+import { LoadingButton } from "@mui/lab";
+import toastOptions from "helpers/toastOptions";
 
 type PropsType = {
   product: ProductData;
@@ -16,6 +19,7 @@ function ProductDetails({ product }: PropsType): ReactElement {
     useProduct();
   const { addProductToActiveCart } = useCart();
   const [count, setCount] = useState(1);
+  const [isLoadingAddBtn, setIsLoadingAddBtn] = useState(false);
 
   const line = (
     <div
@@ -28,6 +32,28 @@ function ProductDetails({ product }: PropsType): ReactElement {
       }}
     />
   );
+
+  const onclickAddToCart = (): void => {
+    setIsLoadingAddBtn(true);
+    toast.promise(
+      addProductToActiveCart(product, count),
+      {
+        success: {
+          render() {
+            setIsLoadingAddBtn(false);
+            return "The product has been successfully added to the shopping cart.";
+          },
+        },
+        error: {
+          render() {
+            setIsLoadingAddBtn(false);
+            return "The product could not be added to the shopping cart.";
+          },
+        },
+      },
+      toastOptions
+    );
+  };
 
   useEffect(() => {
     product?.masterData.current.categories.forEach(async (category) => {
@@ -61,13 +87,14 @@ function ProductDetails({ product }: PropsType): ReactElement {
         >
           Buy Now
         </button>
-        <button
+        <LoadingButton
+          loading={isLoadingAddBtn}
           type="button"
           className="product-details__btn product-details__btn--add"
-          onClick={() => addProductToActiveCart(product, count)}
+          onClick={onclickAddToCart}
         >
           Add to Cart
-        </button>
+        </LoadingButton>
       </div>
       <div className="product-details__info-wrap">
         <p className="product-details__info">
