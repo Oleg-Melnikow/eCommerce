@@ -15,8 +15,10 @@ import {
   cartReducer,
   setActiveCart,
   loading,
+  setActiveDiscount,
 } from "reducers/cartReducer";
 import { LineItem } from "types/API/Cart";
+import { CartDiscountDraft } from "types/API/Discount";
 import { ProductData } from "types/API/Product";
 
 interface ProviderProps {
@@ -39,9 +41,33 @@ export function CartProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
+  const createActiveCartDiscount = useCallback(
+    async (discountDraft: CartDiscountDraft): Promise<void> => {
+      try {
+        const discount =
+          await API.getInstance()?.createCartDiscount(discountDraft);
+        if (discount) dispatch(setActiveDiscount(discount));
+      } catch (err) {
+        if (err instanceof Error) console.error(err.message);
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     fetchActiveCart();
-  }, [fetchActiveCart]);
+    createActiveCartDiscount({
+      value: { type: "relative", permyriad: 1000 },
+      sortOrder: "0.5",
+      isActive: true,
+      cartPredicate: "1=1",
+      name: { en: "mega-discount" },
+      target: {
+        type: "lineItems",
+        predicate: "1=1",
+      },
+    });
+  }, [createActiveCartDiscount, fetchActiveCart]);
 
   const addProductToActiveCart = useCallback(
     async (product: ProductData | LineItem, count: number): Promise<void> => {

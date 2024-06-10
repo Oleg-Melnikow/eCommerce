@@ -24,6 +24,9 @@ export default function errorHandler(axiosError: unknown): string {
     case "Failed to add item to cart":
       errorMessageInner = "Failed to add item to cart";
       break;
+    case "Failed to create discount":
+      errorMessageInner = "Failed to create discount";
+      break;
     default:
       errorMessageInner =
         "Something went wrong during the registration process. Please, should try again later.";

@@ -16,6 +16,7 @@ import {
   DeleteParamsType,
   PersonalDataType,
 } from "types/RegisterForm";
+import { CartDiscount, CartDiscountDraft } from "types/API/Discount";
 import { Cart, LineItem, MyCartDraft } from "../types/API/Cart";
 
 export default class API {
@@ -461,6 +462,22 @@ export default class API {
       });
       if (response?.status === 200) return response.data as Cart;
       throw new AxiosError("Failed to add item to cart");
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
+  }
+
+  public async createCartDiscount(
+    discount: CartDiscountDraft
+  ): Promise<CartDiscount> {
+    try {
+      const response = await this.apiInstance?.post(
+        "/cart-discounts",
+        discount
+      );
+      if (response?.status === 201) return response.data as CartDiscount;
+      throw new AxiosError("Failed to create discount");
     } catch (err) {
       const message = errorHandler(err);
       throw new Error(message);
