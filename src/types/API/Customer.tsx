@@ -113,7 +113,7 @@ interface CustomerReference {
   obj?: Customer;
 }
 
-export interface CreatedBy {
+interface CreatedBy {
   externalUserId?: string;
   customer?: CustomerReference;
   clientId?: string;

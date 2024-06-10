@@ -1,11 +1,10 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect } from "react";
 import "./ProductDetails.scss";
 import ProductDetailsRadio from "components/ProductDetailsRadio/ProductDetailsRadio";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
 import { ProductData } from "types/API/Product";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 import useProduct from "hooks/use-product";
-import useCart from "hooks/use-cart";
 
 type PropsType = {
   product: ProductData;
@@ -14,8 +13,6 @@ type PropsType = {
 function ProductDetails({ product }: PropsType): ReactElement {
   const { getCategoriesCurrentProduct, currentProductCategories } =
     useProduct();
-  const { addProductToActiveCart } = useCart();
-  const [count, setCount] = useState(1);
 
   const line = (
     <div
@@ -43,18 +40,13 @@ function ProductDetails({ product }: PropsType): ReactElement {
     currentProductCategories.map((category) => category.name.en),
     searchKeywords.en?.map((keyword) => keyword.text) ?? [],
   ];
-
   return (
     <div className="product-details">
       <h3 className="product-details__title">{title}</h3>
       <ProductPrice price={price} /> {line}
       <ProductDetailsRadio className="product-details" />
       <div className="product-details__btn-wrap">
-        <ProductDetailsCounter
-          className="product-details"
-          count={count}
-          setCount={setCount}
-        />
+        <ProductDetailsCounter className="product-details" />
         <button
           type="button"
           className="product-details__btn product-details__btn--buy"
@@ -64,7 +56,6 @@ function ProductDetails({ product }: PropsType): ReactElement {
         <button
           type="button"
           className="product-details__btn product-details__btn--add"
-          onClick={() => addProductToActiveCart(product, count)}
         >
           Add to Cart
         </button>

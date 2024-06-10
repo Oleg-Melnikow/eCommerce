@@ -86,5 +86,4 @@ export {
   Price,
   Product,
   ProductsSearch,
-  PriceValue,
 };

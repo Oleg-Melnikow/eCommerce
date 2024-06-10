@@ -16,7 +16,6 @@ import {
   DeleteParamsType,
   PersonalDataType,
 } from "types/RegisterForm";
-import { Cart, MyCartDraft } from "../types/API/Cart";
 
 export default class API {
   protected static instance: API | null = null;
@@ -387,53 +386,5 @@ export default class API {
         const message = errorHandler(err);
         throw new Error(message);
       });
-  }
-
-  public async getCart(): Promise<Cart> {
-    try {
-      const response = await this.apiInstance?.get(`/me/active-cart`);
-      if (response?.status === 200) return response.data as Cart;
-      throw new AxiosError("Error fething cart");
-    } catch (err) {
-      if (err instanceof AxiosError && err.response?.status === 404)
-        return this.createCart();
-      const message = errorHandler(err);
-      throw new Error(message);
-    }
-  }
-
-  private async createCart(): Promise<Cart> {
-    try {
-      const myCartDraft: MyCartDraft = { currency: "EUR" };
-      const response = await this.apiInstance?.post(`/me/carts`, myCartDraft);
-      if (response?.status === 201) return response.data as Cart;
-      throw new AxiosError("Error creating cart");
-    } catch (err) {
-      const message = errorHandler(err);
-      throw new Error(message);
-    }
-  }
-
-  public async addProductToCart(
-    product: ProductData,
-    cart: Cart,
-    quantity: number
-  ): Promise<Cart> {
-    try {
-      const action = {
-        action: "addLineItem",
-        sku: product.masterData.current.masterVariant.sku,
-        quantity,
-      };
-      const response = await this.apiInstance?.post(`/me/carts/${cart.id}`, {
-        version: cart.version,
-        actions: [action],
-      });
-      if (response?.status === 200) return response.data as Cart;
-      throw new AxiosError("Failed to add item to cart");
-    } catch (err) {
-      const message = errorHandler(err);
-      throw new Error(message);
-    }
   }
 }

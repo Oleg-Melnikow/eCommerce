@@ -1,17 +1,13 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import "./ProductDetailsCounter.scss";
 
 type PropsType = {
   className: string;
-  count: number;
-  setCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-function ProductDetailsCounter({
-  className,
-  count,
-  setCount,
-}: PropsType): ReactElement {
+function ProductDetailsCounter({ className }: PropsType): ReactElement {
+  const [count, setCount] = useState(1);
+
   const increment = (): void => {
     setCount(count + 1);
   };
