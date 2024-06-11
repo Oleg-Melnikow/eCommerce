@@ -1,6 +1,75 @@
-.about-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.about-page__description {
+  margin: 20px 0px 0px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 15px;
+}
+.wrapper__team-info {
+  .MuiGrid-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+
+    .inner__dev-photo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0px 20px 0px 10px;
+
+      @media (max-width: 768px) {
+        margin: 0px;
+      }
+
+      .dev-photo {
+        display: block;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+      }
+    }
+
+    .inner__dev-description {
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      border-radius: 15px;
+      font-family: "Noto Sans", sans-serif;
+      text-transform: uppercase;
+      box-shadow: inset 0px 0px 10px rgba(70, 163, 88, 0.5);
+
+      @media (max-width: 768px) {
+        margin: 10px 0px 0px 0px;
+      }
+
+      .inner__dev-description_name {
+        font-size: 20px;
+        font-weight: 700;
+        color: rgb(70, 163, 88);
+      }
+
+      .inner__dev-description_role {
+        margin: 0px 0px 15px;
+        font-size: 12px;
+        font-weight: 700;
+        color: rgb(61, 61, 61);
+      }
+
+      .inner__dev-description_about,
+      .inner__dev-description_description {
+        margin: 0px 0px 15px;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: justify;
+        color: rgb(61, 61, 61);
+      }
+
+      .dev-description_link {
+        display: inline-block;
+      }
+    }
+  }
 }
