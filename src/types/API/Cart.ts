@@ -466,4 +466,31 @@ interface ProductDiscountReference {
   obj?: Record<string, string>;
 }
 
-export { MyCartDraft, Cart, LineItem };
+interface AddLineItemAction {
+  action: string;
+  key: string;
+  productId: string;
+  variantId?: number;
+  sku?: string;
+  quantity?: number;
+  addedAt?: Date;
+}
+
+interface RemoveLineItemAction {
+  action: string;
+  lineItemId?: string;
+  lineItemKey?: string;
+  quantity?: number;
+}
+
+interface AddDiscountCodeAction {
+  action: string;
+  code: string;
+}
+
+type ActionTypes =
+  | AddLineItemAction
+  | RemoveLineItemAction
+  | AddDiscountCodeAction;
+
+export { MyCartDraft, Cart, LineItem, ActionTypes };
