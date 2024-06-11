@@ -460,4 +460,12 @@ export default class API {
     };
     return this.updateCart(cart, action);
   }
+
+  public async addDiscountCodeToCart(cart: Cart, code: string): Promise<Cart> {
+    const action = {
+      action: "addDiscountCode",
+      code,
+    };
+    return this.updateCart(cart, action);
+  }
 }
