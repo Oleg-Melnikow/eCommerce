@@ -3,6 +3,7 @@ import { ReactElement, useEffect } from "react";
 import useCart from "hooks/use-cart";
 import CartTable from "components/CartTable/CartTable";
 import LoaderItem from "components/LoaderItem/LoaderItem";
+import InputPromo from "components/CartPromoInput/CartPromoInput";
 
 function BasketPage(): ReactElement {
   const { activeCart, fetchActiveCart, isLoading } = useCart();
@@ -15,6 +16,7 @@ function BasketPage(): ReactElement {
   return (
     <div className="basket-page" style={{ marginTop: "50px" }}>
       {isLoading && <LoaderItem />}
+      <InputPromo />
       <CartTable cartItems={cartItems} />
     </div>
   );
