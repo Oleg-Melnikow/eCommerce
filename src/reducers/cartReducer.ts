@@ -1,17 +1,19 @@
 import { createContext } from "react";
 import { Cart, LineItem } from "types/API/Cart";
-import { CartDiscount } from "types/API/Discount";
+import { CartDiscount, DiscountCode } from "types/API/Discount";
 import { ProductData } from "types/API/Product";
 
 interface CartStateType {
   activeCart: Cart | null;
   activeDiscount: CartDiscount | null;
+  activeDiscountCode: DiscountCode | null;
   isLoading: boolean;
 }
 
 export const CartInitialState: CartStateType = {
   activeCart: null,
   activeDiscount: null,
+  activeDiscountCode: null,
   isLoading: false,
 };
 
@@ -23,6 +25,7 @@ export const cartReducer = (
     case "cart/eCommerce/SET-ACTIVE-CART":
     case "cart/eCommerce/SET-IS-LOADING":
     case "cart/eCommerce/SET-ACTIVE-DISCOUNT":
+    case "cart/eCommerce/SET-ACTIVE-DISCOUNT-CODE":
       return {
         ...state,
         ...action.payload,
@@ -45,6 +48,12 @@ export const setActiveDiscount = (activeDiscount: CartDiscount) =>
     payload: { activeDiscount },
   }) as const;
 
+export const setActiveDiscountCode = (activeDiscountCode: DiscountCode) =>
+  ({
+    type: "cart/eCommerce/SET-ACTIVE-DISCOUNT-CODE",
+    payload: { activeDiscountCode },
+  }) as const;
+
 export const loading = (isLoading: boolean) =>
   ({
     type: "cart/eCommerce/SET-IS-LOADING",
@@ -54,7 +63,8 @@ export const loading = (isLoading: boolean) =>
 type ActionsType =
   | ReturnType<typeof setActiveCart>
   | ReturnType<typeof loading>
-  | ReturnType<typeof setActiveDiscount>;
+  | ReturnType<typeof setActiveDiscount>
+  | ReturnType<typeof setActiveDiscountCode>;
 
 export interface CartContextValue extends CartStateType {
   addProductToActiveCart: (

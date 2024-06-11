@@ -5,6 +5,7 @@ interface LocalizedString {
 }
 
 interface CartDiscountResourceIdentifier {
+  typeId: "cart-discount";
   key?: string;
   id?: string;
 }
@@ -180,4 +181,30 @@ type CartDiscountValue =
   | CartDiscountValueFixed
   | CartDiscountValueGiftLineItem;
 
-export { DiscountCodeDraft, CartDiscountDraft, CartDiscount };
+interface DiscountCode {
+  version: number;
+  validUntil?: Date;
+  validFrom?: Date;
+  name?: LocalizedString;
+  maxApplicationsPerCustomer?: number;
+  maxApplications?: number;
+  lastModifiedBy?: LastModifiedBy;
+  lastModifiedAt: Date;
+  isActive: boolean;
+  id: string;
+  groups: string[];
+  description?: LocalizedString;
+  createdBy?: CreatedBy;
+  createdAt: Date;
+  code: string;
+  cartPredicate?: string;
+  cartDiscounts: CartDiscountReference[];
+}
+
+interface CartDiscountReference {
+  id: string;
+  typeId: "cart-discount";
+  obj?: CartDiscount;
+}
+
+export { DiscountCodeDraft, CartDiscountDraft, CartDiscount, DiscountCode };

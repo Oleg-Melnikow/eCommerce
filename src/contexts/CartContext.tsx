@@ -16,9 +16,10 @@ import {
   setActiveCart,
   loading,
   setActiveDiscount,
+  setActiveDiscountCode,
 } from "reducers/cartReducer";
 import { LineItem } from "types/API/Cart";
-import { CartDiscountDraft } from "types/API/Discount";
+import { CartDiscountDraft, DiscountCodeDraft } from "types/API/Discount";
 import { ProductData } from "types/API/Product";
 
 interface ProviderProps {
@@ -54,6 +55,19 @@ export function CartProvider(props: ProviderProps): ReactElement {
     []
   );
 
+  const createActiveDiscountCode = useCallback(
+    async (discountCodeDraft: DiscountCodeDraft): Promise<void> => {
+      try {
+        const discountCode =
+          await API.getInstance()?.createDiscountCode(discountCodeDraft);
+        if (discountCode) dispatch(setActiveDiscountCode(discountCode));
+      } catch (err) {
+        if (err instanceof Error) console.error(err.message);
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     fetchActiveCart();
     createActiveCartDiscount({
@@ -68,6 +82,18 @@ export function CartProvider(props: ProviderProps): ReactElement {
       },
     });
   }, [createActiveCartDiscount, fetchActiveCart]);
+
+  useEffect(() => {
+    const { activeDiscount } = CartInitialState;
+    if (activeDiscount)
+      createActiveDiscountCode({
+        isActive: true,
+        code: "PROMO",
+        name: { en: "promo" },
+        cartPredicate: "1=1",
+        cartDiscounts: [{ typeId: "cart-discount", id: activeDiscount.id }],
+      });
+  }, [CartInitialState.activeDiscount, createActiveDiscountCode]);
 
   const addProductToActiveCart = useCallback(
     async (product: ProductData | LineItem, count: number): Promise<void> => {

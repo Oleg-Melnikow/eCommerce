@@ -22,10 +22,9 @@ export default function errorHandler(axiosError: unknown): string {
         "The given current password does not match. Please enter the correct password.";
       break;
     case "Failed to add item to cart":
-      errorMessageInner = "Failed to add item to cart";
-      break;
     case "Failed to create discount":
-      errorMessageInner = "Failed to create discount";
+    case "Failed to create discount-code":
+      errorMessageInner = error.message;
       break;
     default:
       errorMessageInner =
