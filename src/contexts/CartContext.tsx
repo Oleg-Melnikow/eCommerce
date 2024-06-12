@@ -14,9 +14,11 @@ import {
   CartInitialState,
   cartReducer,
   setActiveCart,
+  setActiveDiscountCode,
   loading,
 } from "reducers/cartReducer";
 import { LineItem } from "types/API/Cart";
+import { DiscountCode } from "types/API/Discount";
 import { ProductData } from "types/API/Product";
 
 interface ProviderProps {
@@ -108,6 +110,25 @@ export function CartProvider(props: ProviderProps): ReactElement {
     [state]
   );
 
+  const fetchDiscountCodeFromCart = useCallback(async (): Promise<void> => {
+    try {
+      dispatch(loading(true));
+      const { activeCart } = state;
+      if (
+        activeCart?.discountCodes?.length &&
+        activeCart.discountCodes[0].discountCode
+      ) {
+        const { id } = activeCart.discountCodes[0].discountCode;
+        const response = await API.getInstance()?.getDiscountCodeById(id);
+        if (response) dispatch(setActiveDiscountCode(response));
+      }
+    } catch (err) {
+      if (err instanceof Error) toast.error(err.message, toastOptions);
+    } finally {
+      dispatch(loading(false));
+    }
+  }, [state]);
+
   const contextValue = useMemo(
     () => ({
       ...state,
@@ -115,6 +136,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
       addProductToActiveCart,
       removeProductFromActiveCart,
       addDiscountCode,
+      fetchDiscountCodeFromCart,
     }),
     [
       state,
@@ -122,6 +144,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
       addProductToActiveCart,
       removeProductFromActiveCart,
       addDiscountCode,
+      fetchDiscountCodeFromCart,
     ]
   );
 

@@ -1,16 +1,17 @@
 import { createContext } from "react";
 import { Cart, LineItem } from "types/API/Cart";
+import { DiscountCode } from "types/API/Discount";
 import { ProductData } from "types/API/Product";
 
 interface CartStateType {
   activeCart: Cart | null;
-  activeDiscountCode: string | null;
+  activeDiscountCodes: DiscountCode | null;
   isLoading: boolean;
 }
 
 export const CartInitialState: CartStateType = {
   activeCart: null,
-  activeDiscountCode: null,
+  activeDiscountCodes: null,
   isLoading: false,
 };
 
@@ -44,7 +45,7 @@ export const loading = (isLoading: boolean) =>
     payload: { isLoading },
   }) as const;
 
-export const setActiveDiscountCode = (activeDiscountCode: string) =>
+export const setActiveDiscountCode = (activeDiscountCode: DiscountCode) =>
   ({
     type: "cart/eCommerce/SET-ACTIVE-DISCOUNT-CODE",
     payload: { activeDiscountCode },
@@ -66,6 +67,7 @@ export interface CartContextValue extends CartStateType {
     quantity: number
   ) => Promise<void>;
   addDiscountCode: (code: string) => Promise<void>;
+  fetchDiscountCodeFromCart: () => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextValue>({
@@ -74,4 +76,5 @@ export const CartContext = createContext<CartContextValue>({
   fetchActiveCart: () => Promise.resolve(),
   removeProductFromActiveCart: () => Promise.resolve(),
   addDiscountCode: () => Promise.resolve(),
+  fetchDiscountCodeFromCart: () => Promise.resolve(),
 });
