@@ -17,7 +17,7 @@ import {
   loading,
 } from "reducers/cartReducer";
 import { LineItem } from "types/API/Cart";
-import { ProductData } from "types/API/Product";
+import { Product } from "types/API/Product";
 
 interface ProviderProps {
   children: ReactNode;
@@ -44,17 +44,35 @@ export function CartProvider(props: ProviderProps): ReactElement {
   }, [fetchActiveCart]);
 
   const addProductToActiveCart = useCallback(
-    async (product: ProductData | LineItem, count: number): Promise<void> => {
+    async (product: Product | LineItem, count: number): Promise<void> => {
       try {
-        const { activeCart } = state;
         dispatch(loading(true));
-        if (activeCart) {
+        if (!state.activeCart) {
+          await fetchActiveCart();
+          toast.success(
+            "Cart was created successfully! We can add Product to Cart",
+            toastOptions
+          );
+        }
+        if (state.activeCart) {
+          const instanceOfProductData = (
+            obj: Product | LineItem
+          ): obj is Product => "masterVariant" in obj;
+
+          const sku = instanceOfProductData(product)
+            ? product.masterVariant.sku
+            : product.variant?.sku || "";
+
           const cart = await API.getInstance()?.addProductToCart(
-            product,
-            activeCart,
+            sku,
+            state.activeCart,
             count
           );
           if (cart) dispatch(setActiveCart(cart));
+          toast.success(
+            "The product has been successfully added to the shopping cart.",
+            toastOptions
+          );
         }
       } catch (err) {
         if (err instanceof Error) toast.error(err.message, toastOptions);
@@ -62,7 +80,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
         dispatch(loading(false));
       }
     },
-    [state]
+    [fetchActiveCart, state]
   );
 
   const removeProductFromActiveCart = useCallback(

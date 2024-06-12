@@ -415,25 +415,15 @@ export default class API {
   }
 
   public async addProductToCart(
-    product: ProductData | LineItem,
+    sku: string,
     cart: Cart,
     quantity: number
   ): Promise<Cart> {
     try {
-      const instanceOfProductData = (
-        obj: ProductData | LineItem
-      ): obj is ProductData => "masterData" in obj;
-
-      const sku = instanceOfProductData(product)
-        ? product.masterData.current.masterVariant.sku
-        : product.variant?.sku;
-      const action = {
-        action: "addLineItem",
-        sku,
-        quantity,
-      };
-      const response = await this.apiInstance?.post(`/me/carts/${cart.id}`, {
-        version: cart.version,
+      const { id, version } = cart;
+      const action = { action: "addLineItem", sku, quantity };
+      const response = await this.apiInstance?.post(`/me/carts/${id}`, {
+        version,
         actions: [action],
       });
       if (response?.status === 200) return response.data as Cart;
