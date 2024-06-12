@@ -27,6 +27,7 @@ import {
   setSortType,
   setCurrentProductCategories,
   setProductsFilters,
+  setOffset,
 } from "reducers/productReducer";
 import { Product } from "types/API/Product";
 import { useLocation, useSearchParams } from "react-router-dom";
@@ -43,11 +44,53 @@ export function ProductProvider(props: ProviderProps): ReactElement {
   const [searchParams] = useSearchParams();
   const { pathname } = useLocation();
 
-  const getAllProducts = useCallback(async () => {
+  const setRequestParams = useCallback(
+    (
+      value: string,
+      type: "id" | "search" | "sort" | "filter",
+      filter?: object | null,
+      filterArray?: string[]
+    ): object => {
+      let params: object = {};
+
+      if (type === "id") {
+        params = {
+          filter: [`categories.id: subtree("${value}")`],
+        };
+      }
+      if (type === "filter" && filterArray) {
+        params = { filter: [...filterArray] };
+      }
+      if (type === "search") {
+        params = { "text.en": value, fuzzy: true };
+      }
+      if (type === "sort") {
+        params = { sort: value };
+        if (state.filters.length && type !== "sort") {
+          params = { ...params, filter: [...state.filters] };
+        }
+      }
+      if (filter) {
+        params = { ...filter, ...params };
+      }
+      params = {
+        facet: [
+          "variants.attributes.crown-shape.key",
+          "variants.attributes.foliage-color.key",
+        ],
+        ...params,
+      };
+      return params;
+    },
+    [state.filters]
+  );
+
+  const getAllProducts = useCallback(async (offsetProduct?: number) => {
     dispatch(loading(true));
     try {
+      const params = `?limit=${8}&offset=${offsetProduct || 0}`;
       const clientAPI = API.getInstance();
-      const response = await clientAPI?.getProducts();
+      const response = await clientAPI?.getProducts(params);
       if (response) {
         const { count, limit, offset, results, total } = response;
         const resultsData = results.map((item): Product => {
@@ -66,69 +109,30 @@ export function ProductProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
-  const getProductsCategory = useCallback(
-    async (
-      value: string,
-      type: "id" | "search" | "sort" | "filter",
-      filter?: object | null,
-      filterArray?: string[]
-    ) => {
-      dispatch(loading(true));
-      try {
-        let params: object = {};
-
-        if (type === "id") {
-          params = {
-            filter: [`categories.id: subtree("${value}")`],
-          };
-        }
-        if (type === "filter" && filterArray) {
-          params = { filter: [...filterArray] };
-        }
-        if (type === "search") {
-          // params = { filter: `searchKeywords.en.text:"${value}"` };
-          params = { "text.en": value, fuzzy: true };
-        }
-        if (type === "sort") {
-          // debugger;
-          console.log("sort getProductsCategory");
-          params = { sort: value };
-          if (filter) {
-            params = { ...filter, ...params };
-          }
-          if (state.filters.length && type !== "sort") {
-            params = { ...params, filter: [...state.filters] };
-          }
-        }
-        params = {
-          facet: [
-            "variants.attributes.crown-shape.key",
-            "variants.attributes.foliage-color.key",
-          ],
-          ...params,
-        };
-
-        const clientAPI = API.getInstance();
-        const response = await clientAPI?.getProductsProjection(params);
-        if (response) {
-          const { count, limit, offset, results, total } = response;
-          dispatch(getProducts(results));
-          dispatch(getProductPageData({ count, limit, offset, total }));
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error?.message, toastOptions);
-        }
-      } finally {
-        dispatch(loading(false));
+  const getProductsCategory = useCallback(async (params: object) => {
+    dispatch(loading(true));
+    try {
+      const clientAPI = API.getInstance();
+      const response = await clientAPI?.getProductsProjection({
+        ...params,
+        limit: 8,
+      });
+      if (response) {
+        const { count, limit, offset, results, total } = response;
+        dispatch(getProducts(results));
+        dispatch(getProductPageData({ count, limit, offset, total }));
       }
-    },
-    [state.filters]
-  );
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error?.message, toastOptions);
+      }
+    } finally {
+      dispatch(loading(false));
+    }
+  }, []);
 
   const sortProducts = useCallback(
-    async (sort: string) => {
-      debugger;
+    async (sort: string, offset?: number) => {
       if (sort !== "default") {
         let filter: Array<object | string> = [];
         if (state.currentCategory) {
@@ -141,14 +145,21 @@ export function ProductProvider(props: ProviderProps): ReactElement {
         if (state.filters.length) {
           filter = [...state.filters, ...filter];
         }
-        await getProductsCategory(sort, "sort", { filter });
+        await getProductsCategory({
+          ...setRequestParams(sort, "sort"),
+          filter,
+          offset,
+        });
       } else if (state.currentCategory) {
-        await getProductsCategory(state.currentCategory.id, "id");
+        await getProductsCategory({
+          ...setRequestParams(state.currentCategory.id, "id"),
+        });
       } else if (state.querySearch) {
-        await getProductsCategory(state.querySearch, "search");
+        await getProductsCategory({
+          ...setRequestParams(state.querySearch, "search"),
+        });
       } else {
-        console.log("sortProducts");
-        await getAllProducts();
+        await getAllProducts(offset);
       }
     },
     [
@@ -156,38 +167,59 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       state.querySearch,
       state.filters,
       getProductsCategory,
+      setRequestParams,
       getAllProducts,
     ]
   );
 
   const getProductsCurrentData = useCallback(
-    async (categories: Category[]): Promise<void> => {
+    async (categories: Category[], offset?: number): Promise<void> => {
       const category = pathname.split("/");
       const categoryName = category[category.length - 1];
       const current = categories.find((el) => el.key === categoryName);
       if (current) {
-        await getProductsCategory(current.id, "id");
+        await getProductsCategory({
+          ...setRequestParams(current.id, "id"),
+          offset,
+        });
         dispatch(setCurrentCategory(current));
       } else if (searchParams.size) {
         const searchKeywords = searchParams.get("search");
         const sort = searchParams.get("sort");
 
-        if (searchKeywords) {
-          await getProductsCategory(searchKeywords, "search");
-        }
-        if (sort) {
-          const sortValue = sortingData.find((item) => item.query === sort);
-          if (sortValue) {
+        const paramsToSearch = setRequestParams(searchKeywords || "", "search");
+        const sortValue = sortingData.find((item) => item.query === sort);
+        const paramsToSort = setRequestParams(sortValue?.value || "", "sort");
+
+        if (searchKeywords && sort) {
+          const params = {
+            ...paramsToSearch,
+            ...paramsToSort,
+            offset,
+          };
+          await getProductsCategory(params);
+          dispatch(setSortType(sortValue?.value || "default"));
+        } else {
+          if (searchKeywords) {
+            await getProductsCategory({ ...paramsToSearch, offset });
+          }
+          if (sort && sortValue) {
             dispatch(setSortType(sortValue.value));
-            await sortProducts(sortValue.value);
+            await sortProducts(sortValue.value, offset);
           }
         }
       } else {
-        console.log("getProductsCurrentData");
-        await getAllProducts();
+        await getAllProducts(offset);
       }
     },
-    [getProductsCategory, getAllProducts, pathname, searchParams, sortProducts]
+    [
+      pathname,
+      searchParams,
+      getProductsCategory,
+      setRequestParams,
+      sortProducts,
+      getAllProducts,
+    ]
   );
 
   const getCategoriesData = useCallback(async () => {
@@ -203,7 +235,6 @@ export function ProductProvider(props: ProviderProps): ReactElement {
         );
 
         dispatch(getParentCategories(parentCategories));
-
         await getProductsCurrentData(categories.results);
       }
     } catch (error) {
@@ -221,13 +252,12 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       dispatch(setQuerySearch(""));
       dispatch(setSortType("default"));
       if (category) {
-        await getProductsCategory(category.id, "id");
+        await getProductsCategory({ ...setRequestParams(category.id, "id") });
       } else if (!isSearch) {
-        console.log("setCategory");
         await getAllProducts();
       }
     },
-    [getProductsCategory, getAllProducts]
+    [getProductsCategory, setRequestParams, getAllProducts]
   );
 
   const initializeCatalog = useCallback(async (): Promise<void> => {
@@ -294,22 +324,21 @@ export function ProductProvider(props: ProviderProps): ReactElement {
   }, []);
 
   const setFilters = useCallback(
-    async (filters: string[]): Promise<void> => {
+    async (filters: string[], offset?: number): Promise<void> => {
       dispatch(setProductsFilters(filters));
       dispatch(setSortType("default"));
-      debugger;
       if (filters.length) {
-        console.log(state.currentCategory);
         let filterArray = [...filters];
         if (state.currentCategory) {
           const { id } = state.currentCategory;
           filterArray = [...filterArray, `categories.id: subtree("${id}")`];
         }
-        await getProductsCategory("", "filter", null, filterArray);
+        await getProductsCategory({ filter: [...filterArray], offset });
       } else if (state.currentCategory) {
-        await getProductsCategory(state.currentCategory.id, "id");
+        await getProductsCategory({
+          ...setRequestParams(state.currentCategory.id, "id"),
+        });
       } else if (!searchParams.size) {
-        console.log("setFilters");
         await getAllProducts();
       }
     },
@@ -317,25 +346,38 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       getAllProducts,
       getProductsCategory,
       searchParams.size,
+      setRequestParams,
       state.currentCategory,
     ]
   );
 
   const getSearchProducts = useCallback(
-    async (querySearch: string | null): Promise<void> => {
+    async (querySearch: string | null, offset?: number): Promise<void> => {
       setSort("default");
       if (state.currentCategory) {
         dispatch(setCurrentCategory(null));
       }
       if (querySearch) {
-        await getProductsCategory(querySearch, "search");
+        await getProductsCategory({
+          ...setRequestParams(querySearch, "search"),
+          offset,
+        });
       } else {
-        console.log("getSearchProducts");
-        await getAllProducts();
+        await getAllProducts(offset);
       }
     },
-    [getAllProducts, getProductsCategory, setSort, state.currentCategory]
+    [
+      getAllProducts,
+      getProductsCategory,
+      setRequestParams,
+      setSort,
+      state.currentCategory,
+    ]
   );
+
+  const setOffsetProduct = useCallback((offset: number): void => {
+    dispatch(setOffset(offset));
+  }, []);
 
   const contextValue = useMemo(
     () => ({
@@ -352,6 +394,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       getCategoriesCurrentProduct,
       setFilters,
       getSearchProducts,
+      setOffsetProduct,
     }),
     [
       state,
@@ -367,6 +410,7 @@ export function ProductProvider(props: ProviderProps): ReactElement {
       getCategoriesCurrentProduct,
       setFilters,
       getSearchProducts,
+      setOffsetProduct,
     ]
   );
 
