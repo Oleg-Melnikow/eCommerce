@@ -10,6 +10,7 @@ import { ProductSearch } from "components/ProductSearch/ProductSearch";
 import { Sorting } from "components/Sorting/Sorting";
 import { Filter } from "components/Filter/Filter";
 import "./Catalog.scss";
+import useCart from "hooks/use-cart";
 
 function CatalogPage(): ReactElement {
   const {
@@ -25,6 +26,7 @@ function CatalogPage(): ReactElement {
     filters,
     setFilters,
   } = useProduct();
+  const { isLoading: isLoadingCart } = useCart();
 
   const onPageChange = async (
     event: ChangeEvent<unknown>,
@@ -47,7 +49,7 @@ function CatalogPage(): ReactElement {
 
   return (
     <div className="catalog-page">
-      {isLoading && <LoaderItem />}
+      {(isLoading || isLoadingCart) && <LoaderItem />}
       <Grid container sx={{ mb: 1, alignSelf: "center" }} item md={8} xs={12}>
         <ProductSearch />
       </Grid>

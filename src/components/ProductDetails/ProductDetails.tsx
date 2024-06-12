@@ -1,25 +1,24 @@
 import { ReactElement, useEffect, useState } from "react";
-import "./ProductDetails.scss";
 import ProductDetailsRadio from "components/ProductDetailsRadio/ProductDetailsRadio";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
 import { ProductData } from "types/API/Product";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 import useProduct from "hooks/use-product";
 import useCart from "hooks/use-cart";
-import { toast } from "react-toastify";
 import { LoadingButton } from "@mui/lab";
-import toastOptions from "helpers/toastOptions";
+import LoaderItem from "components/LoaderItem/LoaderItem";
+import "./ProductDetails.scss";
 
 type PropsType = {
   product: ProductData;
 };
 
 function ProductDetails({ product }: PropsType): ReactElement {
+  const { id, key, masterData } = product;
   const { getCategoriesCurrentProduct, currentProductCategories } =
     useProduct();
-  const { addProductToActiveCart } = useCart();
+  const { addProductToActiveCart, isLoading } = useCart();
   const [count, setCount] = useState(1);
-  const [isLoadingAddBtn, setIsLoadingAddBtn] = useState(false);
 
   const line = (
     <div
@@ -34,25 +33,7 @@ function ProductDetails({ product }: PropsType): ReactElement {
   );
 
   const onclickAddToCart = (): void => {
-    setIsLoadingAddBtn(true);
-    toast.promise(
-      addProductToActiveCart(product, count),
-      {
-        success: {
-          render() {
-            setIsLoadingAddBtn(false);
-            return "The product has been successfully added to the shopping cart.";
-          },
-        },
-        error: {
-          render() {
-            setIsLoadingAddBtn(false);
-            return "The product could not be added to the shopping cart.";
-          },
-        },
-      },
-      toastOptions
-    );
+    addProductToActiveCart({ id, key, ...masterData.current }, count);
   };
 
   useEffect(() => {
@@ -61,7 +42,7 @@ function ProductDetails({ product }: PropsType): ReactElement {
     });
   }, [getCategoriesCurrentProduct, product?.masterData]);
 
-  const { name, masterVariant, searchKeywords } = product.masterData.current;
+  const { name, masterVariant, searchKeywords } = masterData.current;
   const { sku, prices } = masterVariant;
   const [price] = prices;
   const [title, categories, tags] = [
@@ -72,6 +53,7 @@ function ProductDetails({ product }: PropsType): ReactElement {
 
   return (
     <div className="product-details">
+      {isLoading && <LoaderItem />}
       <h3 className="product-details__title">{title}</h3>
       <ProductPrice price={price} /> {line}
       <ProductDetailsRadio className="product-details" />
@@ -88,7 +70,7 @@ function ProductDetails({ product }: PropsType): ReactElement {
           Buy Now
         </button>
         <LoadingButton
-          loading={isLoadingAddBtn}
+          loading={isLoading}
           type="button"
           className="product-details__btn product-details__btn--add"
           onClick={onclickAddToCart}
