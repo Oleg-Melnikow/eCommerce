@@ -2,6 +2,10 @@ import Oleg from "assets/Oleg.jpg";
 import Andrew from "assets/Andrew.png";
 import Vladislav from "assets/Vladislav.png";
 
+import Location from "assets/icons/Location.png";
+import Message from "assets/icons/Message.png";
+import Calling from "assets/icons/Calling.png";
+
 export const enum Description {
   DESCRIPTION = `Our project is a SPA application for selling plants of various types. Our goal is to create a convenient and enjoyable application for all plant lovers, helping them quickly and easily select and purchase the necessary plants for their garden or home. `,
   OURTEAM = `Each of us worked around the clock, trying to make the application optimized, adaptive, fix bugs, and also give it a stylish and attractive design. We called each other on Google Meet to share tasks and discussed how best to implement them. Also, for some small problems and questions, we supported communication in the telegram group. Our team of three people worked on the project:`,
@@ -37,5 +41,32 @@ export const teamData = [
       "When we started our project, I didn’t know React at all, but gradually, thanks to Oleg’s advice and practice, I was able to learn a little about React, its features, helped the team to the best of my ability, and even created several pages of our application.",
     photo: `${Vladislav}`,
     gitHubLink: "https://github.com/JeckJonnyQ",
+  },
+];
+
+export const Contacts = [
+  {
+    icon: Location,
+    alt: "IconLocation",
+    href: "https://yandex.by/maps/-/CDrW6U2o",
+    text: "2170 Grand Avenue Baldwin, NY 11510",
+    classNameBox: "contacts__address",
+    classNameLink: "contacts__address_text",
+  },
+  {
+    icon: Message,
+    alt: "IconMessage",
+    href: "https://www.google.com/intl/ru/gmail/about/",
+    text: "contact@greenshop.com",
+    classNameBox: "contacts__message",
+    classNameLink: "contacts__message_text",
+  },
+  {
+    icon: Calling,
+    alt: "IconCalling",
+    href: "tel:88 01911 717 490",
+    text: "+88 01911 717 490",
+    classNameBox: "contacts__tel",
+    classNameLink: "contacts__tel_text",
   },
 ];

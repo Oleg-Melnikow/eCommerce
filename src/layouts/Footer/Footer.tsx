@@ -11,6 +11,8 @@ import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import { NavLink } from "react-router-dom";
 
+import { Contacts } from "helpers/static-teamData";
+
 const CustomLink = styled(Link)({
   textDecoration: "underline",
   textDecorationColor: "rgb(61, 61, 61)",
@@ -28,37 +30,18 @@ function Footer(): ReactElement {
           <img src={HeaderLogo} className="footer__contacts_logo" alt="Logo" />
         </NavLink>
 
-        <Box className="contacts__address">
-          <img className="icon" src={Location} alt="IconColling" />
-          <CustomLink
-            href="https://yandex.by/maps/-/CDrW6U2o"
-            className="contacts__address_text"
-            target="_blank"
-          >
-            2170 Grand Avenue Baldwin, NY 11510
-          </CustomLink>
-        </Box>
-
-        <Box className="contacts__message">
-          <img className="icon" src={Message} alt="IconMessage" />
-          <CustomLink
-            href="https://www.google.com/intl/ru/gmail/about/"
-            className="contacts__message_text"
-            target="_blank"
-          >
-            contact@greenshop.com
-          </CustomLink>
-        </Box>
-
-        <Box className="contacts__tel">
-          <img className="icon" src={Calling} alt="IconColling" />
-          <CustomLink
-            href="tel:88 01911 717 490"
-            className="contacts__message_text"
-          >
-            +88 01911 717 490
-          </CustomLink>
-        </Box>
+        {Contacts.map((contact) => (
+          <Box className={`${contact.classNameBox}`} key={contact.alt}>
+            <img className="icon" src={contact.icon} alt={contact.alt} />
+            <CustomLink
+              href={contact.href}
+              className={contact.classNameLink}
+              target="_blank"
+            >
+              {contact.text}
+            </CustomLink>
+          </Box>
+        ))}
       </Box>
     </footer>
   );
