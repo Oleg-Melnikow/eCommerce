@@ -5,13 +5,13 @@ import { ProductData } from "types/API/Product";
 
 interface CartStateType {
   activeCart: Cart | null;
-  activeDiscountCodes: DiscountCode | null;
+  activeDiscountCode: DiscountCode | null;
   isLoading: boolean;
 }
 
 export const CartInitialState: CartStateType = {
   activeCart: null,
-  activeDiscountCodes: null,
+  activeDiscountCode: null,
   isLoading: false,
 };
 

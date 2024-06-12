@@ -29,7 +29,7 @@ function InputPromo(): ReactElement {
       onSubmit={handleSubmit(onSubmitHandler)}
     >
       <span style={{ fontSize: "1rem" }}>
-        Do you have a promo code? Enter it here{" "}
+        Do you have a promo code? Enter it here!{" "}
       </span>
       <Controller
         name="code"

@@ -1,8 +1,7 @@
 import { Customer } from "./Customer";
 
-interface LocalizedString {
-  [key: string]: string;
-}
+interface LocalizedString extends Record<"ru" | "en", string> {}
+
 type StackingMode = string;
 
 interface CartDiscountTarget {}

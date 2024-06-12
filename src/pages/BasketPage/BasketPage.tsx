@@ -4,6 +4,7 @@ import useCart from "hooks/use-cart";
 import CartTable from "components/CartTable/CartTable";
 import LoaderItem from "components/LoaderItem/LoaderItem";
 import InputPromo from "components/CartPromoInput/CartPromoInput";
+import MessagePromo from "components/CartPromoMessage/CartPromoMessage";
 
 function BasketPage(): ReactElement {
   const {
@@ -11,7 +12,7 @@ function BasketPage(): ReactElement {
     fetchActiveCart,
     isLoading,
     fetchDiscountCodeFromCart,
-    activeDiscountCodes,
+    activeDiscountCode,
   } = useCart();
   const cartItems = activeCart?.lineItems ?? [];
 
@@ -26,7 +27,11 @@ function BasketPage(): ReactElement {
   return (
     <div className="basket-page" style={{ marginTop: "50px" }}>
       {isLoading && <LoaderItem />}
-      <InputPromo />
+      {activeDiscountCode ? (
+        <MessagePromo discountCode={activeDiscountCode} />
+      ) : (
+        <InputPromo />
+      )}
       <CartTable cartItems={cartItems} />
     </div>
   );
