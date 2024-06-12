@@ -129,6 +129,10 @@ export function CartProvider(props: ProviderProps): ReactElement {
     }
   }, [state]);
 
+  useEffect(() => {
+    fetchDiscountCodeFromCart();
+  }, [state.activeCart]);
+
   const removeDiscountCode = useCallback(async (): Promise<void> => {
     try {
       dispatch(loading(true));

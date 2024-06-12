@@ -1,7 +1,15 @@
-import { Box, Button } from "@mui/material";
+import {
+  Box,
+  Button,
+  Table,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { ReactElement } from "react";
 import { NavLink } from "react-router-dom";
 import "./MainPage.scss";
+import useCart from "hooks/use-cart";
 
 function MainPage(): ReactElement {
   const links = [
@@ -12,6 +20,10 @@ function MainPage(): ReactElement {
     "registration",
     "profile",
   ];
+
+  const promoTableHeads = ["Code", "Description"];
+  const { activeDiscountCode } = useCart();
+  const { code, description } = activeDiscountCode || {};
 
   return (
     <div className="main-page" style={{ marginTop: "50px" }}>
@@ -24,6 +36,23 @@ function MainPage(): ReactElement {
             </NavLink>
           );
         })}
+      </Box>
+      <Box>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              {promoTableHeads.map((head) => (
+                <TableCell key={head} sx={{ fontWeight: "bold" }}>
+                  {head}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableRow>
+            <TableCell>{code}</TableCell>
+            <TableCell>{description?.en}</TableCell>
+          </TableRow>
+        </Table>
       </Box>
     </div>
   );
