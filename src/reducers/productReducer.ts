@@ -20,7 +20,7 @@ interface ProductStateType extends ProductPage {
 
 export const ProductInitialState: ProductStateType = {
   count: 0,
-  limit: 20,
+  limit: 10,
   offset: 0,
   total: 0,
   products: [],
@@ -53,6 +53,7 @@ export const productReducer = (
     case "products/eCommerce/SET-SORT-TYPE":
     case "products/eCommerce/SET-CURRENT-PRODUCT-CATEGORIES":
     case "products/eCommerce/SET-PRODUCTS-FILTERS":
+    case "products/eCommerce/SET-OFFSET":
       return {
         ...state,
         ...action.payload,
@@ -69,6 +70,12 @@ export const productReducer = (
       return state;
   }
 };
+
+export const setOffset = (offset: number) =>
+  ({
+    type: "products/eCommerce/SET-OFFSET",
+    payload: { offset },
+  }) as const;
 
 export const setProductsFilters = (filters: string[]) =>
   ({
@@ -157,26 +164,29 @@ type ActionsType =
   | ReturnType<typeof clearProducts>
   | ReturnType<typeof setSortType>
   | ReturnType<typeof setCurrentProductCategories>
-  | ReturnType<typeof setProductsFilters>;
+  | ReturnType<typeof setProductsFilters>
+  | ReturnType<typeof setOffset>;
 
 export interface ProductContextValue extends ProductStateType {
-  getAllProducts: () => Promise<void>;
+  getAllProducts: (offsetProduct?: number) => Promise<void>;
   getCategoriesData: () => Promise<void>;
-  getProductsCategory: (
-    value: string,
-    type: "id" | "search" | "sort" | "filter",
-    filter?: { [key: string]: string } | null,
-    filterArray?: string[]
-  ) => Promise<void>;
+  getProductsCategory: (params: object) => Promise<void>;
   setCategory: (category: CurrentCategory, isSearch?: boolean) => Promise<void>;
   chooseProduct: (id: string) => Promise<void>;
-  sortProducts: (sort: string) => Promise<void>;
+  sortProducts: (sort: string, offset?: number) => Promise<void>;
   querySearchUpdate: (querySearch: string) => void;
-  getProductsCurrentData: (categories: Category[]) => Promise<void>;
+  getProductsCurrentData: (
+    categories: Category[],
+    offset?: number
+  ) => Promise<void>;
   setSort: (sort: string) => void;
+  setOffsetProduct: (offset: number) => void;
   getCategoriesCurrentProduct: (id: string) => Promise<void>;
-  setFilters: (filters: string[]) => Promise<void>;
-  getSearchProducts: (querySearch: string | null) => Promise<void>;
+  setFilters: (filters: string[], offset?: number) => Promise<void>;
+  getSearchProducts: (
+    querySearch: string | null,
+    offset?: number
+  ) => Promise<void>;
 }
 
 export const ProductContext = createContext<ProductContextValue>({
@@ -192,5 +202,6 @@ export const ProductContext = createContext<ProductContextValue>({
   setFilters: () => Promise.resolve(),
   querySearchUpdate: () => {},
   setSort: () => {},
+  setOffsetProduct: () => {},
   getCategoriesCurrentProduct: () => Promise.resolve(),
 });

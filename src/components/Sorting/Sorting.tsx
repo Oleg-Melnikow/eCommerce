@@ -8,7 +8,6 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { sortingData } from "helpers/static-data";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -16,7 +15,7 @@ import useProduct from "hooks/use-product";
 import { getSortQuery } from "helpers/getSortQuery";
 
 export function Sorting(): ReactElement {
-  const { sortProducts, sortValue, setSort } = useProduct();
+  const { sortProducts, sortValue, setSort, offset } = useProduct();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
@@ -38,7 +37,7 @@ export function Sorting(): ReactElement {
     const urlPath = getSortQuery(value, pathname, search);
     navigate(urlPath);
     setSort(value);
-    sortProducts(value);
+    sortProducts(value, offset);
   };
 
   const handleClick = (event: MouseEvent<HTMLElement>): void => {
