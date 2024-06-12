@@ -1,5 +1,5 @@
-import { ReactElement, useEffect } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { ChangeEvent, ReactElement, useEffect } from "react";
+import { Box, Grid, Pagination, Stack, Typography } from "@mui/material";
 import useProduct from "hooks/use-product";
 import ProductCard from "components/ProductCard/ProductCard";
 import { CategoriesMenu } from "components/CategoriesMenu/CategoriesMenu";
@@ -19,8 +19,27 @@ function CatalogPage(): ReactElement {
     isInitialize,
     getProductsCurrentData,
     categories,
+    limit,
+    total,
+    offset,
+    setOffsetProduct,
+    filters,
+    setFilters,
   } = useProduct();
   const { isLoading: isLoadingCart } = useCart();
+
+  const onPageChange = async (
+    event: ChangeEvent<unknown>,
+    page: number
+  ): Promise<void> => {
+    const currentProducts = (page - 1) * 8;
+    await setOffsetProduct(currentProducts);
+    if (!filters.length) {
+      getProductsCurrentData(categories, currentProducts);
+    } else {
+      setFilters(filters, currentProducts);
+    }
+  };
 
   useEffect(() => {
     if (isInitialize && !products.length) {
@@ -51,8 +70,8 @@ function CatalogPage(): ReactElement {
           sx={{
             height: "100%",
             display: "flex",
-            gap: "10px",
-            maxWidth: "calc(100% - 250px)",
+            gap: 2,
+            maxWidth: "calc(100% - 260px)",
             "@media (max-width: 800px)": {
               maxWidth: "100%",
               justifyContent: "center",
@@ -60,21 +79,47 @@ function CatalogPage(): ReactElement {
           }}
           item
         >
-          {!products.length && (
-            <Box
-              sx={{
-                display: "flex",
+          <Grid
+            container
+            item
+            sx={{
+              width: "100%",
+              display: "flex",
+              gap: "15px",
+              "@media (max-width: 800px)": {
                 justifyContent: "center",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              <Typography variant="h4">Products not found</Typography>
-            </Box>
+                maxWidth: "100%",
+              },
+            }}
+          >
+            {!products.length && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Typography variant="h4">Products not found</Typography>
+              </Box>
+            )}
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </Grid>
+          {total > limit && (
+            <Stack spacing={2} sx={{ width: "100%" }}>
+              <Pagination
+                sx={{ display: "flex", justifyContent: "center" }}
+                page={offset / limit + 1}
+                count={Math.ceil(total / limit)}
+                showFirstButton
+                showLastButton
+                onChange={onPageChange}
+              />
+            </Stack>
           )}
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
         </Grid>
       </Grid>
     </div>

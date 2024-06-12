@@ -11,7 +11,13 @@ import {
 } from "@mui/material";
 import { colorsTree, crownShape } from "helpers/static-data";
 import useProduct from "hooks/use-product";
-import { ChangeEvent, ReactElement, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export function Filter(): ReactElement {
@@ -67,15 +73,14 @@ export function Filter(): ReactElement {
     }
   };
 
-  const resetFilter = (): void => {
+  const resetFilter = useCallback((): void => {
     setShape("");
     setColor("");
     setPrice([0, 25]);
     if (filters.length) {
       setFilters([]);
     }
-    if (search) navigate(pathname);
-  };
+  }, [filters.length, setFilters]);
 
   const chnageValue = (event: ChangeEvent<HTMLInputElement>): void => {
     const { value, name } = event.target;
@@ -91,11 +96,10 @@ export function Filter(): ReactElement {
   };
 
   useEffect(() => {
-    console.log(search);
     if (search.includes("search")) {
       resetFilter();
     }
-  }, [search]);
+  }, [resetFilter, search]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>

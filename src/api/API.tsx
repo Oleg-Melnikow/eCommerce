@@ -232,10 +232,10 @@ export default class API {
     return false;
   }
 
-  public async getProducts(): Promise<Products> {
+  public async getProducts(params: string): Promise<Products> {
     return this.createAPI()
       .then(async () => {
-        const response = await this.apiInstance?.get("/products");
+        const response = await this.apiInstance?.get(`/products${params}`);
         return response?.data as Products;
       })
       .catch((err) => {
