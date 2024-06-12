@@ -441,11 +441,11 @@ export default class API {
     const sku = instanceOfProductData(product)
       ? product.masterData.current.masterVariant.sku
       : product.variant?.sku;
-    const action = {
+    const action: ActionTypes = {
       action: "addLineItem",
       sku,
       quantity,
-    };
+    } as const;
     return this.updateCart(cart, action);
   }
 
@@ -454,16 +454,16 @@ export default class API {
     cart: Cart,
     quantity: number
   ): Promise<Cart> {
-    const action = {
+    const action: ActionTypes = {
       action: "removeLineItem",
       lineItemId: product.id,
       quantity,
-    };
+    } as const;
     return this.updateCart(cart, action);
   }
 
   public async addDiscountCodeToCart(cart: Cart, code: string): Promise<Cart> {
-    const action = {
+    const action: ActionTypes = {
       action: "addDiscountCode",
       code,
     };
@@ -479,5 +479,19 @@ export default class API {
       const message = errorHandler(err);
       throw new Error(message);
     }
+  }
+
+  public async removeDiscountCodeFromCart(
+    id: string,
+    cart: Cart
+  ): Promise<Cart> {
+    const action: ActionTypes = {
+      action: "removeDiscountCode",
+      discountCode: {
+        typeId: "discount-code",
+        id,
+      },
+    };
+    return this.updateCart(cart, action);
   }
 }

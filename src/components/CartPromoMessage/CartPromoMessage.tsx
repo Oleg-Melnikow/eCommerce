@@ -3,12 +3,19 @@ import { ReactElement } from "react";
 import { DiscountCode } from "types/API/Discount";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
+import useCart from "hooks/use-cart";
 
 type PropsType = {
   discountCode: DiscountCode;
 };
 function MessagePromo({ discountCode }: PropsType): ReactElement {
   const { isActive, code, description } = discountCode;
+  const { removeDiscountCode } = useCart();
+
+  const onClick = (): void => {
+    removeDiscountCode();
+  };
+
   return (
     <Box
       sx={{
@@ -41,7 +48,7 @@ function MessagePromo({ discountCode }: PropsType): ReactElement {
         variant="contained"
         color="warning"
         type="submit"
-        sx={{ justifySelf: "end" }}
+        onClick={onClick}
       >
         Remove promo code
       </Button>

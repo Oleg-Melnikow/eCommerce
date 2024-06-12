@@ -129,6 +129,27 @@ export function CartProvider(props: ProviderProps): ReactElement {
     }
   }, [state]);
 
+  const removeDiscountCode = useCallback(async (): Promise<void> => {
+    try {
+      dispatch(loading(true));
+      const { activeCart, activeDiscountCode } = state;
+      if (activeCart && activeDiscountCode) {
+        const response = await API.getInstance()?.removeDiscountCodeFromCart(
+          activeDiscountCode.id,
+          activeCart
+        );
+        if (response) {
+          dispatch(setActiveCart(response));
+          dispatch(setActiveDiscountCode(null));
+        }
+      }
+    } catch (err) {
+      if (err instanceof Error) toast.error(err.message, toastOptions);
+    } finally {
+      dispatch(loading(false));
+    }
+  }, [state]);
+
   const contextValue = useMemo(
     () => ({
       ...state,
@@ -137,6 +158,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
       removeProductFromActiveCart,
       addDiscountCode,
       fetchDiscountCodeFromCart,
+      removeDiscountCode,
     }),
     [
       state,
@@ -145,6 +167,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
       removeProductFromActiveCart,
       addDiscountCode,
       fetchDiscountCodeFromCart,
+      removeDiscountCode,
     ]
   );
 

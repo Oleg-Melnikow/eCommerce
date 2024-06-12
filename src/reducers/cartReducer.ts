@@ -45,7 +45,9 @@ export const loading = (isLoading: boolean) =>
     payload: { isLoading },
   }) as const;
 
-export const setActiveDiscountCode = (activeDiscountCode: DiscountCode) =>
+export const setActiveDiscountCode = (
+  activeDiscountCode: DiscountCode | null
+) =>
   ({
     type: "cart/eCommerce/SET-ACTIVE-DISCOUNT-CODE",
     payload: { activeDiscountCode },
@@ -68,6 +70,7 @@ export interface CartContextValue extends CartStateType {
   ) => Promise<void>;
   addDiscountCode: (code: string) => Promise<void>;
   fetchDiscountCodeFromCart: () => Promise<void>;
+  removeDiscountCode: () => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextValue>({
@@ -77,4 +80,5 @@ export const CartContext = createContext<CartContextValue>({
   removeProductFromActiveCart: () => Promise.resolve(),
   addDiscountCode: () => Promise.resolve(),
   fetchDiscountCodeFromCart: () => Promise.resolve(),
+  removeDiscountCode: () => Promise.resolve(),
 });

@@ -467,30 +467,39 @@ interface ProductDiscountReference {
 }
 
 interface AddLineItemAction {
-  action: string;
-  key: string;
-  productId: string;
+  action: "addLineItem";
+  key?: string;
+  productId?: string;
   variantId?: number;
   sku?: string;
-  quantity?: number;
+  quantity: number;
   addedAt?: Date;
 }
 
 interface RemoveLineItemAction {
-  action: string;
+  action: "removeLineItem";
   lineItemId?: string;
   lineItemKey?: string;
   quantity?: number;
 }
 
 interface AddDiscountCodeAction {
-  action: string;
+  action: "addDiscountCode";
   code: string;
+}
+
+interface RemoveDiscountCodeAction {
+  action: "removeDiscountCode";
+  discountCode: {
+    typeId: "discount-code";
+    id: string;
+  };
 }
 
 type ActionTypes =
   | AddLineItemAction
   | RemoveLineItemAction
-  | AddDiscountCodeAction;
+  | AddDiscountCodeAction
+  | RemoveDiscountCodeAction;
 
 export { MyCartDraft, Cart, LineItem, ActionTypes };
