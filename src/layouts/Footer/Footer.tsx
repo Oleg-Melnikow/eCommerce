@@ -1,17 +1,14 @@
 import "./Footer.scss";
 import React, { ReactElement } from "react";
 import { styled } from "@mui/system";
+import Stack from "@mui/material/Stack";
 
 import HeaderLogo from "assets/HeaderLogo.png";
-import Location from "assets/icons/Location.png";
-import Message from "assets/icons/Message.png";
-import Calling from "assets/icons/Calling.png";
-
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import { NavLink } from "react-router-dom";
-
-import { Contacts } from "helpers/static-teamData";
+import { Contacts, SocialIcons, SocialIconRSS } from "helpers/static-teamData";
+import Typography from "@mui/material/Typography";
 
 const CustomLink = styled(Link)({
   textDecoration: "underline",
@@ -43,6 +40,55 @@ function Footer(): ReactElement {
           </Box>
         ))}
       </Box>
+      <Box className="footer__social">
+        <Box className="social__media">
+          <Typography className="social__media_title">Social Media</Typography>
+
+          <Stack direction="row" spacing={1}>
+            {SocialIcons.map((social) => (
+              <Link
+                key={social.id}
+                href={social.href}
+                target="_blank"
+                sx={{
+                  transition: "transform 0.5s",
+                  "&:hover": {
+                    transform: "scale(1.1)",
+                  },
+                }}
+              >
+                <img
+                  src={social.icon}
+                  alt={social.alt}
+                  style={{ display: "block", width: "40px", height: "40px" }}
+                />
+              </Link>
+            ))}
+          </Stack>
+        </Box>
+
+        <Box className="social__mediaRSS">
+          <Typography className="social__mediaRSS_title">RSSchool</Typography>
+
+          <Link
+            className="social__mediaRSS_link"
+            key={SocialIconRSS.id}
+            href={SocialIconRSS.href}
+            target="_blank"
+          >
+            <img
+              className="Rsschool_icon"
+              src={SocialIconRSS.icon}
+              alt={SocialIconRSS.alt}
+              style={{ display: "block", borderRadius: "5px" }}
+            />
+          </Link>
+        </Box>
+      </Box>
+
+      <Typography className="social__media_copyright">
+        © 2021 GreenShop. All Rights Reserved.
+      </Typography>
     </footer>
   );
 }
