@@ -15,7 +15,7 @@ function InputPromo(): ReactElement {
   const onSubmitHandler: SubmitHandler<DataFormType> = (
     dataForm: DataFormType
   ): void => {
-    addDiscountCode(dataForm.code);
+    addDiscountCode(dataForm.code.toUpperCase());
   };
 
   return (
@@ -37,7 +37,7 @@ function InputPromo(): ReactElement {
         render={({ field: { onChange, value, name } }) => (
           <OutlinedInput
             name={name}
-            value={value || ""}
+            value={value?.toUpperCase() || ""}
             type="text"
             onChange={onChange}
             color="success"
