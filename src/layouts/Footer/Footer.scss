@@ -1,7 +1,138 @@
+@mixin DisplayFlex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .footer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  background-color: bisque;
+
+  .footer__contacts {
+    @include DisplayFlex;
+    padding: 27px 23px;
+    border-top: 1px solid rgba(70, 164, 89, 0.3);
+    border-bottom: 1px solid rgba(70, 164, 89, 0.3);
+    background: rgba(70, 164, 89, 0.102);
+
+    @media (max-width: 890px) {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 15px 12px;
+    }
+
+    .footer__contacts_logo {
+      max-width: 150px;
+      width: 100%;
+
+      @media (max-width: 890px) {
+        margin: 0px 0px 10px 0px;
+      }
+
+      img {
+        display: block;
+      }
+    }
+
+    .contacts__address,
+    .contacts__message,
+    .contacts__tel {
+      @include DisplayFlex;
+
+      @media (max-width: 890px) {
+        margin: 3px 0px;
+      }
+
+      .icon {
+        display: block;
+        margin: 0px 8px 0px 0px;
+        width: 20px;
+        height: 20px;
+      }
+
+      .contacts__address_text,
+      .contacts__message_text,
+      .contacts__tel_text {
+        max-width: 230px;
+        width: 100%;
+        color: rgb(61, 61, 61);
+        transition: all 0.5s ease;
+
+        &:hover {
+          color: rgb(70, 163, 88);
+        }
+
+        @media (max-width: 890px) {
+          max-width: 100%;
+          width: 100%;
+        }
+
+        @media (max-width: 390px) {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+
+  .footer__social {
+    @include DisplayFlex;
+    padding: 23px 23px;
+
+    @media (max-width: 890px) {
+      padding: 15px 12px;
+    }
+
+    .social__media {
+      display: flex;
+      flex-direction: column;
+
+      .social__media_title {
+        margin: 0px 0px 10px;
+        font-size: 20px;
+        font-weight: 700;
+        color: rgb(61, 61, 61);
+      }
+    }
+
+    .social__mediaRSS {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      .social__mediaRSS_title {
+        margin: 0px 0px 10px;
+        font-size: 20px;
+        font-weight: 700;
+        color: rgb(61, 61, 61);
+      }
+
+      .social__mediaRSS_link {
+        transition: all 0.5s ease;
+
+        &:hover {
+          scale: 1.1;
+        }
+
+        .Rsschool_icon {
+          width: 40px;
+          height: 40px;
+        }
+      }
+    }
+  }
+
+  .social__media_copyright {
+    padding: 18px 23px;
+    border-top: 1px solid rgba(70, 164, 89, 0.3);
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    color: rgb(61, 61, 61);
+
+    @media (max-width: 890px) {
+      padding: 15px 12px;
+    }
+  }
 }

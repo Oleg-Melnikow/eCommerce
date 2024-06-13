@@ -12,6 +12,11 @@
 
     @media (max-width: 768px) {
       flex-direction: column;
+      align-items: center;
+    }
+
+    @media (max-width: 520px) {
+      margin-bottom: 10px;
     }
 
     .inner__dev-photo {
@@ -29,6 +34,17 @@
         width: 280px;
         height: 280px;
         border-radius: 50%;
+
+        @media (max-width: 768px) {
+          margin: 0px;
+          width: 200px;
+          height: 200px;
+        }
+
+        @media (max-width: 520px) {
+          width: 140px;
+          height: 140px;
+        }
       }
     }
 
@@ -43,6 +59,10 @@
 
       @media (max-width: 768px) {
         margin: 10px 0px 0px 0px;
+      }
+
+      @media (max-width: 520px) {
+        padding: 12px;
       }
 
       .inner__dev-description_name {
@@ -65,10 +85,23 @@
         font-weight: 700;
         text-align: justify;
         color: rgb(61, 61, 61);
+
+        @media (max-width: 520px) {
+          margin: 0px 0px 10px;
+          font-size: 10px;
+        }
       }
 
       .dev-description_link {
         display: inline-block;
+
+        img {
+          transition: all 0.5s ease;
+
+          &:hover {
+            scale: 1.1;
+          }
+        }
       }
     }
   }
