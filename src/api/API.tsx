@@ -236,10 +236,10 @@ export default class API {
     return false;
   }
 
-  public async getProducts(): Promise<Products> {
+  public async getProducts(params: string): Promise<Products> {
     return this.createAPI()
       .then(async () => {
-        const response = await this.apiInstance?.get("/products");
+        const response = await this.apiInstance?.get(`/products${params}`);
         return response?.data as Products;
       })
       .catch((err) => {
@@ -433,22 +433,11 @@ export default class API {
   }
 
   public async addProductToCart(
-    product: ProductData | LineItem,
+    sku: string,
     cart: Cart,
     quantity: number
   ): Promise<Cart> {
-    const instanceOfProductData = (
-      obj: ProductData | LineItem
-    ): obj is ProductData => "masterData" in obj;
-
-    const sku = instanceOfProductData(product)
-      ? product.masterData.current.masterVariant.sku
-      : product.variant?.sku;
-    const action: ActionTypes = {
-      action: "addLineItem",
-      sku,
-      quantity,
-    } as const;
+    const action: ActionTypes = { action: "addLineItem", sku, quantity };
     return this.updateCart(cart, action);
   }
 

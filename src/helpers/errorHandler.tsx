@@ -8,7 +8,7 @@ export default function errorHandler(axiosError: unknown): string {
       : new Error("Unknow error");
 
   let errorMessageInner: string;
-  switch (error.message) {
+  switch (error?.message) {
     case "Account with the given credentials not found.":
       errorMessageInner =
         "The password is incorrect. Please enter the correct password.";
