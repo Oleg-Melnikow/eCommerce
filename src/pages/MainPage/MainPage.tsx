@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Table,
+  TableBody,
   TableCell,
   TableHead,
   TableRow,
@@ -22,8 +23,7 @@ function MainPage(): ReactElement {
   ];
 
   const promoTableHeads = ["Code", "Description"];
-  const { activeDiscountCode } = useCart();
-  const { code, description } = activeDiscountCode || {};
+  const { allDiscountCodes } = useCart();
 
   return (
     <div className="main-page" style={{ marginTop: "50px" }}>
@@ -48,10 +48,14 @@ function MainPage(): ReactElement {
               ))}
             </TableRow>
           </TableHead>
-          <TableRow>
-            <TableCell>{code}</TableCell>
-            <TableCell>{description?.en}</TableCell>
-          </TableRow>
+          <TableBody>
+            {allDiscountCodes.map((discountcode) => (
+              <TableRow key={discountcode.code}>
+                <TableCell>{discountcode.code}</TableCell>
+                <TableCell>{discountcode.description?.en}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
         </Table>
       </Box>
     </div>

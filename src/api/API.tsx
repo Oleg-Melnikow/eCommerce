@@ -16,7 +16,10 @@ import {
   DeleteParamsType,
   PersonalDataType,
 } from "types/RegisterForm";
-import { DiscountCode } from "types/API/Discount";
+import {
+  DiscountCode,
+  DiscountCodePagedQueryResponse,
+} from "types/API/Discount";
 import { ActionTypes, Cart, LineItem, MyCartDraft } from "../types/API/Cart";
 
 export default class API {
@@ -493,5 +496,17 @@ export default class API {
       },
     };
     return this.updateCart(cart, action);
+  }
+
+  public async getAllDiscountCodes(): Promise<DiscountCodePagedQueryResponse> {
+    try {
+      const response = await this.apiInstance?.get(`/discount-codes`);
+      if (response?.status === 200)
+        return response.data as DiscountCodePagedQueryResponse;
+      throw new AxiosError("Error fething cart");
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
   }
 }

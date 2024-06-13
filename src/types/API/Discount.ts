@@ -121,4 +121,12 @@ interface CartDiscountReference {
   obj?: CartDiscount;
 }
 
-export { CartDiscount, DiscountCode };
+interface DiscountCodePagedQueryResponse {
+  total?: number;
+  results: DiscountCode[];
+  offset: number;
+  limit: number;
+  count: number;
+}
+
+export { CartDiscount, DiscountCode, DiscountCodePagedQueryResponse };

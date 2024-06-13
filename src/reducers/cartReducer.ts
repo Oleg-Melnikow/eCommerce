@@ -6,12 +6,14 @@ import { ProductData } from "types/API/Product";
 interface CartStateType {
   activeCart: Cart | null;
   activeDiscountCode: DiscountCode | null;
+  allDiscountCodes: DiscountCode[];
   isLoading: boolean;
 }
 
 export const CartInitialState: CartStateType = {
   activeCart: null,
   activeDiscountCode: null,
+  allDiscountCodes: [],
   isLoading: false,
 };
 
@@ -22,6 +24,7 @@ export const cartReducer = (
   switch (action.type) {
     case "cart/eCommerce/SET-ACTIVE-CART":
     case "cart/eCommerce/SET-ACTIVE-DISCOUNT-CODE":
+    case "cart/eCommerce/SET-ALL-DISCOUNT-CODES":
     case "cart/eCommerce/SET-IS-LOADING":
       return {
         ...state,
@@ -53,10 +56,17 @@ export const setActiveDiscountCode = (
     payload: { activeDiscountCode },
   }) as const;
 
+export const setAllDiscountCodes = (allDiscountCodes: DiscountCode[]) =>
+  ({
+    type: "cart/eCommerce/SET-ALL-DISCOUNT-CODES",
+    payload: { allDiscountCodes },
+  }) as const;
+
 type ActionsType =
   | ReturnType<typeof setActiveCart>
   | ReturnType<typeof setActiveDiscountCode>
-  | ReturnType<typeof loading>;
+  | ReturnType<typeof loading>
+  | ReturnType<typeof setAllDiscountCodes>;
 
 export interface CartContextValue extends CartStateType {
   addProductToActiveCart: (
@@ -71,6 +81,7 @@ export interface CartContextValue extends CartStateType {
   addDiscountCode: (code: string) => Promise<void>;
   fetchDiscountCodeFromCart: () => Promise<void>;
   removeDiscountCode: () => Promise<void>;
+  getAllDiscountCodes: () => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextValue>({
@@ -81,4 +92,5 @@ export const CartContext = createContext<CartContextValue>({
   addDiscountCode: () => Promise.resolve(),
   fetchDiscountCodeFromCart: () => Promise.resolve(),
   removeDiscountCode: () => Promise.resolve(),
+  getAllDiscountCodes: () => Promise.resolve(),
 });

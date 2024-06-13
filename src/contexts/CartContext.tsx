@@ -16,6 +16,7 @@ import {
   setActiveCart,
   setActiveDiscountCode,
   loading,
+  setAllDiscountCodes,
 } from "reducers/cartReducer";
 import { LineItem } from "types/API/Cart";
 import { DiscountCode } from "types/API/Discount";
@@ -154,6 +155,22 @@ export function CartProvider(props: ProviderProps): ReactElement {
     }
   }, [state]);
 
+  const getAllDiscountCodes = useCallback(async (): Promise<void> => {
+    try {
+      dispatch(loading(true));
+      const response = await API.getInstance()?.getAllDiscountCodes();
+      if (response) dispatch(setAllDiscountCodes(response.results));
+    } catch (err) {
+      if (err instanceof Error) toast.error(err.message, toastOptions);
+    } finally {
+      dispatch(loading(false));
+    }
+  }, []);
+
+  useEffect(() => {
+    getAllDiscountCodes();
+  }, [getAllDiscountCodes]);
+
   const contextValue = useMemo(
     () => ({
       ...state,
@@ -163,6 +180,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
       addDiscountCode,
       fetchDiscountCodeFromCart,
       removeDiscountCode,
+      getAllDiscountCodes,
     }),
     [
       state,
@@ -172,6 +190,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
       addDiscountCode,
       fetchDiscountCodeFromCart,
       removeDiscountCode,
+      getAllDiscountCodes,
     ]
   );
 
