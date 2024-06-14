@@ -17,6 +17,7 @@ function BasketPage(): ReactElement {
     fetchDiscountCodeFromCart,
     activeDiscountCode,
   } = useCart();
+
   const cartItems = activeCart?.lineItems ?? [];
 
   useEffect(() => {
@@ -46,16 +47,18 @@ function BasketPage(): ReactElement {
   return (
     <div className="basket-page" style={{ marginTop: "50px" }}>
       {isLoading && <LoaderItem />}
-      {activeDiscountCode ? (
-        <MessagePromo discountCode={activeDiscountCode} />
-      ) : (
-        <InputPromo />
-      )}
       {cartItems.length ? (
-        <CartTable
-          cartItems={cartItems}
-          totalCentAmout={activeCart?.totalPrice.centAmount ?? 0}
-        />
+        <>
+          {activeDiscountCode ? (
+            <MessagePromo discountCode={activeDiscountCode} />
+          ) : (
+            <InputPromo />
+          )}
+          <CartTable
+            cartItems={cartItems}
+            totalCentAmout={activeCart?.totalPrice.centAmount ?? 0}
+          />
+        </>
       ) : (
         emptyCartMessage
       )}
