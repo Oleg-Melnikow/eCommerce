@@ -35,7 +35,7 @@ function BasketPage(): ReactElement {
   );
 
   return (
-    <div className="basket-page" style={{ marginTop: "50px" }}>
+    <div className="basket-page">
       {isLoading && <LoaderItem />}
       {activeDiscountCode ? (
         <MessagePromo discountCode={activeDiscountCode} />

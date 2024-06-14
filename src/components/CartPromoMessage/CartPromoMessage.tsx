@@ -4,6 +4,7 @@ import { DiscountCode } from "types/API/Discount";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import useCart from "hooks/use-cart";
+import "./CartPromoMessage.scss";
 
 type PropsType = {
   discountCode: DiscountCode;
@@ -17,16 +18,14 @@ function MessagePromo({ discountCode }: PropsType): ReactElement {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-      }}
-    >
-      <Box sx={{ display: "flex", flexDirection: "column", flexGrow: "1" }}>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
+    <Box className="promo-message">
+      <Box className="message-block">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           {isActive ? (
             <CheckCircleIcon color="success" />
           ) : (
