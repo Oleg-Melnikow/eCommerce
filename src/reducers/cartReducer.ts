@@ -31,6 +31,11 @@ export const cartReducer = (
         ...action.payload,
       };
 
+    case "cart/eCommerce/CLEAR-CART":
+      return {
+        ...CartInitialState,
+      };
+
     default:
       return state;
   }
@@ -62,11 +67,17 @@ export const setAllDiscountCodes = (allDiscountCodes: DiscountCode[]) =>
     payload: { allDiscountCodes },
   }) as const;
 
+export const clearCart = () =>
+  ({
+    type: "cart/eCommerce/CLEAR-CART",
+  }) as const;
+
 type ActionsType =
   | ReturnType<typeof setActiveCart>
   | ReturnType<typeof setActiveDiscountCode>
   | ReturnType<typeof loading>
-  | ReturnType<typeof setAllDiscountCodes>;
+  | ReturnType<typeof setAllDiscountCodes>
+  | ReturnType<typeof clearCart>;
 
 export interface CartContextValue extends CartStateType {
   addProductToActiveCart: (
@@ -82,6 +93,7 @@ export interface CartContextValue extends CartStateType {
   fetchDiscountCodeFromCart: () => Promise<void>;
   removeDiscountCode: () => Promise<void>;
   getAllDiscountCodes: () => Promise<void>;
+  resetActiveCart: () => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextValue>({
@@ -93,4 +105,5 @@ export const CartContext = createContext<CartContextValue>({
   fetchDiscountCodeFromCart: () => Promise.resolve(),
   removeDiscountCode: () => Promise.resolve(),
   getAllDiscountCodes: () => Promise.resolve(),
+  resetActiveCart: () => Promise.resolve(),
 });

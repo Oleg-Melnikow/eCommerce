@@ -111,7 +111,6 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
   const totalPriceWithoutDiscount = cartItems
     .map((item) => (item.price?.value.centAmount ?? 0) * item.quantity)
     .reduce((sum, item) => sum + item, 0);
-  console.log(totalPriceWithoutDiscount);
 
   const totalPrice: Price = {
     id: "",

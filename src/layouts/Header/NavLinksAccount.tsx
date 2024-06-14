@@ -4,13 +4,16 @@ import Tooltip from "@mui/material/Tooltip";
 import useAuth from "hooks/use-auth";
 import { LinkAccount, navLinksToAccount } from "helpers/static-data";
 import { Box } from "@mui/material";
+import useCart from "hooks/use-cart";
 
 const NavLinksToAccount = memo(function NavLinksToAccount(): ReactElement {
   const { isAuthenticated, logoutAccount } = useAuth();
+  const { resetActiveCart } = useCart();
   const [links, setLinks] = useState<LinkAccount[]>([]);
 
   const logOut = (): void => {
     logoutAccount();
+    resetActiveCart();
   };
 
   const filterLink = useCallback((): LinkAccount[] => {

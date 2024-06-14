@@ -17,6 +17,7 @@ import {
   setActiveDiscountCode,
   loading,
   setAllDiscountCodes,
+  clearCart,
 } from "reducers/cartReducer";
 import { LineItem } from "types/API/Cart";
 import { DiscountCode } from "types/API/Discount";
@@ -185,6 +186,10 @@ export function CartProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
+  const resetActiveCart = useCallback(async (): Promise<void> => {
+    dispatch(clearCart());
+  }, []);
+
   useEffect(() => {
     getAllDiscountCodes();
   }, [getAllDiscountCodes]);
@@ -199,6 +204,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
       fetchDiscountCodeFromCart,
       removeDiscountCode,
       getAllDiscountCodes,
+      resetActiveCart,
     }),
     [
       state,
@@ -209,6 +215,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
       fetchDiscountCodeFromCart,
       removeDiscountCode,
       getAllDiscountCodes,
+      resetActiveCart,
     ]
   );
 
