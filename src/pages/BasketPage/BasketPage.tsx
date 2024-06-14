@@ -52,7 +52,10 @@ function BasketPage(): ReactElement {
         <InputPromo />
       )}
       {cartItems.length ? (
-        <CartTable cartItems={cartItems} />
+        <CartTable
+          cartItems={cartItems}
+          totalCentAmout={activeCart?.totalPrice.centAmount ?? 0}
+        />
       ) : (
         emptyCartMessage
       )}

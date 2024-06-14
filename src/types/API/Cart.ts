@@ -51,7 +51,7 @@ interface ItemShippingTarget {
 
 interface Cart {
   version: number;
-  totalPrice: TypedMoney;
+  totalPrice: CentPrecisionMoney;
   taxedPrice?: TaxedPrice;
   taxRoundingMode: RoundingMode;
   taxMode: TaxMode;
@@ -452,13 +452,15 @@ interface DeliveryItem {
 type ShippingMethodState = string;
 
 interface DiscountedPrice {
-  value: Money;
+  value: CentPrecisionMoney;
   discount?: ProductDiscountReference;
 }
 
-interface Money {
+interface CentPrecisionMoney {
   currencyCode: CurrencyCode;
   centAmount: number;
+  fractionDigits: number;
+  type: string;
 }
 
 interface ProductDiscountReference {
