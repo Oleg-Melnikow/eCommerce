@@ -3,17 +3,29 @@ import { ReactElement, useEffect } from "react";
 import useCart from "hooks/use-cart";
 import CartTable from "components/CartTable/CartTable";
 import LoaderItem from "components/LoaderItem/LoaderItem";
+import InputPromo from "components/CartPromoInput/CartPromoInput";
+import MessagePromo from "components/CartPromoMessage/CartPromoMessage";
 import { Paper } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import cartImg from "../../assets/empty-cart.png";
 
 function BasketPage(): ReactElement {
-  const { activeCart, fetchActiveCart, isLoading } = useCart();
+  const {
+    activeCart,
+    fetchActiveCart,
+    isLoading,
+    fetchDiscountCodeFromCart,
+    activeDiscountCode,
+  } = useCart();
   const cartItems = activeCart?.lineItems ?? [];
 
   useEffect(() => {
     fetchActiveCart();
   }, [fetchActiveCart]);
+
+  useEffect(() => {
+    fetchDiscountCodeFromCart();
+  }, [activeCart]);
 
   const emptyCartMessage = (
     <Paper elevation={3} className="empty-cart">
@@ -34,6 +46,11 @@ function BasketPage(): ReactElement {
   return (
     <div className="basket-page" style={{ marginTop: "50px" }}>
       {isLoading && <LoaderItem />}
+      {activeDiscountCode ? (
+        <MessagePromo discountCode={activeDiscountCode} />
+      ) : (
+        <InputPromo />
+      )}
       {cartItems.length ? (
         <CartTable cartItems={cartItems} />
       ) : (

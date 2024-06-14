@@ -466,4 +466,40 @@ interface ProductDiscountReference {
   obj?: Record<string, string>;
 }
 
-export { MyCartDraft, Cart, LineItem };
+interface AddLineItemAction {
+  action: "addLineItem";
+  key?: string;
+  productId?: string;
+  variantId?: number;
+  sku?: string;
+  quantity: number;
+  addedAt?: Date;
+}
+
+interface RemoveLineItemAction {
+  action: "removeLineItem";
+  lineItemId?: string;
+  lineItemKey?: string;
+  quantity?: number;
+}
+
+interface AddDiscountCodeAction {
+  action: "addDiscountCode";
+  code: string;
+}
+
+interface RemoveDiscountCodeAction {
+  action: "removeDiscountCode";
+  discountCode: {
+    typeId: "discount-code";
+    id: string;
+  };
+}
+
+type ActionTypes =
+  | AddLineItemAction
+  | RemoveLineItemAction
+  | AddDiscountCodeAction
+  | RemoveDiscountCodeAction;
+
+export { MyCartDraft, Cart, LineItem, ActionTypes };

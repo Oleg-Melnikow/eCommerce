@@ -14,9 +14,12 @@ import {
   CartInitialState,
   cartReducer,
   setActiveCart,
+  setActiveDiscountCode,
   loading,
+  setAllDiscountCodes,
 } from "reducers/cartReducer";
 import { LineItem } from "types/API/Cart";
+import { DiscountCode } from "types/API/Discount";
 import { Product } from "types/API/Product";
 
 interface ProviderProps {
@@ -105,18 +108,107 @@ export function CartProvider(props: ProviderProps): ReactElement {
     [state]
   );
 
+  const addDiscountCode = useCallback(
+    async (code: string): Promise<void> => {
+      try {
+        dispatch(loading(true));
+        const { activeCart } = state;
+        if (activeCart) {
+          const cart = await API.getInstance()?.addDiscountCodeToCart(
+            activeCart,
+            code
+          );
+          if (cart) dispatch(setActiveCart(cart));
+        }
+      } catch (err) {
+        if (err instanceof Error) toast.error(err.message, toastOptions);
+      } finally {
+        dispatch(loading(false));
+      }
+    },
+    [state]
+  );
+
+  const fetchDiscountCodeFromCart = useCallback(async (): Promise<void> => {
+    try {
+      dispatch(loading(true));
+      const { activeCart } = state;
+      if (
+        activeCart?.discountCodes?.length &&
+        activeCart.discountCodes[0].discountCode
+      ) {
+        const { id } = activeCart.discountCodes[0].discountCode;
+        const response = await API.getInstance()?.getDiscountCodeById(id);
+        if (response) dispatch(setActiveDiscountCode(response));
+      }
+    } catch (err) {
+      if (err instanceof Error) toast.error(err.message, toastOptions);
+    } finally {
+      dispatch(loading(false));
+    }
+  }, [state]);
+
+  useEffect(() => {
+    fetchDiscountCodeFromCart();
+  }, [state.activeCart]);
+
+  const removeDiscountCode = useCallback(async (): Promise<void> => {
+    try {
+      dispatch(loading(true));
+      const { activeCart, activeDiscountCode } = state;
+      if (activeCart && activeDiscountCode) {
+        const response = await API.getInstance()?.removeDiscountCodeFromCart(
+          activeDiscountCode.id,
+          activeCart
+        );
+        if (response) {
+          dispatch(setActiveCart(response));
+          dispatch(setActiveDiscountCode(null));
+        }
+      }
+    } catch (err) {
+      if (err instanceof Error) toast.error(err.message, toastOptions);
+    } finally {
+      dispatch(loading(false));
+    }
+  }, [state]);
+
+  const getAllDiscountCodes = useCallback(async (): Promise<void> => {
+    try {
+      dispatch(loading(true));
+      const response = await API.getInstance()?.getAllDiscountCodes();
+      if (response) dispatch(setAllDiscountCodes(response.results));
+    } catch (err) {
+      if (err instanceof Error) toast.error(err.message, toastOptions);
+    } finally {
+      dispatch(loading(false));
+    }
+  }, []);
+
+  useEffect(() => {
+    getAllDiscountCodes();
+  }, [getAllDiscountCodes]);
+
   const contextValue = useMemo(
     () => ({
       ...state,
       fetchActiveCart,
       addProductToActiveCart,
       removeProductFromActiveCart,
+      addDiscountCode,
+      fetchDiscountCodeFromCart,
+      removeDiscountCode,
+      getAllDiscountCodes,
     }),
     [
       state,
       fetchActiveCart,
       addProductToActiveCart,
       removeProductFromActiveCart,
+      addDiscountCode,
+      fetchDiscountCodeFromCart,
+      removeDiscountCode,
+      getAllDiscountCodes,
     ]
   );
 
