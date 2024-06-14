@@ -34,6 +34,31 @@ function CartTable({ cartItems }: PropsType): ReactElement {
   );
 
   const tableItems = cartItems.map((item) => {
+    const totalPrice =
+      (item.price?.value.centAmount ?? 0) * item.quantity >
+      item.totalPrice.centAmount
+        ? {
+            id: `custom-totalPrice-${item.id}`,
+            key: "",
+            value: {
+              centAmount: (item.price?.value.centAmount ?? 0) * item.quantity,
+              currencyCode: "EUR",
+              type: "custom-price",
+            },
+            discounted: {
+              discount: { id: "", typeId: "" },
+              value: item.totalPrice,
+            },
+          }
+        : {
+            id: `custom-totalPrice-${item.id}`,
+            key: "",
+            value: {
+              centAmount: item.totalPrice.centAmount,
+              currencyCode: "EUR",
+              type: "custom-price",
+            },
+          };
     return (
       <TableRow
         key={`Cart-Item-${item.name?.en}`}
@@ -75,7 +100,7 @@ function CartTable({ cartItems }: PropsType): ReactElement {
           />
         </TableCell>
         <TableCell sx={{ fontWeight: "bold" }}>
-          <ProductPrice price={{ id: "", key: "", value: item.totalPrice }} />
+          <ProductPrice price={totalPrice} />
         </TableCell>
         <TableCell>
           <IconButton
