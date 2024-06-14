@@ -90,7 +90,7 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
             count={item.quantity}
             className="product-details"
             setCount={null}
-            addItemToCart={() => addProductToActiveCart(item, 1)}
+            addItemToCart={() => addProductToActiveCart(item, 1, true)}
             removeItemFromCart={() => removeProductFromActiveCart(item, 1)}
           />
         </TableCell>

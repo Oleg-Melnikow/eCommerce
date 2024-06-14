@@ -82,7 +82,8 @@ type ActionsType =
 export interface CartContextValue extends CartStateType {
   addProductToActiveCart: (
     product: Product | LineItem,
-    count: number
+    count: number,
+    noToast?: boolean
   ) => Promise<void>;
   fetchActiveCart: () => Promise<void>;
   removeProductFromActiveCart: (
