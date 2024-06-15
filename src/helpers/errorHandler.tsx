@@ -8,6 +8,7 @@ export default function errorHandler(axiosError: unknown): string {
       : new Error("Unknow error");
 
   let errorMessageInner: string;
+
   switch (error?.message) {
     case "Account with the given credentials not found.":
       errorMessageInner =
@@ -28,6 +29,10 @@ export default function errorHandler(axiosError: unknown): string {
       errorMessageInner =
         "Something went wrong during the registration process. Please, should try again later.";
       break;
+  }
+
+  if (error?.message.includes("The discount code")) {
+    errorMessageInner = error?.message;
   }
 
   return errorMessageInner;
