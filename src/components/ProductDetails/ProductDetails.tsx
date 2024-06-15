@@ -8,6 +8,7 @@ import useCart from "hooks/use-cart";
 import { LoadingButton } from "@mui/lab";
 import LoaderItem from "components/LoaderItem/LoaderItem";
 import "./ProductDetails.scss";
+import { LineItem } from "types/API/Cart";
 
 type PropsType = {
   product: ProductData;
@@ -17,7 +18,7 @@ function ProductDetails({ product }: PropsType): ReactElement {
   const { id, key, masterData } = product;
   const { getCategoriesCurrentProduct, currentProductCategories } =
     useProduct();
-  const { addProductToActiveCart, isLoading } = useCart();
+  const { addProductToActiveCart, isLoading, activeCart } = useCart();
   const [count, setCount] = useState(1);
 
   const line = (
@@ -51,12 +52,24 @@ function ProductDetails({ product }: PropsType): ReactElement {
     searchKeywords.en?.map((keyword) => keyword.text) ?? [],
   ];
 
+  let itemInCart: LineItem | null = null;
+  activeCart?.lineItems.some((item) => {
+    if (id === item.productId) {
+      itemInCart = item;
+      return true;
+    }
+    return false;
+  });
+
+  const quantityInCart = itemInCart ? (itemInCart as LineItem).quantity : 0;
+
+  console.log(quantityInCart);
+
   return (
     <div className="product-details">
       {isLoading && <LoaderItem />}
       <h3 className="product-details__title">{title}</h3>
       <ProductPrice price={price} /> {line}
-      <ProductDetailsRadio className="product-details" />
       <div className="product-details__btn-wrap">
         <ProductDetailsCounter
           className="product-details"
@@ -77,6 +90,9 @@ function ProductDetails({ product }: PropsType): ReactElement {
         >
           Add to Cart
         </LoadingButton>
+      </div>
+      <div className="product-details__quantity-in-cart">
+        <span>{`${quantityInCart} pieces have already been added to the cart`}</span>
       </div>
       <div className="product-details__info-wrap">
         <p className="product-details__info">
