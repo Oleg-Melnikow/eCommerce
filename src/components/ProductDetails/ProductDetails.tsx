@@ -92,7 +92,9 @@ function ProductDetails({ product }: PropsType): ReactElement {
         </LoadingButton>
       </div>
       <div className="product-details__quantity-in-cart">
-        <span>{`${quantityInCart} pieces have already been added to the cart`}</span>
+        {quantityInCart ? (
+          <span>{`${quantityInCart} pieces have already been added to the cart`}</span>
+        ) : null}
       </div>
       <div className="product-details__info-wrap">
         <p className="product-details__info">
