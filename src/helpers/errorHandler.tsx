@@ -23,8 +23,10 @@ export default function errorHandler(axiosError: unknown): string {
         "The given current password does not match. Please enter the correct password.";
       break;
     case "Failed to update cart":
+    case "Error deleting the cart":
       errorMessageInner = error.message;
       break;
+
     default:
       errorMessageInner =
         "Something went wrong during the registration process. Please, should try again later.";
