@@ -7,7 +7,6 @@ import {
   StaticMPGarden,
 } from "helpers/static-mainData";
 import { NavLink } from "react-router-dom";
-import Footer from "../../layouts/Footer/Footer";
 
 import {
   Box,
@@ -20,6 +19,7 @@ import {
 } from "@mui/material";
 import useCart from "hooks/use-cart";
 
+import Footer from "../../layouts/Footer/Footer";
 import WELCOMEIMG from "../../assets/MainBack.png";
 import PICTURE from "../../assets/SectPicture.png";
 
