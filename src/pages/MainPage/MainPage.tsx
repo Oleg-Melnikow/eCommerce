@@ -1,5 +1,14 @@
 import "./MainPage.scss";
 import React, { ReactElement, useEffect } from "react";
+
+import {
+  Description,
+  StaticMPCare,
+  StaticMPGarden,
+} from "helpers/static-mainData";
+import { NavLink } from "react-router-dom";
+import Footer from "../../layouts/Footer/Footer";
+
 import {
   Box,
   Typography,
@@ -9,11 +18,10 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { Description, StaticMainPage } from "helpers/static-mainData";
-import WELCOMEIMG from "../../assets/MainBack.png";
-import { NavLink } from "react-router-dom";
-
 import useCart from "hooks/use-cart";
+
+import WELCOMEIMG from "../../assets/MainBack.png";
+import PICTURE from "../../assets/SectPicture.png";
 
 function MainPage(): ReactElement {
   const promoTableHeads = ["Code", "Description"];
@@ -54,7 +62,7 @@ function MainPage(): ReactElement {
       </Box>
 
       <Box className="section-care__plant">
-        {StaticMainPage.map((item) => (
+        {StaticMPCare.map((item) => (
           <Box className="section-care__plant_item" key={item.id}>
             <img className="plant__item_img" src={item.icon} alt={item.alt} />
             <Typography className="plant__item_title">{item.title}</Typography>
@@ -62,6 +70,22 @@ function MainPage(): ReactElement {
           </Box>
         ))}
       </Box>
+
+      <Box className="main-page__photo">
+        <img src={PICTURE} alt="PlantPicture" />
+      </Box>
+
+      <Box className="section-care__garden">
+        {StaticMPGarden.map((item) => (
+          <Box className="section-care__garden_item" key={item.id}>
+            <img className="garden__item_img" src={item.icon} alt={item.alt} />
+            <Typography className="garden__item_title">{item.title}</Typography>
+            <Typography className="garden__item_desc">{item.text}</Typography>
+          </Box>
+        ))}
+      </Box>
+
+      <Footer />
 
       {/* <iframe
         width="100%"

@@ -106,7 +106,7 @@
 
   .main-page__section-care {
     @include DisplayFlexColumn;
-    margin: 50px 0px 0px;
+    margin: 82px 0px 0px;
 
     .main-page__section-care_title {
       margin: 0px 0px 16px;
@@ -152,19 +152,23 @@
     }
   }
 
-  .section-care__plant {
+  .section-care__plant,
+  .section-care__garden {
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 1fr 1fr 1fr;
+    justify-items: center;
     grid-column-gap: 50px;
-    margin: 72px 0px 0px;
+    margin: 72px 0px;
+    width: 100%;
 
     @media (max-width: 1120px) {
       grid-template-rows: 1fr 1fr;
       grid-template-columns: 1fr 1fr;
       margin: 32px 0px 0px;
 
-      .section-care__plant_item:nth-child(3) {
+      .section-care__plant_item:nth-child(3),
+      .section-care__garden_item:nth-child(3) {
         grid-column: 1 / -1;
         justify-self: center;
       }
@@ -175,7 +179,8 @@
       grid-template-columns: 1fr;
     }
 
-    .section-care__plant_item {
+    .section-care__plant_item,
+    .section-care__garden_item {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -199,7 +204,14 @@
         }
       }
 
-      .plant__item_title {
+      .garden__item_img {
+        display: block;
+        width: 77px;
+        height: 77px;
+      }
+
+      .plant__item_title,
+      .garden__item_title {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -226,7 +238,8 @@
         }
       }
 
-      .plant__item_desc {
+      .plant__item_desc,
+      .garden__item_desc {
         font-size: 16px;
         font-weight: 400;
         color: rgb(175, 178, 170);
@@ -239,6 +252,27 @@
           font-size: 12px;
         }
       }
+    }
+  }
+
+  .section-care__garden {
+    background-color: rgb(251, 251, 251);
+
+    .section-care__garden_item {
+      align-items: flex-start;
+      text-align: start;
+    }
+  }
+
+  .main-page__photo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      display: block;
+      max-width: 100%;
+      width: 100%;
     }
   }
 }
