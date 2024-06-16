@@ -10,6 +10,7 @@ import {
   TableBody,
   Typography,
   IconButton,
+  Button,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
@@ -128,6 +129,11 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
       value: { type: "", currencyCode: "EUR", centAmount: totalCentAmout },
     };
 
+  const { resetActiveCart } = useCart();
+  const onClickClearCart = (): void => {
+    resetActiveCart();
+  };
+
   return (
     <TableContainer>
       <Table size="small">
@@ -137,8 +143,18 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
         <TableBody>
           {tableItems}
           <TableRow>
+            <TableCell rowSpan={2}>
+              <Button
+                variant="contained"
+                color="warning"
+                endIcon={<DeleteIcon />}
+                onClick={onClickClearCart}
+              >
+                Clear Shopping Cart
+              </Button>
+            </TableCell>
             <TableCell
-              colSpan={3}
+              colSpan={2}
               align="right"
               sx={{ fontWeight: "bold", fontSize: "1.25rem" }}
             >
@@ -150,7 +166,7 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
           </TableRow>
           {totalPrice.discounted && (
             <TableRow>
-              <TableCell colSpan={3} align="right">
+              <TableCell colSpan={2} align="right">
                 Discount:
               </TableCell>
               <TableCell>
