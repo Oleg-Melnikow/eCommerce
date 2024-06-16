@@ -18,6 +18,7 @@ import {
   setActiveDiscountCode,
   loading,
   setAllDiscountCodes,
+  clearCart,
 } from "reducers/cartReducer";
 import { Cart, LineItem } from "types/API/Cart";
 import { Product } from "types/API/Product";
@@ -72,7 +73,11 @@ export function CartProvider(props: ProviderProps): ReactElement {
   );
 
   const addProductToActiveCart = useCallback(
-    async (product: Product | LineItem, count: number): Promise<void> => {
+    async (
+      product: Product | LineItem,
+      count: number,
+      noToast = false
+    ): Promise<void> => {
       try {
         dispatch(loading(true));
         if (!state.activeCart) {
@@ -97,10 +102,11 @@ export function CartProvider(props: ProviderProps): ReactElement {
             count
           );
           if (cart) dispatch(setActiveCart(cart));
-          toast.success(
-            "The product has been successfully added to the shopping cart.",
-            toastOptions
-          );
+          if (!noToast)
+            toast.success(
+              "The product has been successfully added to the shopping cart.",
+              toastOptions
+            );
         }
       } catch (err) {
         if (err instanceof Error) toast.error(err.message, toastOptions);
@@ -194,6 +200,10 @@ export function CartProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
+  const resetActiveCart = useCallback(async (): Promise<void> => {
+    dispatch(clearCart());
+  }, []);
+
   const initializeCart = useCallback(async (): Promise<void> => {
     dispatch(loading(true));
     const isBacket = pathname.includes("basket");
@@ -227,6 +237,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
       fetchDiscountCodeFromCart,
       removeDiscountCode,
       getAllDiscountCodes,
+      resetActiveCart,
       initializeCart,
     }),
     [
@@ -238,6 +249,7 @@ export function CartProvider(props: ProviderProps): ReactElement {
       fetchDiscountCodeFromCart,
       removeDiscountCode,
       getAllDiscountCodes,
+      resetActiveCart,
       initializeCart,
     ]
   );

@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import "./MainPage.scss";
 import useCart from "hooks/use-cart";
@@ -23,7 +23,11 @@ function MainPage(): ReactElement {
   ];
 
   const promoTableHeads = ["Code", "Description"];
-  const { allDiscountCodes } = useCart();
+  const { allDiscountCodes, getAllDiscountCodes } = useCart();
+
+  useEffect(() => {
+    getAllDiscountCodes();
+  }, [getAllDiscountCodes]);
 
   return (
     <div className="main-page" style={{ marginTop: "50px" }}>

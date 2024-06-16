@@ -12,6 +12,7 @@ import cartImg from "assets/empty-cart.png";
 function BasketPage(): ReactElement {
   const { activeCart, fetchActiveCart, isLoading, activeDiscountCode } =
     useCart();
+
   const cartItems = activeCart?.lineItems ?? [];
 
   useEffect(() => {
@@ -37,13 +38,18 @@ function BasketPage(): ReactElement {
   return (
     <div className="basket-page">
       {isLoading && <LoaderItem />}
-      {activeDiscountCode ? (
-        <MessagePromo discountCode={activeDiscountCode} />
-      ) : (
-        <InputPromo />
-      )}
       {cartItems.length ? (
-        <CartTable cartItems={cartItems} />
+        <>
+          {activeDiscountCode ? (
+            <MessagePromo discountCode={activeDiscountCode} />
+          ) : (
+            <InputPromo />
+          )}
+          <CartTable
+            cartItems={cartItems}
+            totalCentAmout={activeCart?.totalPrice.centAmount ?? 0}
+          />
+        </>
       ) : (
         emptyCartMessage
       )}

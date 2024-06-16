@@ -70,12 +70,24 @@ function ProductDetails({ product }: PropsType): ReactElement {
     searchKeywords.en?.map((keyword) => keyword.text) ?? [],
   ];
 
+  let itemInCart: LineItem | null = null;
+  activeCart?.lineItems.some((item) => {
+    if (id === item.productId) {
+      itemInCart = item;
+      return true;
+    }
+    return false;
+  });
+
+  const quantityInCart = itemInCart ? (itemInCart as LineItem).quantity : 0;
+
+  console.log(quantityInCart);
+
   return (
     <div className="product-details">
       {isLoading && <LoaderItem />}
       <h3 className="product-details__title">{title}</h3>
       <ProductPrice price={price} /> {line}
-      <ProductDetailsRadio className="product-details" />
       <div className="product-details__btn-wrap">
         <ProductDetailsCounter
           className="product-details"
@@ -103,6 +115,11 @@ function ProductDetails({ product }: PropsType): ReactElement {
         >
           Add to Cart
         </LoadingButton>
+      </div>
+      <div className="product-details__quantity-in-cart">
+        {quantityInCart ? (
+          <span>{`${quantityInCart} pieces have already been added to the cart`}</span>
+        ) : null}
       </div>
       <div className="product-details__info-wrap">
         <p className="product-details__info">
