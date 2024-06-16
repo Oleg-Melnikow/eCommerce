@@ -1,6 +1,6 @@
 import { LineItem } from "types/API/Cart";
 import "./CartTable.scss";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import {
   Table,
   TableCell,
@@ -10,6 +10,7 @@ import {
   TableBody,
   Typography,
   IconButton,
+  Box,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
@@ -24,11 +25,26 @@ type PropsType = {
 
 function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
   const { addProductToActiveCart, removeProductFromActiveCart } = useCart();
-  const tableHeadCells = ["Products", "Price", "Quantity", "Total", ""].map(
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = (): void => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return (): void => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const tableHeadCells = ["", "Products", "Price", "Quantity", "Total", ""].map(
     (item) => (
       <TableCell
         key={`Cart-Table-Head-Coloumn-${item}`}
-        sx={{ fontWeight: "bold" }}
+        className="cart-table__head-item"
       >
         {item}
       </TableCell>
@@ -54,56 +70,73 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
         value: item.totalPrice,
       };
 
+    const priceItem = (
+      <>
+        {" "}
+        {item.price && (
+          <ProductPrice price={item.price} classNamePredicate="cart-table" />
+        )}
+      </>
+    );
+    const totalPriceItem = (
+      <ProductPrice
+        price={totalPriceForCartItem}
+        classNamePredicate="cart-table"
+      />
+    );
+    const deleteBtn = (
+      <IconButton
+        onClick={() => removeProductFromActiveCart(item.id, item.quantity)}
+      >
+        <DeleteIcon />
+      </IconButton>
+    );
+
     return (
       <TableRow
         key={`Cart-Item-${item.name?.en}`}
-        sx={{ backgroundColor: "#FBFBFB" }}
+        className="cart-table__row-body"
       >
-        <TableCell
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 15,
-          }}
-        >
+        <TableCell className="cart-table__cell cart-table__thumb-wrap">
           {item.variant?.images && (
             <img
+              className="cart-table__thumb"
               src={item.variant.images[0].url}
               alt={item.name?.en ?? ""}
-              style={{ maxHeight: 100, objectFit: "contain" }}
             />
           )}
-          <Typography
-            variant="body2"
-            component="p"
-            noWrap
-            sx={{ fontWeight: "bold" }}
-          >
-            {item.name && item.name.en}
-          </Typography>
         </TableCell>
-        <TableCell>
-          {item.price && <ProductPrice price={item.price} />}
+        <TableCell className="cart-table__cell">
+          <Box className="cart-table__cell-inner">
+            <Typography
+              variant="body2"
+              component="p"
+              sx={{ fontWeight: "bold" }}
+            >
+              {item.name && item.name.en}
+            </Typography>
+            {windowWidth <= 600 && priceItem}
+          </Box>
         </TableCell>
-        <TableCell>
-          <ProductDetailsCounter
-            count={item.quantity}
-            className="product-details"
-            setCount={null}
-            addItemToCart={() => addProductToActiveCart(item, 1, true)}
-            removeItemFromCart={() => removeProductFromActiveCart(item.id, 1)}
-          />
+        {windowWidth > 600 && (
+          <TableCell className="cart-table__cell">{priceItem} </TableCell>
+        )}
+        <TableCell className="cart-table__cell">
+          <Box className="cart-table__cell-inner">
+            <ProductDetailsCounter
+              count={item.quantity}
+              className="cart-table"
+              setCount={null}
+              addItemToCart={() => addProductToActiveCart(item, 1, true)}
+              removeItemFromCart={() => removeProductFromActiveCart(item.id, 1)}
+            />
+            {windowWidth <= 600 && totalPriceItem}
+          </Box>
         </TableCell>
-        <TableCell sx={{ fontWeight: "bold" }}>
-          <ProductPrice price={totalPriceForCartItem} />
-        </TableCell>
-        <TableCell>
-          <IconButton
-            onClick={() => removeProductFromActiveCart(item.id, item.quantity)}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </TableCell>
+        {windowWidth > 600 && (
+          <TableCell className="cart-table__price">{totalPriceItem}</TableCell>
+        )}
+        <TableCell className="cart-table__cell">{deleteBtn}</TableCell>
       </TableRow>
     );
   });
@@ -129,28 +162,35 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
     };
 
   return (
-    <TableContainer>
-      <Table size="small">
-        <TableHead>
-          <TableRow>{tableHeadCells}</TableRow>
-        </TableHead>
+    <TableContainer className="cart-table__container">
+      <Table size="small" className="cart-table">
+        {windowWidth > 600 && (
+          <TableHead className="cart-table__head">
+            <TableRow>{tableHeadCells}</TableRow>
+          </TableHead>
+        )}
         <TableBody>
           {tableItems}
           <TableRow>
             <TableCell
-              colSpan={3}
-              align="right"
-              sx={{ fontWeight: "bold", fontSize: "1.25rem" }}
+              className="cart-table__total-price-title"
+              colSpan={windowWidth <= 600 ? 1 : 4}
             >
               Total:
             </TableCell>
             <TableCell>
-              <ProductPrice price={totalPrice} />
+              <ProductPrice
+                price={totalPrice}
+                classNamePredicate="cart-table"
+              />
             </TableCell>
           </TableRow>
           {totalPrice.discounted && (
             <TableRow>
-              <TableCell colSpan={3} align="right">
+              <TableCell
+                colSpan={windowWidth <= 600 ? 1 : 4}
+                className="cart-table__discount-title"
+              >
                 Discount:
               </TableCell>
               <TableCell>
@@ -164,6 +204,7 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
                       centAmount: totalPriceWithoutDiscount - totalCentAmout,
                     },
                   }}
+                  classNamePredicate="cart-table"
                 />
               </TableCell>
             </TableRow>

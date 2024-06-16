@@ -6,7 +6,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .counter-btn {
+  
+  &__counter-btn {
     flex-shrink: 0;
     width: 33px;
     height: 38px;
@@ -26,7 +27,7 @@
     }
   }
 
-  .counter-value {
+  &__counter-value {
     font-size: 1.25rem;
   }
 }

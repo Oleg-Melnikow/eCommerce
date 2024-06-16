@@ -1,1 +1,97 @@
 @use "../../styles/colors" as colors;
+
+.cart-table {
+  & &__head {
+
+  &-item{
+      font-weight: bold;
+      font-size: 1rem;
+    }
+  }
+
+  & &__total-price-title {
+    text-align: right;
+    font-weight: bold;
+    font-size: 1.25rem;
+    @media screen and (max-width: 960px) {
+      font-size: 1rem;
+    }
+  }
+
+  & &__discount-title {
+    text-align: right;
+    font-size: 1rem;
+    @media screen and (max-width: 960px) {
+      font-size: 0.8rem;
+    }
+  }
+
+  &__row-body {
+    background-color: colors.$background-gray;
+  }
+
+  &__thumb {
+    max-height: 100px;
+    object-fit: contain;
+    @media screen and (max-width: 960px) {
+      max-height: 50px;
+    }
+  }
+
+  & &__counter {
+    @media screen and (max-width: 960px) {
+      width: 60px;
+      height: 20px;
+    }
+  }
+
+  & &__counter-btn {
+    @media screen and (max-width: 960px) {
+      width: 20px;
+      height: 22px;
+      font-size: 1rem;
+    }
+  }
+
+  & &__counter-value {
+    @media screen and (max-width: 960px) {
+      font-size: 0.8rem;
+    }
+  }
+
+  & &__product-price {
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+      gap: 2px;
+      align-items: start;
+    }
+
+    &-icon {
+      @media screen and (max-width: 960px) {
+        font-size: 1rem;
+      }
+    }
+
+    &-value {
+      @media screen and (max-width: 960px) {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  & &__cell {
+    @media screen and (max-width: 500px) {
+      padding: 2px;
+    }
+  }
+
+  & &__thumb-wrap {
+    @media screen and (max-width: 500px) {
+      width: 50px;
+    }
+  }
+}
+
+.cart-table__container {
+  padding-top: 20px;
+}
