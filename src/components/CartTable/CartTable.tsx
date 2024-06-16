@@ -1,6 +1,6 @@
 import { LineItem } from "types/API/Cart";
 import "./CartTable.scss";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import {
   Table,
   TableCell,
@@ -17,6 +17,7 @@ import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
 import useCart from "hooks/use-cart";
 import { Price } from "types/API/Product";
+import CartClearDialog from "components/CartClearDialog/CartClearDialog";
 
 type PropsType = {
   cartItems: LineItem[];
@@ -25,6 +26,9 @@ type PropsType = {
 
 function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
   const { addProductToActiveCart, removeProductFromActiveCart } = useCart();
+
+  const [clearDialogOpen, setClearDialogOpen] = useState(false);
+
   const tableHeadCells = ["Products", "Price", "Quantity", "Total", ""].map(
     (item) => (
       <TableCell
@@ -130,63 +134,70 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
     };
 
   const { resetActiveCart } = useCart();
-  const onClickClearCart = (): void => {
+  const clearCart = (): void => {
     resetActiveCart();
   };
 
   return (
-    <TableContainer>
-      <Table size="small">
-        <TableHead>
-          <TableRow>{tableHeadCells}</TableRow>
-        </TableHead>
-        <TableBody>
-          {tableItems}
-          <TableRow>
-            <TableCell rowSpan={2}>
-              <Button
-                variant="contained"
-                color="warning"
-                endIcon={<DeleteIcon />}
-                onClick={onClickClearCart}
-              >
-                Clear Shopping Cart
-              </Button>
-            </TableCell>
-            <TableCell
-              colSpan={2}
-              align="right"
-              sx={{ fontWeight: "bold", fontSize: "1.25rem" }}
-            >
-              Total:
-            </TableCell>
-            <TableCell>
-              <ProductPrice price={totalPrice} />
-            </TableCell>
-          </TableRow>
-          {totalPrice.discounted && (
+    <>
+      <TableContainer>
+        <Table size="small">
+          <TableHead>
+            <TableRow>{tableHeadCells}</TableRow>
+          </TableHead>
+          <TableBody>
+            {tableItems}
             <TableRow>
-              <TableCell colSpan={2} align="right">
-                Discount:
+              <TableCell rowSpan={2}>
+                <Button
+                  variant="contained"
+                  color="warning"
+                  endIcon={<DeleteIcon />}
+                  onClick={() => setClearDialogOpen(true)}
+                >
+                  Clear Shopping Cart
+                </Button>
+              </TableCell>
+              <TableCell
+                colSpan={2}
+                align="right"
+                sx={{ fontWeight: "bold", fontSize: "1.25rem" }}
+              >
+                Total:
               </TableCell>
               <TableCell>
-                <ProductPrice
-                  price={{
-                    id: "",
-                    key: "",
-                    value: {
-                      type: "",
-                      currencyCode: "EUR",
-                      centAmount: totalPriceWithoutDiscount - totalCentAmout,
-                    },
-                  }}
-                />
+                <ProductPrice price={totalPrice} />
               </TableCell>
             </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            {totalPrice.discounted && (
+              <TableRow>
+                <TableCell colSpan={2} align="right">
+                  Discount:
+                </TableCell>
+                <TableCell>
+                  <ProductPrice
+                    price={{
+                      id: "",
+                      key: "",
+                      value: {
+                        type: "",
+                        currencyCode: "EUR",
+                        centAmount: totalPriceWithoutDiscount - totalCentAmout,
+                      },
+                    }}
+                  />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <CartClearDialog
+        open={clearDialogOpen}
+        setOpen={setClearDialogOpen}
+        action={clearCart}
+      />
+    </>
   );
 }
 
