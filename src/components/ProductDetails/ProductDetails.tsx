@@ -1,5 +1,4 @@
 import { ReactElement, useEffect, useState } from "react";
-import ProductDetailsRadio from "components/ProductDetailsRadio/ProductDetailsRadio";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
 import { ProductData } from "types/API/Product";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
@@ -80,8 +79,6 @@ function ProductDetails({ product }: PropsType): ReactElement {
   });
 
   const quantityInCart = itemInCart ? (itemInCart as LineItem).quantity : 0;
-
-  console.log(quantityInCart);
 
   return (
     <div className="product-details">
