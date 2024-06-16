@@ -7,11 +7,106 @@
 
 .main-page {
   @include DisplayFlexColumn;
-  max-width: 100%;
-  width: 100%;
+
+  .main-page__section-welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 50px 0px 0px;
+    padding-left: 40px;
+    width: 100%;
+    background-color: rgba(245, 245, 245, 0.502);
+
+    @media (max-width: 580px) {
+      flex-direction: column;
+      margin: 20px 0px 0px;
+      padding: 10px 10px 0px;
+    }
+
+    .main-page__section-welcome_content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      .section-welcome__greet {
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: rgba(61, 61, 61, 0.7);
+
+        @media (max-width: 768px) {
+          margin-top: 10px;
+        }
+      }
+
+      .section-welcome__title {
+        margin: 10px 0px;
+        max-width: 530px;
+        width: 100%;
+        font-size: 70px;
+        font-weight: 900;
+        line-height: 1;
+        color: rgb(61, 61, 61);
+
+        @media (max-width: 1120px) {
+          font-size: 50px;
+        }
+
+        span {
+          color: rgb(70, 163, 88);
+        }
+      }
+
+      .section-welcome__desc {
+        max-width: 530px;
+        width: 100%;
+        font-size: 14px;
+        color: rgb(114, 114, 114);
+
+        @media (max-width: 580px) {
+          font-size: 12px;
+        }
+      }
+
+      .section-welcome__button {
+        margin-top: 10px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.5s ease-in;
+        color: rgb(255, 255, 255);
+        background: rgb(70, 163, 88);
+        cursor: pointer;
+
+        @media (max-width: 768px) {
+          padding: 8px 12px;
+          font-size: 12px;
+        }
+
+        &:hover {
+          transition: 0.5s ease-in;
+          opacity: 0.7;
+        }
+      }
+    }
+
+    .main-page__section-welcome_inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        display: block;
+        max-width: 450px;
+        width: 100%;
+      }
+    }
+  }
 
   .main-page__section-care {
     @include DisplayFlexColumn;
+    margin: 50px 0px 0px;
 
     .main-page__section-care_title {
       margin: 0px 0px 16px;

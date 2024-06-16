@@ -2,7 +2,13 @@ import WaterIcon from "../assets/icons/WaterIcon.png";
 import SunIcon from "../assets/icons/SunIcon.png";
 import BagIcon from "../assets/icons/BagIcon.png";
 
-export const enum DescriptionCare {
+export const enum Description {
+  WELCOME = `Welcome to greenshop`,
+  BETTERPLANET = `Let’s Make a Better `,
+  ONLINESHOP = `We are an online plant shop offering a wide range of cheap and
+  trendy plants. Use our plants to create an unique Urban Jungle.
+  Order your favorite plants!`,
+
   TAKECARE = `By following these three steps - proper watering, appropriate
   sunlight, and providing essential nutrients - you'll be well on your
   way to maintaining healthy and thriving plants.`,

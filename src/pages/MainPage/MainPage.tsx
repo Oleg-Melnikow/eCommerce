@@ -1,9 +1,18 @@
 import "./MainPage.scss";
 import React, { ReactElement, useEffect } from "react";
-import { Box, Typography, Button, Table, TableBody, TableCell, TableHead, TableRow,} from "@mui/material";
-import { DescriptionCare, StaticMainPage } from "helpers/static-mainData";
+import {
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import { Description, StaticMainPage } from "helpers/static-mainData";
+import WELCOMEIMG from "../../assets/MainBack.png";
 import { NavLink } from "react-router-dom";
-        
+
 import useCart from "hooks/use-cart";
 
 function MainPage(): ReactElement {
@@ -15,13 +24,32 @@ function MainPage(): ReactElement {
   }, [getAllDiscountCodes]);
 
   return (
-    <div className="main-page" style={{ marginTop: "30px" }}>
+    <div className="main-page">
+      <Box className="main-page__section-welcome">
+        <Box className="main-page__section-welcome_content">
+          <span className="section-welcome__greet">{Description.WELCOME}</span>
+          <h2 className="section-welcome__title">
+            {Description.BETTERPLANET}
+            <span>Planet</span>
+          </h2>
+          <p className="section-welcome__desc">{Description.ONLINESHOP}</p>
+
+          <NavLink className="section-welcome__button" to="/catalog">
+            Catalog Now
+          </NavLink>
+        </Box>
+
+        <Box className="main-page__section-welcome_inner">
+          <img src={WELCOMEIMG} alt="SomePlant" />
+        </Box>
+      </Box>
+
       <Box className="main-page__section-care">
         <Typography className="main-page__section-care_title">
           Steps To Take Care Of Your <span>Plants</span>
         </Typography>
         <Typography className="main-page__section-care_desc">
-          {DescriptionCare.TAKECARE}
+          {Description.TAKECARE}
         </Typography>
       </Box>
 
@@ -45,7 +73,7 @@ function MainPage(): ReactElement {
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
       ></iframe> */}
-        
+
       {!!allDiscountCodes.length && (
         <Box>
           <Table size="small">
