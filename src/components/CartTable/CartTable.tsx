@@ -15,12 +15,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
 import useCart from "hooks/use-cart";
+import { Price } from "types/API/Product";
 
 type PropsType = {
   cartItems: LineItem[];
+  totalCentAmout: number;
 };
 
-function CartTable({ cartItems }: PropsType): ReactElement {
+function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
   const { addProductToActiveCart, removeProductFromActiveCart } = useCart();
   const tableHeadCells = ["Products", "Price", "Quantity", "Total", ""].map(
     (item) => (
@@ -34,6 +36,24 @@ function CartTable({ cartItems }: PropsType): ReactElement {
   );
 
   const tableItems = cartItems.map((item) => {
+    const totalPriceForCartItem: Price = {
+      id: "",
+      key: "",
+      value: {
+        centAmount: (item.price?.value.centAmount ?? 0) * item.quantity,
+        currencyCode: "EUR",
+        type: "",
+      },
+    };
+    if (
+      (item.price?.value.centAmount ?? 0) * item.quantity !==
+      item.totalPrice.centAmount
+    )
+      totalPriceForCartItem.discounted = {
+        discount: { id: "", typeId: "" },
+        value: item.totalPrice,
+      };
+
     return (
       <TableRow
         key={`Cart-Item-${item.name?.en}`}
@@ -70,16 +90,16 @@ function CartTable({ cartItems }: PropsType): ReactElement {
             count={item.quantity}
             className="product-details"
             setCount={null}
-            addItemToCart={() => addProductToActiveCart(item, 1)}
-            removeItemFromCart={() => removeProductFromActiveCart(item, 1)}
+            addItemToCart={() => addProductToActiveCart(item, 1, true)}
+            removeItemFromCart={() => removeProductFromActiveCart(item.id, 1)}
           />
         </TableCell>
         <TableCell sx={{ fontWeight: "bold" }}>
-          <ProductPrice price={{ id: "", key: "", value: item.totalPrice }} />
+          <ProductPrice price={totalPriceForCartItem} />
         </TableCell>
         <TableCell>
           <IconButton
-            onClick={() => removeProductFromActiveCart(item, item.quantity)}
+            onClick={() => removeProductFromActiveCart(item.id, item.quantity)}
           >
             <DeleteIcon />
           </IconButton>
@@ -88,13 +108,67 @@ function CartTable({ cartItems }: PropsType): ReactElement {
     );
   });
 
+  const totalPriceWithoutDiscount = cartItems
+    .map((item) => (item.price?.value.centAmount ?? 0) * item.quantity)
+    .reduce((sum, item) => sum + item, 0);
+
+  const totalPrice: Price = {
+    id: "",
+    key: "",
+    value: {
+      type: "",
+      currencyCode: "EUR",
+      centAmount: totalPriceWithoutDiscount,
+    },
+  };
+
+  if (totalCentAmout !== totalPriceWithoutDiscount)
+    totalPrice.discounted = {
+      discount: { id: "", typeId: "" },
+      value: { type: "", currencyCode: "EUR", centAmount: totalCentAmout },
+    };
+
   return (
     <TableContainer>
       <Table size="small">
         <TableHead>
           <TableRow>{tableHeadCells}</TableRow>
         </TableHead>
-        <TableBody>{tableItems}</TableBody>
+        <TableBody>
+          {tableItems}
+          <TableRow>
+            <TableCell
+              colSpan={3}
+              align="right"
+              sx={{ fontWeight: "bold", fontSize: "1.25rem" }}
+            >
+              Total:
+            </TableCell>
+            <TableCell>
+              <ProductPrice price={totalPrice} />
+            </TableCell>
+          </TableRow>
+          {totalPrice.discounted && (
+            <TableRow>
+              <TableCell colSpan={3} align="right">
+                Discount:
+              </TableCell>
+              <TableCell>
+                <ProductPrice
+                  price={{
+                    id: "",
+                    key: "",
+                    value: {
+                      type: "",
+                      currencyCode: "EUR",
+                      centAmount: totalPriceWithoutDiscount - totalCentAmout,
+                    },
+                  }}
+                />
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
       </Table>
     </TableContainer>
   );

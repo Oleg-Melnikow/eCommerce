@@ -5,7 +5,7 @@ import {
   CardActions,
   Typography,
 } from "@mui/material";
-import { ReactElement, useCallback, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Product } from "types/API/Product";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
@@ -49,7 +49,6 @@ function ProductCard({ product }: PropsType): ReactElement {
     <Card
       className="product-card"
       sx={{ width: 280, position: "relative", overflow: "visible" }}
-      onClick={onClickProduct}
     >
       {price?.discounted && (
         <div className="ribbon ribbon-top-right">

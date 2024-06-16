@@ -16,7 +16,11 @@ import {
   DeleteParamsType,
   PersonalDataType,
 } from "types/RegisterForm";
-import { Cart, LineItem, MyCartDraft } from "../types/API/Cart";
+import {
+  DiscountCode,
+  DiscountCodePagedQueryResponse,
+} from "types/API/Discount";
+import { ActionTypes, Cart, LineItem, MyCartDraft } from "../types/API/Cart";
 
 export default class API {
   protected static instance: API | null = null;
@@ -414,43 +418,81 @@ export default class API {
     }
   }
 
-  public async addProductToCart(
-    sku: string,
-    cart: Cart,
-    quantity: number
-  ): Promise<Cart> {
+  private async updateCart(cart: Cart, action: ActionTypes): Promise<Cart> {
     try {
-      const { id, version } = cart;
-      const action = { action: "addLineItem", sku, quantity };
-      const response = await this.apiInstance?.post(`/me/carts/${id}`, {
-        version,
+      const response = await this.apiInstance?.post(`/me/carts/${cart.id}`, {
+        version: cart.version,
         actions: [action],
       });
       if (response?.status === 200) return response.data as Cart;
-      throw new AxiosError("Failed to add item to cart");
+      throw new AxiosError("Failed to update cart");
     } catch (err) {
       const message = errorHandler(err);
       throw new Error(message);
     }
   }
 
-  public async removeProductFromCart(
-    product: LineItem,
+  public async addProductToCart(
+    sku: string,
     cart: Cart,
     quantity: number
   ): Promise<Cart> {
+    const action: ActionTypes = { action: "addLineItem", sku, quantity };
+    return this.updateCart(cart, action);
+  }
+
+  public async removeProductFromCart(
+    lineItemId: string,
+    cart: Cart,
+    quantity: number
+  ): Promise<Cart> {
+    const action: ActionTypes = {
+      action: "removeLineItem",
+      lineItemId,
+      quantity,
+    } as const;
+    return this.updateCart(cart, action);
+  }
+
+  public async addDiscountCodeToCart(cart: Cart, code: string): Promise<Cart> {
+    const action: ActionTypes = {
+      action: "addDiscountCode",
+      code,
+    };
+    return this.updateCart(cart, action);
+  }
+
+  public async getDiscountCodeById(id: string): Promise<DiscountCode> {
     try {
-      const action = {
-        action: "removeLineItem",
-        lineItemId: product.id,
-        quantity,
-      };
-      const response = await this.apiInstance?.post(`/me/carts/${cart.id}`, {
-        version: cart.version,
-        actions: [action],
-      });
-      if (response?.status === 200) return response.data as Cart;
-      throw new AxiosError("Failed to add item to cart");
+      const response = await this.apiInstance?.get(`/discount-codes/${id}`);
+      if (response?.status === 200) return response.data as DiscountCode;
+      throw new AxiosError("Error fething cart");
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
+  }
+
+  public async removeDiscountCodeFromCart(
+    id: string,
+    cart: Cart
+  ): Promise<Cart> {
+    const action: ActionTypes = {
+      action: "removeDiscountCode",
+      discountCode: {
+        typeId: "discount-code",
+        id,
+      },
+    };
+    return this.updateCart(cart, action);
+  }
+
+  public async getAllDiscountCodes(): Promise<DiscountCodePagedQueryResponse> {
+    try {
+      const response = await this.apiInstance?.get(`/discount-codes`);
+      if (response?.status === 200)
+        return response.data as DiscountCodePagedQueryResponse;
+      throw new AxiosError("Error fething cart");
     } catch (err) {
       const message = errorHandler(err);
       throw new Error(message);

@@ -3,15 +3,20 @@ import { NavLink } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
 import useAuth from "hooks/use-auth";
 import { LinkAccount, navLinksToAccount } from "helpers/static-data";
-import { Box } from "@mui/material";
+import { Badge, Box } from "@mui/material";
+import useCart from "hooks/use-cart";
 
 const NavLinksToAccount = memo(function NavLinksToAccount(): ReactElement {
   const { isAuthenticated, logoutAccount } = useAuth();
+  const { resetActiveCart, activeCart } = useCart();
   const [links, setLinks] = useState<LinkAccount[]>([]);
 
   const logOut = (): void => {
     logoutAccount();
+    resetActiveCart();
   };
+
+  const badgeContent = activeCart?.lineItems.length ?? 0;
 
   const filterLink = useCallback((): LinkAccount[] => {
     return navLinksToAccount.filter((link) => {
@@ -33,6 +38,7 @@ const NavLinksToAccount = memo(function NavLinksToAccount(): ReactElement {
           key={id}
           title={title}
           arrow
+          sx={{ mr: id === "basket" && badgeContent ? 1 : 0 }}
           slotProps={{
             popper: {
               modifiers: [
@@ -47,9 +53,14 @@ const NavLinksToAccount = memo(function NavLinksToAccount(): ReactElement {
           }}
         >
           {id !== "logout" ? (
-            <NavLink className={className} to={path}>
-              <img src={imgSrc} alt={title} />
-            </NavLink>
+            <Badge
+              color="success"
+              badgeContent={id === "basket" ? badgeContent : 0}
+            >
+              <NavLink className={className} to={path}>
+                <img src={imgSrc} alt={title} />
+              </NavLink>
+            </Badge>
           ) : (
             <Box className={className} onClick={logOut}>
               <img src={imgSrc} alt={title} />

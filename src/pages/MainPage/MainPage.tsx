@@ -1,9 +1,19 @@
 import "./MainPage.scss";
-import React, { ReactElement } from "react";
-import { Box, Typography } from "@mui/material";
+import React, { ReactElement, useEffect } from "react";
+import { Box, Typography, Button, Table, TableBody, TableCell, TableHead, TableRow,} from "@mui/material";
 import { DescriptionCare, StaticMainPage } from "helpers/static-mainData";
+import { NavLink } from "react-router-dom";
+        
+import useCart from "hooks/use-cart";
 
 function MainPage(): ReactElement {
+  const promoTableHeads = ["Code", "Description"];
+  const { allDiscountCodes, getAllDiscountCodes } = useCart();
+
+  useEffect(() => {
+    getAllDiscountCodes();
+  }, [getAllDiscountCodes]);
+
   return (
     <div className="main-page" style={{ marginTop: "30px" }}>
       <Box className="main-page__section-care">
@@ -35,6 +45,30 @@ function MainPage(): ReactElement {
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
       ></iframe> */}
+        
+      {!!allDiscountCodes.length && (
+        <Box>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                {promoTableHeads.map((head) => (
+                  <TableCell key={head} sx={{ fontWeight: "bold" }}>
+                    {head}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {allDiscountCodes.map((discountcode) => (
+                <TableRow key={discountcode.code}>
+                  <TableCell>{discountcode.code}</TableCell>
+                  <TableCell>{discountcode.description?.en}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
+      )}
     </div>
   );
 }

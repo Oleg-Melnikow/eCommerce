@@ -8,6 +8,7 @@ import useCart from "hooks/use-cart";
 import { LoadingButton } from "@mui/lab";
 import LoaderItem from "components/LoaderItem/LoaderItem";
 import "./ProductDetails.scss";
+import { LineItem } from "types/API/Cart";
 
 type PropsType = {
   product: ProductData;
@@ -17,8 +18,14 @@ function ProductDetails({ product }: PropsType): ReactElement {
   const { id, key, masterData } = product;
   const { getCategoriesCurrentProduct, currentProductCategories } =
     useProduct();
-  const { addProductToActiveCart, isLoading } = useCart();
+  const {
+    addProductToActiveCart,
+    isLoading,
+    activeCart,
+    removeProductFromActiveCart,
+  } = useCart();
   const [count, setCount] = useState(1);
+  const [productToCart, setProductToCart] = useState<LineItem | null>(null);
 
   const line = (
     <div
@@ -36,11 +43,23 @@ function ProductDetails({ product }: PropsType): ReactElement {
     addProductToActiveCart({ id, key, ...masterData.current }, count);
   };
 
+  const removeToCart = (): void => {
+    if (productToCart) {
+      removeProductFromActiveCart(productToCart.id, productToCart.quantity);
+    }
+  };
+
   useEffect(() => {
     product?.masterData.current.categories.forEach(async (category) => {
       await getCategoriesCurrentProduct(category.id);
     });
   }, [getCategoriesCurrentProduct, product?.masterData]);
+
+  useEffect(() => {
+    const productCart =
+      activeCart?.lineItems.find((item) => item.productId === id) || null;
+    setProductToCart(productCart);
+  }, [activeCart, id]);
 
   const { name, masterVariant, searchKeywords } = masterData.current;
   const { sku, prices } = masterVariant;
@@ -51,25 +70,44 @@ function ProductDetails({ product }: PropsType): ReactElement {
     searchKeywords.en?.map((keyword) => keyword.text) ?? [],
   ];
 
+  let itemInCart: LineItem | null = null;
+  activeCart?.lineItems.some((item) => {
+    if (id === item.productId) {
+      itemInCart = item;
+      return true;
+    }
+    return false;
+  });
+
+  const quantityInCart = itemInCart ? (itemInCart as LineItem).quantity : 0;
+
+  console.log(quantityInCart);
+
   return (
     <div className="product-details">
       {isLoading && <LoaderItem />}
       <h3 className="product-details__title">{title}</h3>
       <ProductPrice price={price} /> {line}
-      <ProductDetailsRadio className="product-details" />
       <div className="product-details__btn-wrap">
         <ProductDetailsCounter
           className="product-details"
           count={count}
           setCount={setCount}
         />
-        <button
-          type="button"
-          className="product-details__btn product-details__btn--buy"
-        >
-          Buy Now
-        </button>
+        {!!productToCart && (
+          <LoadingButton
+            sx={{ width: "170px" }}
+            loading={isLoading}
+            variant="contained"
+            type="button"
+            color="error"
+            onClick={removeToCart}
+          >
+            Remove to Cart
+          </LoadingButton>
+        )}
         <LoadingButton
+          disabled={!!productToCart}
           loading={isLoading}
           type="button"
           className="product-details__btn product-details__btn--add"
@@ -77,6 +115,11 @@ function ProductDetails({ product }: PropsType): ReactElement {
         >
           Add to Cart
         </LoadingButton>
+      </div>
+      <div className="product-details__quantity-in-cart">
+        {quantityInCart ? (
+          <span>{`${quantityInCart} pieces have already been added to the cart`}</span>
+        ) : null}
       </div>
       <div className="product-details__info-wrap">
         <p className="product-details__info">

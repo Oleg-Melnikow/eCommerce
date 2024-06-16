@@ -3,17 +3,21 @@ import { ReactElement, useEffect } from "react";
 import useCart from "hooks/use-cart";
 import CartTable from "components/CartTable/CartTable";
 import LoaderItem from "components/LoaderItem/LoaderItem";
+import InputPromo from "components/CartPromoInput/CartPromoInput";
+import MessagePromo from "components/CartPromoMessage/CartPromoMessage";
 import { Paper } from "@mui/material";
 import { NavLink } from "react-router-dom";
-import cartImg from "../../assets/empty-cart.png";
+import cartImg from "assets/empty-cart.png";
 
 function BasketPage(): ReactElement {
-  const { activeCart, fetchActiveCart, isLoading } = useCart();
+  const { activeCart, fetchActiveCart, isLoading, activeDiscountCode } =
+    useCart();
+
   const cartItems = activeCart?.lineItems ?? [];
 
   useEffect(() => {
-    fetchActiveCart();
-  }, [fetchActiveCart]);
+    fetchActiveCart(true);
+  }, []);
 
   const emptyCartMessage = (
     <Paper elevation={3} className="empty-cart">
@@ -32,10 +36,20 @@ function BasketPage(): ReactElement {
   );
 
   return (
-    <div className="basket-page" style={{ marginTop: "50px" }}>
+    <div className="basket-page">
       {isLoading && <LoaderItem />}
       {cartItems.length ? (
-        <CartTable cartItems={cartItems} />
+        <>
+          {activeDiscountCode ? (
+            <MessagePromo discountCode={activeDiscountCode} />
+          ) : (
+            <InputPromo />
+          )}
+          <CartTable
+            cartItems={cartItems}
+            totalCentAmout={activeCart?.totalPrice.centAmount ?? 0}
+          />
+        </>
       ) : (
         emptyCartMessage
       )}

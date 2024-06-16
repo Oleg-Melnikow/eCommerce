@@ -51,7 +51,7 @@ interface ItemShippingTarget {
 
 interface Cart {
   version: number;
-  totalPrice: TypedMoney;
+  totalPrice: CentPrecisionMoney;
   taxedPrice?: TaxedPrice;
   taxRoundingMode: RoundingMode;
   taxMode: TaxMode;
@@ -452,13 +452,15 @@ interface DeliveryItem {
 type ShippingMethodState = string;
 
 interface DiscountedPrice {
-  value: Money;
+  value: CentPrecisionMoney;
   discount?: ProductDiscountReference;
 }
 
-interface Money {
+interface CentPrecisionMoney {
   currencyCode: CurrencyCode;
   centAmount: number;
+  fractionDigits: number;
+  type: string;
 }
 
 interface ProductDiscountReference {
@@ -466,4 +468,40 @@ interface ProductDiscountReference {
   obj?: Record<string, string>;
 }
 
-export { MyCartDraft, Cart, LineItem };
+interface AddLineItemAction {
+  action: "addLineItem";
+  key?: string;
+  productId?: string;
+  variantId?: number;
+  sku?: string;
+  quantity: number;
+  addedAt?: Date;
+}
+
+interface RemoveLineItemAction {
+  action: "removeLineItem";
+  lineItemId?: string;
+  lineItemKey?: string;
+  quantity?: number;
+}
+
+interface AddDiscountCodeAction {
+  action: "addDiscountCode";
+  code: string;
+}
+
+interface RemoveDiscountCodeAction {
+  action: "removeDiscountCode";
+  discountCode: {
+    typeId: "discount-code";
+    id: string;
+  };
+}
+
+type ActionTypes =
+  | AddLineItemAction
+  | RemoveLineItemAction
+  | AddDiscountCodeAction
+  | RemoveDiscountCodeAction;
+
+export { MyCartDraft, Cart, LineItem, ActionTypes };
