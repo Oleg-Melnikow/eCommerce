@@ -442,13 +442,13 @@ export default class API {
   }
 
   public async removeProductFromCart(
-    product: LineItem,
+    lineItemId: string,
     cart: Cart,
     quantity: number
   ): Promise<Cart> {
     const action: ActionTypes = {
       action: "removeLineItem",
-      lineItemId: product.id,
+      lineItemId,
       quantity,
     } as const;
     return this.updateCart(cart, action);

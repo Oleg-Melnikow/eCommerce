@@ -91,7 +91,7 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
             className="product-details"
             setCount={null}
             addItemToCart={() => addProductToActiveCart(item, 1, true)}
-            removeItemFromCart={() => removeProductFromActiveCart(item, 1)}
+            removeItemFromCart={() => removeProductFromActiveCart(item.id, 1)}
           />
         </TableCell>
         <TableCell sx={{ fontWeight: "bold" }}>
@@ -99,7 +99,7 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
         </TableCell>
         <TableCell>
           <IconButton
-            onClick={() => removeProductFromActiveCart(item, item.quantity)}
+            onClick={() => removeProductFromActiveCart(item.id, item.quantity)}
           >
             <DeleteIcon />
           </IconButton>

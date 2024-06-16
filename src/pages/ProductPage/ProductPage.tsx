@@ -6,9 +6,11 @@ import ProductDescription from "components/ProductDescription/ProductDescription
 import useProduct from "hooks/use-product";
 import { useParams } from "react-router-dom";
 import LoaderItem from "components/LoaderItem/LoaderItem";
+import useCart from "hooks/use-cart";
 
 function ProductPage(): ReactElement {
   const { currentProduct, chooseProduct, isLoading } = useProduct();
+  const { isLoading: isLoadingCart } = useCart();
   const { id } = useParams();
   useEffect(() => {
     if (id) {
@@ -18,7 +20,7 @@ function ProductPage(): ReactElement {
 
   return (
     <div className="product-page">
-      {isLoading && <LoaderItem />}
+      {(isLoading || isLoadingCart) && <LoaderItem />}
       {currentProduct && (
         <>
           <Slider product={currentProduct} />

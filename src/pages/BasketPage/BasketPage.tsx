@@ -7,26 +7,17 @@ import InputPromo from "components/CartPromoInput/CartPromoInput";
 import MessagePromo from "components/CartPromoMessage/CartPromoMessage";
 import { Paper } from "@mui/material";
 import { NavLink } from "react-router-dom";
-import cartImg from "../../assets/empty-cart.png";
+import cartImg from "assets/empty-cart.png";
 
 function BasketPage(): ReactElement {
-  const {
-    activeCart,
-    fetchActiveCart,
-    isLoading,
-    fetchDiscountCodeFromCart,
-    activeDiscountCode,
-  } = useCart();
+  const { activeCart, fetchActiveCart, isLoading, activeDiscountCode } =
+    useCart();
 
   const cartItems = activeCart?.lineItems ?? [];
 
   useEffect(() => {
-    fetchActiveCart();
-  }, [fetchActiveCart]);
-
-  useEffect(() => {
-    fetchDiscountCodeFromCart();
-  }, [activeCart]);
+    fetchActiveCart(true);
+  }, []);
 
   const emptyCartMessage = (
     <Paper elevation={3} className="empty-cart">
@@ -45,7 +36,7 @@ function BasketPage(): ReactElement {
   );
 
   return (
-    <div className="basket-page" style={{ marginTop: "50px" }}>
+    <div className="basket-page">
       {isLoading && <LoaderItem />}
       {cartItems.length ? (
         <>

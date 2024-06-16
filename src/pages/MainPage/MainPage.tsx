@@ -41,27 +41,29 @@ function MainPage(): ReactElement {
           );
         })}
       </Box>
-      <Box>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              {promoTableHeads.map((head) => (
-                <TableCell key={head} sx={{ fontWeight: "bold" }}>
-                  {head}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {allDiscountCodes.map((discountcode) => (
-              <TableRow key={discountcode.code}>
-                <TableCell>{discountcode.code}</TableCell>
-                <TableCell>{discountcode.description?.en}</TableCell>
+      {!!allDiscountCodes.length && (
+        <Box>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                {promoTableHeads.map((head) => (
+                  <TableCell key={head} sx={{ fontWeight: "bold" }}>
+                    {head}
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Box>
+            </TableHead>
+            <TableBody>
+              {allDiscountCodes.map((discountcode) => (
+                <TableRow key={discountcode.code}>
+                  <TableCell>{discountcode.code}</TableCell>
+                  <TableCell>{discountcode.description?.en}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
+      )}
     </div>
   );
 }

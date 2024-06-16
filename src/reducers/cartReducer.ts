@@ -85,16 +85,17 @@ export interface CartContextValue extends CartStateType {
     count: number,
     noToast?: boolean
   ) => Promise<void>;
-  fetchActiveCart: () => Promise<void>;
+  fetchActiveCart: (isBacket?: boolean) => Promise<void>;
   removeProductFromActiveCart: (
-    product: LineItem,
+    productId: string,
     quantity: number
   ) => Promise<void>;
   addDiscountCode: (code: string) => Promise<void>;
-  fetchDiscountCodeFromCart: () => Promise<void>;
+  fetchDiscountCodeFromCart: (activeCart?: Cart) => Promise<void>;
   removeDiscountCode: () => Promise<void>;
   getAllDiscountCodes: () => Promise<void>;
   resetActiveCart: () => Promise<void>;
+  initializeCart: () => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextValue>({
@@ -107,4 +108,5 @@ export const CartContext = createContext<CartContextValue>({
   removeDiscountCode: () => Promise.resolve(),
   getAllDiscountCodes: () => Promise.resolve(),
   resetActiveCart: () => Promise.resolve(),
+  initializeCart: () => Promise.resolve(),
 });

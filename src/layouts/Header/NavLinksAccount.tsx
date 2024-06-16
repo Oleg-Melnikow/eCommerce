@@ -38,6 +38,7 @@ const NavLinksToAccount = memo(function NavLinksToAccount(): ReactElement {
           key={id}
           title={title}
           arrow
+          sx={{ mr: id === "basket" && badgeContent ? 1 : 0 }}
           slotProps={{
             popper: {
               modifiers: [
