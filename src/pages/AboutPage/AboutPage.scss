@@ -1,7 +1,14 @@
 .about-page__description {
-  margin: 20px 0px 0px;
+  margin-top: 10px;
   font-family: "Noto Sans", sans-serif;
   font-size: 15px;
+}
+.about-page__header {
+  max-width: 550px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 25px 0;
 }
 .wrapper__team-info {
   .MuiGrid-item {

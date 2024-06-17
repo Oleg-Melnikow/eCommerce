@@ -22,10 +22,14 @@ export const teamData = [
   {
     name: "Oleg",
     role: "TeamLeader",
-    about:
-      "Has extensive knowledge in programming, and he also has experience in commercial application development, so we always turn to him for all questions about code structure, correct code writing, working with the framework and for other help. He wrote some of the most complex parts of the code, including tests, various react contexts, validation, etc.",
-    description:
-      "Has extensive knowledge in programming, and he also has experience in commercial application development, so we always turn to him for all questions about code structure, correct code writing, working with the framework and for other help. He wrote some of the most complex parts of the code, including tests, various react contexts, validation, etc.",
+    about: `I have a higher education in the technical sphere.
+    I got it at the BSUIR. Also I already have working experience in the IT sphere as a Frontend developer.
+    I have personal projects and worked with such technologies as JavaScript, React, TypeScript, Sass, Redux and many other libraries.
+    In my projects, I usually use jest to test functionality and make unit tests.
+    In my spare time, I like watch different films, read books, ride a bicycle and so on.`,
+    description: `My role in the final task is providing routing between different pages of our application and also creating the Catalog,
+    Login and Registration Pages and write Unit tests. Also I process management, work planning,
+    team building, quality control, project assembly, work with API.`,
     photo: `${Oleg}`,
     gitHubLink: "https://github.com/Oleg-Melnikow",
   },
