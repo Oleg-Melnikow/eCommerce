@@ -28,7 +28,7 @@ const NavLinksToAccount = memo(function NavLinksToAccount(): ReactElement {
 
   useEffect(() => {
     setLinks(filterLink());
-    setTimeout(initializeCart, 200);
+    initializeCart();
   }, [isAuthenticated, filterLink]);
 
   return (

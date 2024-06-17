@@ -63,7 +63,7 @@ export default class API {
   public async createAPI(customerData?: MyCustomerDraft): Promise<void> {
     const token = localStorage.getItem("ACCESS_TOKEN");
     if (!token || customerData) {
-      this.getToken(customerData).then(() => this.createAPI());
+      await this.getToken(customerData).then(() => this.createAPI());
     } else {
       // const { tokenReceiving } = this.authContext;
       // tokenReceiving();
