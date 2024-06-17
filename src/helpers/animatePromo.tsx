@@ -15,9 +15,9 @@ export function MovingPromoCode({
   useEffect(() => {
     let animationFrameId: number | undefined;
     let containerWidth = 0;
-    let textWidth = 0;
+    const textWidth = 0;
 
-    const animate = () => {
+    const animate = (): void => {
       if (containerRef.current) {
         containerWidth = containerRef.current.clientWidth;
 
@@ -33,7 +33,7 @@ export function MovingPromoCode({
 
     animationFrameId = requestAnimationFrame(animate);
 
-    return () => {
+    return (): void => {
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
