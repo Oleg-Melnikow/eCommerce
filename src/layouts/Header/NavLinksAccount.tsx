@@ -8,12 +8,11 @@ import useCart from "hooks/use-cart";
 
 const NavLinksToAccount = memo(function NavLinksToAccount(): ReactElement {
   const { isAuthenticated, logoutAccount } = useAuth();
-  const { resetActiveCart, activeCart } = useCart();
+  const { fetchActiveCart, activeCart } = useCart();
   const [links, setLinks] = useState<LinkAccount[]>([]);
 
   const logOut = (): void => {
     logoutAccount();
-    resetActiveCart();
   };
 
   const badgeContent = activeCart?.lineItems.length ?? 0;
@@ -29,6 +28,7 @@ const NavLinksToAccount = memo(function NavLinksToAccount(): ReactElement {
 
   useEffect(() => {
     setLinks(filterLink());
+    fetchActiveCart();
   }, [isAuthenticated, filterLink]);
 
   return (
