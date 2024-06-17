@@ -396,8 +396,8 @@ export default class API {
   public async getCart(): Promise<Cart> {
     try {
       const response = await this.apiInstance?.get(`/me/active-cart`);
-      if (response?.status === 200) return response.data as Cart;
-      throw new AxiosError("Error fething cart");
+      return response?.data as Cart;
+      // throw new AxiosError("Error fething cart");
     } catch (err) {
       if (err instanceof AxiosError && err.response?.status === 404)
         return this.createCart();
@@ -490,9 +490,10 @@ export default class API {
   public async getAllDiscountCodes(): Promise<DiscountCodePagedQueryResponse> {
     try {
       const response = await this.apiInstance?.get(`/discount-codes`);
-      if (response?.status === 200)
-        return response.data as DiscountCodePagedQueryResponse;
-      throw new AxiosError("Error fething cart");
+
+      return response?.data as DiscountCodePagedQueryResponse;
+      // console.log("getAllDiscountCodes");
+      // throw new AxiosError("Error fething cart");
     } catch (err) {
       const message = errorHandler(err);
       throw new Error(message);

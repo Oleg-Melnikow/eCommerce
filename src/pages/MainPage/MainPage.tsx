@@ -1,13 +1,11 @@
 import "./MainPage.scss";
-import React, { ReactElement, useEffect } from "react";
-
+import { ReactElement } from "react";
 import {
   Description,
   StaticMPCare,
   StaticMPGarden,
 } from "helpers/static-mainData";
 import { NavLink } from "react-router-dom";
-
 import {
   Box,
   Typography,
@@ -18,18 +16,13 @@ import {
   TableRow,
 } from "@mui/material";
 import useCart from "hooks/use-cart";
-
 import Footer from "../../layouts/Footer/Footer";
 import WELCOMEIMG from "../../assets/MainBack.png";
 import PICTURE from "../../assets/SectPicture.png";
 
 function MainPage(): ReactElement {
   const promoTableHeads = ["Code", "Description"];
-  const { allDiscountCodes, getAllDiscountCodes } = useCart();
-
-  useEffect(() => {
-    getAllDiscountCodes();
-  }, [getAllDiscountCodes]);
+  const { allDiscountCodes } = useCart();
 
   return (
     <div className="main-page">
