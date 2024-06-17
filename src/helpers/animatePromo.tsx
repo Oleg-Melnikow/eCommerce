@@ -15,17 +15,18 @@ export function MovingPromoCode({
   useEffect(() => {
     let animationFrameId: number | undefined;
     let containerWidth = 0;
-    const textWidth = 0;
+    let textWidth = 0;
 
     const animate = (): void => {
       if (containerRef.current) {
         containerWidth = containerRef.current.clientWidth;
+        textWidth = containerRef.current.scrollWidth;
 
         setPosition((prevPosition) => {
           if (prevPosition >= containerWidth) {
             return -textWidth;
           }
-          return prevPosition + 0.5;
+          return prevPosition + 1;
         });
       }
       animationFrameId = requestAnimationFrame(animate);
@@ -45,6 +46,7 @@ export function MovingPromoCode({
       ref={containerRef}
       className="main-page__animate_item"
       style={{
+        overflow: "hidden",
         whiteSpace: "nowrap",
         position: "relative",
         left: `${position}px`,
