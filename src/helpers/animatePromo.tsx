@@ -47,7 +47,7 @@ export function MovingPromoCode({
       style={{
         whiteSpace: "nowrap",
         position: "relative",
-        right: `${position}px`,
+        left: `${position}px`,
         display: "inline-block",
       }}
     >
