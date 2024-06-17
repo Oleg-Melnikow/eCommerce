@@ -9,6 +9,7 @@ import { LoadingButton } from "@mui/lab";
 import LoaderItem from "components/LoaderItem/LoaderItem";
 import "./ProductDetails.scss";
 import { LineItem } from "types/API/Cart";
+import { NavLink } from "react-router-dom";
 
 type PropsType = {
   product: ProductData;
@@ -107,7 +108,10 @@ function ProductDetails({ product }: PropsType): ReactElement {
       </div>
       <div className="product-details__quantity-in-cart">
         {productToCart ? (
-          <span>{`${productToCart.quantity} pieces have already been added to the cart`}</span>
+          <>
+            <p>{`${productToCart.quantity} pieces have already been added to the cart`}</p>
+            <NavLink to="/basket">Go to the Cart</NavLink>
+          </>
         ) : null}
       </div>
       <div className="product-details__info-wrap">
