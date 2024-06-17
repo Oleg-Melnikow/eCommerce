@@ -27,19 +27,26 @@ function InputPromo(): ReactElement {
           name="code"
           control={control}
           render={({ field: { onChange, value, name } }) => (
-            <OutlinedInput
-              name={name}
-              size="small"
-              value={value?.toUpperCase() || ""}
-              type="text"
-              onChange={onChange}
-              color="success"
-            />
+            <>
+              <OutlinedInput
+                name={name}
+                size="small"
+                value={value?.toUpperCase() || ""}
+                type="text"
+                onChange={onChange}
+                color="success"
+              />
+              <Button
+                variant="contained"
+                color="success"
+                type="submit"
+                disabled={!value}
+              >
+                APPLY
+              </Button>
+            </>
           )}
         />
-        <Button variant="contained" color="success" type="submit">
-          APPLY
-        </Button>
       </Box>
     </form>
   );

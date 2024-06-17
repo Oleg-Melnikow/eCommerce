@@ -498,4 +498,17 @@ export default class API {
       throw new Error(message);
     }
   }
+
+  public async deleteCart(cart: Cart): Promise<Cart> {
+    try {
+      const response = await this.apiInstance?.delete(
+        `/me/carts/${cart.id}?version=${cart.version}`
+      );
+      if (response?.status === 200) return response.data as Cart;
+      throw new AxiosError("Error deleting the cart");
+    } catch (err) {
+      const message = errorHandler(err);
+      throw new Error(message);
+    }
+  }
 }
