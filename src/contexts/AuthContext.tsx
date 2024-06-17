@@ -216,14 +216,12 @@ export function AuthProvider(props: AuthProviderProps): ReactElement {
     ["ACCESS_TOKEN", "userProfile"].forEach((item) => {
       localStorage.removeItem(item);
     });
-    setTimeout(() => {
-      API.getInstance()
-        ?.createAPI()
-        .then(() => {
-          dispatch(initialize(false, null));
-          navigate("/login");
-        });
-    }, 0);
+    API.getInstance()
+      ?.createAPI()
+      .then(() => {
+        dispatch(initialize(false, null));
+        navigate("/login");
+      });
   }, [navigate]);
 
   const tokenReceiving = useCallback(() => {

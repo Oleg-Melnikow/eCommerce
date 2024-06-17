@@ -8,7 +8,7 @@ import useCart from "hooks/use-cart";
 
 const NavLinksToAccount = memo(function NavLinksToAccount(): ReactElement {
   const { isAuthenticated, logoutAccount } = useAuth();
-  const { fetchActiveCart, activeCart } = useCart();
+  const { initializeCart, activeCart } = useCart();
   const [links, setLinks] = useState<LinkAccount[]>([]);
 
   const logOut = (): void => {
@@ -28,7 +28,7 @@ const NavLinksToAccount = memo(function NavLinksToAccount(): ReactElement {
 
   useEffect(() => {
     setLinks(filterLink());
-    fetchActiveCart();
+    setTimeout(initializeCart, 200);
   }, [isAuthenticated, filterLink]);
 
   return (
