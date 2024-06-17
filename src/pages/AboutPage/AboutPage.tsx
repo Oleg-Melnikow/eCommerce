@@ -13,8 +13,13 @@ import Footer from "../../layouts/Footer/Footer";
 function AboutPage(): ReactElement {
   return (
     <Box className="about-page">
-      <p className="about-page__description">{Description.DESCRIPTION}</p>
-      <p className="about-page__description">{Description.OURTEAM}</p>
+      <Box className="about-page__header">
+        <Typography sx={{ textAlign: "center" }} variant="h5">
+          Our Team
+        </Typography>
+        <p className="about-page__description">{Description.DESCRIPTION}</p>
+        <p className="about-page__description">{Description.OURTEAM}</p>
+      </Box>
 
       <Box className="wrapper__team-info" sx={{ flexGrow: 1 }}>
         <Grid
