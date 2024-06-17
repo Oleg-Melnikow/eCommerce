@@ -8,18 +8,45 @@
 .main-page {
   @include DisplayFlexColumn;
 
+  .main-page__animate {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 0px;
+    width: 100%;
+    overflow: hidden;
+
+    @media (max-width: 768px) {
+      padding: 10px 0px 0px;
+    }
+
+    .main-page__animate_item {
+      padding: 0px;
+      width: 570px;
+      font-size: 15px;
+
+      @media (max-width: 768px) {
+        font-size: 13px;
+      }
+
+      @media (max-width: 580px) {
+        font-size: 11px;
+      }
+    }
+  }
+
   .main-page__section-welcome {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 50px 0px 0px;
+    margin: 10px 0px 0px;
     padding-left: 40px;
     width: 100%;
     background-color: rgba(245, 245, 245, 0.502);
 
     @media (max-width: 580px) {
       flex-direction: column;
-      margin: 20px 0px 0px;
+      margin: 10px 0px 0px;
       padding: 10px 10px 0px;
     }
 
