@@ -40,6 +40,7 @@ function Footer(): ReactElement {
           </Box>
         ))}
       </Box>
+
       <Box className="footer__social">
         <Box className="social__media">
           <Typography className="social__media_title">Social Media</Typography>

@@ -1,10 +1,27 @@
 import "./MainPage.scss";
 import React, { ReactElement, useEffect } from "react";
-import { Box, Typography, Button, Table, TableBody, TableCell, TableHead, TableRow,} from "@mui/material";
-import { DescriptionCare, StaticMainPage } from "helpers/static-mainData";
+
+import {
+  Description,
+  StaticMPCare,
+  StaticMPGarden,
+} from "helpers/static-mainData";
 import { NavLink } from "react-router-dom";
-        
+
+import {
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import useCart from "hooks/use-cart";
+
+import Footer from "../../layouts/Footer/Footer";
+import WELCOMEIMG from "../../assets/MainBack.png";
+import PICTURE from "../../assets/SectPicture.png";
 
 function MainPage(): ReactElement {
   const promoTableHeads = ["Code", "Description"];
@@ -15,18 +32,37 @@ function MainPage(): ReactElement {
   }, [getAllDiscountCodes]);
 
   return (
-    <div className="main-page" style={{ marginTop: "30px" }}>
+    <div className="main-page">
+      <Box className="main-page__section-welcome">
+        <Box className="main-page__section-welcome_content">
+          <span className="section-welcome__greet">{Description.WELCOME}</span>
+          <h2 className="section-welcome__title">
+            {Description.BETTERPLANET}
+            <span>Planet</span>
+          </h2>
+          <p className="section-welcome__desc">{Description.ONLINESHOP}</p>
+
+          <NavLink className="section-welcome__button" to="/catalog">
+            Catalog Now
+          </NavLink>
+        </Box>
+
+        <Box className="main-page__section-welcome_inner">
+          <img src={WELCOMEIMG} alt="SomePlant" />
+        </Box>
+      </Box>
+
       <Box className="main-page__section-care">
         <Typography className="main-page__section-care_title">
           Steps To Take Care Of Your <span>Plants</span>
         </Typography>
         <Typography className="main-page__section-care_desc">
-          {DescriptionCare.TAKECARE}
+          {Description.TAKECARE}
         </Typography>
       </Box>
 
       <Box className="section-care__plant">
-        {StaticMainPage.map((item) => (
+        {StaticMPCare.map((item) => (
           <Box className="section-care__plant_item" key={item.id}>
             <img className="plant__item_img" src={item.icon} alt={item.alt} />
             <Typography className="plant__item_title">{item.title}</Typography>
@@ -34,6 +70,22 @@ function MainPage(): ReactElement {
           </Box>
         ))}
       </Box>
+
+      <Box className="main-page__photo">
+        <img src={PICTURE} alt="PlantPicture" />
+      </Box>
+
+      <Box className="section-care__garden">
+        {StaticMPGarden.map((item) => (
+          <Box className="section-care__garden_item" key={item.id}>
+            <img className="garden__item_img" src={item.icon} alt={item.alt} />
+            <Typography className="garden__item_title">{item.title}</Typography>
+            <Typography className="garden__item_desc">{item.text}</Typography>
+          </Box>
+        ))}
+      </Box>
+
+      <Footer />
 
       {/* <iframe
         width="100%"
@@ -45,7 +97,7 @@ function MainPage(): ReactElement {
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
       ></iframe> */}
-        
+
       {!!allDiscountCodes.length && (
         <Box>
           <Table size="small">
