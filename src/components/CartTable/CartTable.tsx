@@ -128,7 +128,9 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
               className="cart-table"
               setCount={null}
               addItemToCart={() => addProductToActiveCart(item, 1, true)}
-              removeItemFromCart={() => removeProductFromActiveCart(item.id, 1)}
+              removeItemFromCart={() =>
+                removeProductFromActiveCart(item.id, 1, true)
+              }
             />
             {windowWidth <= 600 && totalPriceItem}
           </Box>
