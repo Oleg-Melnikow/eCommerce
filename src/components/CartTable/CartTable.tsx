@@ -17,6 +17,7 @@ import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
 import useCart from "hooks/use-cart";
 import { Price } from "types/API/Product";
+import { useNavigate, useNavigation } from "react-router-dom";
 
 type PropsType = {
   cartItems: LineItem[];
@@ -27,6 +28,8 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
   const { addProductToActiveCart, removeProductFromActiveCart } = useCart();
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = (): void => {
@@ -40,7 +43,7 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
     };
   }, []);
 
-  const tableHeadCells = ["", "Products", "Price", "Quantity", "Total", ""].map(
+  const tableHeadCells = ["", "Products", "Price", "Quantity", "Total"].map(
     (item) => (
       <TableCell
         key={`Cart-Table-Head-Coloumn-${item}`}
@@ -97,7 +100,10 @@ function CartTable({ cartItems, totalCentAmout }: PropsType): ReactElement {
         key={`Cart-Item-${item.name?.en}`}
         className="cart-table__row-body"
       >
-        <TableCell className="cart-table__cell cart-table__thumb-wrap">
+        <TableCell
+          className="cart-table__cell cart-table__thumb-wrap"
+          onClick={() => navigate(`/product/${item.productId}`)}
+        >
           {item.variant?.images && (
             <img
               className="cart-table__thumb"

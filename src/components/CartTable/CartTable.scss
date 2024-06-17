@@ -85,8 +85,10 @@
   }
 
   & &__thumb-wrap {
-    @media screen and (max-width: 500px) {
-      width: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+    &:hover {
+      scale: 1.1;
     }
   }
 }
