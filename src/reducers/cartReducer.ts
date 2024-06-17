@@ -88,7 +88,8 @@ export interface CartContextValue extends CartStateType {
   fetchActiveCart: (isBacket?: boolean) => Promise<void>;
   removeProductFromActiveCart: (
     productId: string,
-    quantity: number
+    quantity: number,
+    noToast?: boolean
   ) => Promise<void>;
   addDiscountCode: (code: string) => Promise<void>;
   fetchDiscountCodeFromCart: (activeCart?: Cart) => Promise<void>;

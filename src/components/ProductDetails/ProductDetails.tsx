@@ -8,6 +8,8 @@ import { LoadingButton } from "@mui/lab";
 import LoaderItem from "components/LoaderItem/LoaderItem";
 import "./ProductDetails.scss";
 import { LineItem } from "types/API/Cart";
+import { NavLink } from "react-router-dom";
+import { Button } from "@mui/material";
 
 type PropsType = {
   product: ProductData;
@@ -86,11 +88,13 @@ function ProductDetails({ product }: PropsType): ReactElement {
       <h3 className="product-details__title">{title}</h3>
       <ProductPrice price={price} /> {line}
       <div className="product-details__btn-wrap">
-        <ProductDetailsCounter
-          className="product-details"
-          count={count}
-          setCount={setCount}
-        />
+        {!productToCart && (
+          <ProductDetailsCounter
+            className="product-details"
+            count={count}
+            setCount={setCount}
+          />
+        )}
         {!!productToCart && (
           <LoadingButton
             sx={{ width: "170px" }}
@@ -114,8 +118,15 @@ function ProductDetails({ product }: PropsType): ReactElement {
         </LoadingButton>
       </div>
       <div className="product-details__quantity-in-cart">
-        {quantityInCart ? (
-          <span>{`${quantityInCart} pieces have already been added to the cart`}</span>
+        {productToCart ? (
+          <>
+            <p>{`${productToCart.quantity} pieces have already been added to the cart`}</p>
+            <NavLink to="/basket">
+              <Button sx={{ mt: 1 }} color="success" variant="outlined">
+                Go to the Cart
+              </Button>
+            </NavLink>
+          </>
         ) : null}
       </div>
       <div className="product-details__info-wrap">

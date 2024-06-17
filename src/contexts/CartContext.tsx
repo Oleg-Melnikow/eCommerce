@@ -118,7 +118,11 @@ export function CartProvider(props: ProviderProps): ReactElement {
   );
 
   const removeProductFromActiveCart = useCallback(
-    async (productId: string, quantity: number): Promise<void> => {
+    async (
+      productId: string,
+      quantity: number,
+      noToast = false
+    ): Promise<void> => {
       try {
         const { activeCart } = state;
         dispatch(loading(true));
@@ -129,10 +133,11 @@ export function CartProvider(props: ProviderProps): ReactElement {
             quantity
           );
           if (cart) dispatch(setActiveCart(cart));
-          toast.success(
-            "The product has been successfully removed to the shopping cart.",
-            toastOptions
-          );
+          if (!noToast)
+            toast.success(
+              "The product has been successfully removed to the shopping cart.",
+              toastOptions
+            );
         }
       } catch (err) {
         if (err instanceof Error) toast.error(err.message, toastOptions);
