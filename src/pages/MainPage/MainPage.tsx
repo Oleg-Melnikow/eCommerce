@@ -25,15 +25,17 @@ function MainPage(): ReactElement {
 
   return (
     <div className="main-page">
-      <Box className="main-page__animate">
-        {allDiscountCodes.map((discountcode) => (
-          <MovingPromoCode
-            key={discountcode.code}
-            promoCode={discountcode.code}
-            description={discountcode.description?.en}
-          />
-        ))}
-      </Box>
+      {allDiscountCodes.length > 0 && (
+        <Box className="main-page__animate">
+          {allDiscountCodes.map((discountcode) => (
+            <MovingPromoCode
+              key={discountcode.code}
+              promoCode={discountcode.code}
+              description={discountcode.description?.en}
+            />
+          ))}
+        </Box>
+      )}
 
       <Box className="main-page__section-welcome">
         <Box className="main-page__section-welcome_content">
