@@ -8,23 +8,15 @@ import {
 } from "helpers/static-mainData";
 import { NavLink } from "react-router-dom";
 
-import {
-  Box,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import useCart from "hooks/use-cart";
+import { MovingPromoCode } from "../../helpers/animatePromo";
 
 import Footer from "../../layouts/Footer/Footer";
 import WELCOMEIMG from "../../assets/MainBack.png";
 import PICTURE from "../../assets/SectPicture.png";
 
 function MainPage(): ReactElement {
-  const promoTableHeads = ["Code", "Description"];
   const { allDiscountCodes, getAllDiscountCodes } = useCart();
 
   useEffect(() => {
@@ -33,6 +25,18 @@ function MainPage(): ReactElement {
 
   return (
     <div className="main-page">
+      {allDiscountCodes.length > 0 && (
+        <Box className="main-page__animate">
+          {allDiscountCodes.map((discountcode) => (
+            <MovingPromoCode
+              key={discountcode.code}
+              promoCode={discountcode.code}
+              description={discountcode.description?.en}
+            />
+          ))}
+        </Box>
+      )}
+
       <Box className="main-page__section-welcome">
         <Box className="main-page__section-welcome_content">
           <span className="section-welcome__greet">{Description.WELCOME}</span>
@@ -97,30 +101,6 @@ function MainPage(): ReactElement {
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
       ></iframe> */}
-
-      {!!allDiscountCodes.length && (
-        <Box>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                {promoTableHeads.map((head) => (
-                  <TableCell key={head} sx={{ fontWeight: "bold" }}>
-                    {head}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {allDiscountCodes.map((discountcode) => (
-                <TableRow key={discountcode.code}>
-                  <TableCell>{discountcode.code}</TableCell>
-                  <TableCell>{discountcode.description?.en}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
-      )}
     </div>
   );
 }
