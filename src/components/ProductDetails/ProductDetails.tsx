@@ -9,6 +9,7 @@ import LoaderItem from "components/LoaderItem/LoaderItem";
 import "./ProductDetails.scss";
 import { LineItem } from "types/API/Cart";
 import { NavLink } from "react-router-dom";
+import { Button } from "@mui/material";
 
 type PropsType = {
   product: ProductData;
@@ -70,6 +71,17 @@ function ProductDetails({ product }: PropsType): ReactElement {
     searchKeywords.en?.map((keyword) => keyword.text) ?? [],
   ];
 
+  let itemInCart: LineItem | null = null;
+  activeCart?.lineItems.some((item) => {
+    if (id === item.productId) {
+      itemInCart = item;
+      return true;
+    }
+    return false;
+  });
+
+  const quantityInCart = itemInCart ? (itemInCart as LineItem).quantity : 0;
+
   return (
     <div className="product-details">
       {isLoading && <LoaderItem />}
@@ -109,7 +121,11 @@ function ProductDetails({ product }: PropsType): ReactElement {
         {productToCart ? (
           <>
             <p>{`${productToCart.quantity} pieces have already been added to the cart`}</p>
-            <NavLink to="/basket">Go to the Cart</NavLink>
+            <NavLink to="/basket">
+              <Button sx={{ mt: 1 }} color="success" variant="outlined">
+                Go to the Cart
+              </Button>
+            </NavLink>
           </>
         ) : null}
       </div>

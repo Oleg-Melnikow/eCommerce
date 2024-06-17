@@ -30,6 +30,7 @@
   }
 
   &__thumb {
+    border-radius: 10px;
     max-height: 100px;
     object-fit: contain;
     @media screen and (max-width: 960px) {
