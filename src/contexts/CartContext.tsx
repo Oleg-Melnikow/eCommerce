@@ -205,10 +205,6 @@ export function CartProvider(props: ProviderProps): ReactElement {
     }
   }, []);
 
-  const resetActiveCart = useCallback(async (): Promise<void> => {
-    dispatch(clearCart());
-  }, []);
-
   const initializeCart = useCallback(async (): Promise<void> => {
     dispatch(loading(true));
     const isBacket = pathname.includes("basket");
@@ -225,6 +221,24 @@ export function CartProvider(props: ProviderProps): ReactElement {
       dispatch(loading(false));
     }
   }, [fetchActiveCart, getAllDiscountCodes, pathname]);
+
+  const resetActiveCart = useCallback(async (): Promise<void> => {
+    try {
+      dispatch(loading(true));
+      const { activeCart } = state;
+      if (activeCart) {
+        await API.getInstance()?.deleteCart(activeCart);
+        await initializeCart();
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message, toastOptions);
+      }
+    } finally {
+      dispatch(loading(false));
+    }
+    dispatch(clearCart());
+  }, [initializeCart, state]);
 
   useEffect(() => {
     if (!state.activeCart) {

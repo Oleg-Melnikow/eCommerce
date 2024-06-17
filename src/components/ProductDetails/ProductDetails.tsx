@@ -1,5 +1,4 @@
 import { ReactElement, useEffect, useState } from "react";
-import ProductDetailsRadio from "components/ProductDetailsRadio/ProductDetailsRadio";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
 import { ProductData } from "types/API/Product";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
