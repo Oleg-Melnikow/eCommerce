@@ -68,7 +68,7 @@ type ActionsType =
   | ReturnType<typeof receivingToken>;
 
 export interface AuthContextValue extends AuthStateType {
-  logoutAccount: () => void;
+  logoutAccount: () => Promise<void>;
   login: (data: LoginType) => Promise<void>;
   signup: (customer: MyCustomerDraft) => Promise<void>;
   updateUserAdress: (
@@ -85,7 +85,7 @@ export interface AuthContextValue extends AuthStateType {
 
 export const AuthContext = createContext<AuthContextValue>({
   ...AuthInitialState,
-  logoutAccount: () => {},
+  logoutAccount: () => Promise.resolve(),
   login: () => Promise.resolve(),
   signup: () => Promise.resolve(),
   updateUserAdress: () => Promise.resolve(),
