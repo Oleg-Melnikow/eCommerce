@@ -1,18 +1,32 @@
-import { ReactElement, useEffect } from "react";
-import "./ProductDetails.scss";
-import ProductDetailsRadio from "components/ProductDetailsRadio/ProductDetailsRadio";
+import { ReactElement, useEffect, useState } from "react";
 import ProductDetailsCounter from "components/ProductDetailsCounter/ProductDetailsCounter";
 import { ProductData } from "types/API/Product";
 import { ProductPrice } from "components/ProductCard/ProductPrice/ProductPrice";
 import useProduct from "hooks/use-product";
+import useCart from "hooks/use-cart";
+import { LoadingButton } from "@mui/lab";
+import LoaderItem from "components/LoaderItem/LoaderItem";
+import "./ProductDetails.scss";
+import { LineItem } from "types/API/Cart";
+import { NavLink } from "react-router-dom";
+import { Button } from "@mui/material";
 
 type PropsType = {
   product: ProductData;
 };
 
 function ProductDetails({ product }: PropsType): ReactElement {
+  const { id, key, masterData } = product;
   const { getCategoriesCurrentProduct, currentProductCategories } =
     useProduct();
+  const {
+    addProductToActiveCart,
+    isLoading,
+    activeCart,
+    removeProductFromActiveCart,
+  } = useCart();
+  const [count, setCount] = useState(1);
+  const [productToCart, setProductToCart] = useState<LineItem | null>(null);
 
   const line = (
     <div
@@ -26,13 +40,29 @@ function ProductDetails({ product }: PropsType): ReactElement {
     />
   );
 
+  const onclickAddToCart = (): void => {
+    addProductToActiveCart({ id, key, ...masterData.current }, count);
+  };
+
+  const removeToCart = (): void => {
+    if (productToCart) {
+      removeProductFromActiveCart(productToCart.id, productToCart.quantity);
+    }
+  };
+
   useEffect(() => {
     product?.masterData.current.categories.forEach(async (category) => {
       await getCategoriesCurrentProduct(category.id);
     });
   }, [getCategoriesCurrentProduct, product?.masterData]);
 
-  const { name, masterVariant, searchKeywords } = product.masterData.current;
+  useEffect(() => {
+    const productCart =
+      activeCart?.lineItems.find((item) => item.productId === id) || null;
+    setProductToCart(productCart);
+  }, [activeCart, id]);
+
+  const { name, masterVariant, searchKeywords } = masterData.current;
   const { sku, prices } = masterVariant;
   const [price] = prices;
   const [title, categories, tags] = [
@@ -40,25 +70,64 @@ function ProductDetails({ product }: PropsType): ReactElement {
     currentProductCategories.map((category) => category.name.en),
     searchKeywords.en?.map((keyword) => keyword.text) ?? [],
   ];
+
+  let itemInCart: LineItem | null = null;
+  activeCart?.lineItems.some((item) => {
+    if (id === item.productId) {
+      itemInCart = item;
+      return true;
+    }
+    return false;
+  });
+
+  const quantityInCart = itemInCart ? (itemInCart as LineItem).quantity : 0;
+
   return (
     <div className="product-details">
+      {isLoading && <LoaderItem />}
       <h3 className="product-details__title">{title}</h3>
       <ProductPrice price={price} /> {line}
-      <ProductDetailsRadio className="product-details" />
       <div className="product-details__btn-wrap">
-        <ProductDetailsCounter className="product-details" />
-        <button
-          type="button"
-          className="product-details__btn product-details__btn--buy"
-        >
-          Buy Now
-        </button>
-        <button
+        {!productToCart && (
+          <ProductDetailsCounter
+            className="product-details"
+            count={count}
+            setCount={setCount}
+          />
+        )}
+        {!!productToCart && (
+          <LoadingButton
+            sx={{ width: "170px" }}
+            loading={isLoading}
+            variant="contained"
+            type="button"
+            color="error"
+            onClick={removeToCart}
+          >
+            Remove to Cart
+          </LoadingButton>
+        )}
+        <LoadingButton
+          disabled={!!productToCart}
+          loading={isLoading}
           type="button"
           className="product-details__btn product-details__btn--add"
+          onClick={onclickAddToCart}
         >
           Add to Cart
-        </button>
+        </LoadingButton>
+      </div>
+      <div className="product-details__quantity-in-cart">
+        {productToCart ? (
+          <>
+            <p>{`${productToCart.quantity} pieces have already been added to the cart`}</p>
+            <NavLink to="/basket">
+              <Button sx={{ mt: 1 }} color="success" variant="outlined">
+                Go to the Cart
+              </Button>
+            </NavLink>
+          </>
+        ) : null}
       </div>
       <div className="product-details__info-wrap">
         <p className="product-details__info">

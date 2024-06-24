@@ -46,13 +46,13 @@ interface Price {
   };
 }
 
-interface ProductData {
+type ProductData = {
   id: string;
   key: string;
   masterData: {
     current: ProductCurrent;
   };
-}
+};
 
 interface ProductCurrent {
   name: Languages;
@@ -86,4 +86,5 @@ export {
   Price,
   Product,
   ProductsSearch,
+  PriceValue,
 };

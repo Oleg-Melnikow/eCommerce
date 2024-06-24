@@ -26,13 +26,17 @@
     margin-right: 5px;
   }
 
-  &__btn {
+  & &__btn {
     width: 130px;
     height: 40px;
     border: 2px solid colors.$main-color;
     border-radius: 5px;
     text-transform: uppercase;
     transition: 0.25s;
+
+    &:disabled {
+      border-color: rgba(0, 0, 0, 0.26);
+    }
 
     &--buy {
       color: white;
@@ -58,5 +62,19 @@
     &-title {
       color: colors.$text-regular;
     }
+  }
+
+  &__quantity-in-cart {
+    padding: 8px 20px;
+    min-height: 40px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: colors.$main-color;
+  }
+}
+
+@media (max-width: 500px) {
+  .product-details__btn-wrap {
+    flex-wrap: wrap;
   }
 }

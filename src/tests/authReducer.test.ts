@@ -4,6 +4,7 @@ import {
   loading,
   initialize,
   setUser,
+  receivingToken,
 } from "../reducers/authReducer";
 
 describe("authReducer testing", () => {
@@ -35,5 +36,11 @@ describe("authReducer testing", () => {
     const setUserAction = setUser(userData);
     const result = authReducer(initialState, setUserAction);
     expect(result).toEqual({ ...initialState, user: userData });
+  });
+
+  it("should update data in the state when called receivingToken action", () => {
+    const action = receivingToken(true);
+    const result = authReducer(initialState, action);
+    expect(result).toEqual({ ...initialState, isTokenReceived: true });
   });
 });
