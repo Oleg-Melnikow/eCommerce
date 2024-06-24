@@ -20,7 +20,7 @@ import {
   DiscountCode,
   DiscountCodePagedQueryResponse,
 } from "types/API/Discount";
-import { ActionTypes, Cart, LineItem, MyCartDraft } from "../types/API/Cart";
+import { ActionTypes, Cart, MyCartDraft } from "../types/API/Cart";
 
 export default class API {
   protected static instance: API | null = null;
