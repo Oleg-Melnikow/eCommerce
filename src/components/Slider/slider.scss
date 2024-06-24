@@ -1,0 +1,92 @@
+@use "../../styles/colors.scss" as colors;
+
+.slider {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: 350px auto;
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
+  &__thumbs-container {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    max-width: 100%;
+    padding: 5px;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+    @media screen and (max-width: 768px) {
+      display: none;
+    }
+
+    .slider__thumb-wraper {
+      max-width: 100%;
+      max-width: 100%;
+    }
+
+    .slider__thumb {
+      max-height: 100px;
+      object-fit: cover;
+      border-radius: 10px;
+      transition: 250ms;
+      &--active {
+        box-shadow: colors.$accent-shadow;
+      }
+      &:hover {
+        cursor: pointer;
+        box-shadow: colors.$accent-shadow;
+        scale: 1.05;
+      }
+    }
+  }
+
+  &__image-wrap {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+
+    .slider__image {
+      position: absolute;
+      top: 0;
+      left: auto;
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      cursor: zoom-in;
+    }
+  }
+
+  .slider__btns-row {
+    grid-column-start: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 10px;
+    @media screen and (max-width: 768px) {
+      grid-column-start: auto;
+    }
+  }
+
+  @mixin control__icon {
+    height: 8px;
+    border-radius: 4px;
+    background-color: colors.$main-color;
+    transition: 0.25s;
+  }
+
+  &__control_icon {
+    @include control__icon();
+    width: 8px;
+  }
+
+  &__control_icon--checked {
+    @include control__icon();
+    width: 28px;
+  }
+}
